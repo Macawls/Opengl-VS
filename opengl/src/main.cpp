@@ -7,7 +7,7 @@
 #include "systems/settings/render_settings.h"
 
 #define ICON_DATA { image_width, image_height, image_data }
-#define WINDOW_PARAMS { 1600, 800, "Cube Demo", 22.0f, ICON_DATA }
+#define WINDOW_PARAMS { 1600, 800, "Task 1", 22.0f, ICON_DATA }
 
 // N.B always do camera update last
 int main(void)

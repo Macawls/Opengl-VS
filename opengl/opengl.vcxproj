@@ -635,7 +635,6 @@
     <ClInclude Include="src\systems\rendering\terrain.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="C:\Users\Jordan\Downloads\berg-river.png" />
     <Image Include="src\resources\images\terrain\berg-river.png" />
     <Image Include="src\resources\images\terrain\cape-town.png" />
   </ItemGroup>

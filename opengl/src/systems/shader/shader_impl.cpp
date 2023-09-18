@@ -11,7 +11,7 @@ Shader::Shader(const char* vertSource, const char* fragsSource)
     ID = createShaderProgram(2, vert, frag);
 }
 
-Shader& Shader::Use() 
+Shader& Shader::Use()
 { 
     glUseProgram(ID);
     return *this; 

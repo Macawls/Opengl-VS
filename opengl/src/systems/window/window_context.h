@@ -31,6 +31,14 @@ struct FramebufferSize
     int height;
 };
 
+
+// (1, 1) is top right, (-1, -1) is bottom left
+struct NormalizedMousePosition
+{
+	float x;
+	float y;
+};
+
 // A Wrapper for GLFWwindow, also manages ImGui and OpenGL context
 class WindowContext
 {
@@ -61,14 +69,19 @@ public:
     
     // Returns the framebuffer size
     FramebufferSize* GetFrameBufferSize() { return &m_FramebufferSize; }
+
+    // Returns the normalized mouse position
+    NormalizedMousePosition* GetNormalizedMousePosition() { return &m_normalizedMousePosition; }
     
     // Returns the framebuffer aspect ratio
     float GetFrameBufferAspectRatio() { return (float)m_FramebufferSize.width / (float)m_FramebufferSize.height; }
-
 private:
     GLFWwindow *m_window;
+    
+
     std::function<void(float deltaTime)> m_update;
-    FramebufferSize m_FramebufferSize = { 0, 0 };
+    FramebufferSize m_FramebufferSize;
+    NormalizedMousePosition m_normalizedMousePosition;
     
     bool init(WindowParams params);
     void set_standard_callbacks();

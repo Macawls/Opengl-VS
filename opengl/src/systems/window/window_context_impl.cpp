@@ -15,7 +15,6 @@ WindowContext::WindowContext(WindowParams params)
     }
 
     glfwSetWindowIcon(m_window, 1, &params.iconImage);
-    set_standard_callbacks();
 
     Logger::LogDebug("%s Init Sucess", CLASS_NAME(WindowContext));
     Logger::LogDebug("%s Init Success, version: %s", CLASS_NAME(ImGUIModule),  IMGUI_VERSION);
@@ -91,6 +90,9 @@ bool WindowContext::init(WindowParams params)
         return false;
     }
 
+    // Before imgui init
+    set_standard_callbacks();
+
     // Init ImGui with window context
     bool success = ImGUI.Init("#version 330", m_window, params.imguiFontSize);
     if (!success)
@@ -102,6 +104,8 @@ bool WindowContext::init(WindowParams params)
     return true;
 }
 
+// N.B always call set_standard_callbacks() 
+// BEFORE IMGUI INIT
 void WindowContext::set_standard_callbacks()
 {
     // Make sure viewport updates when window is resized
@@ -114,6 +118,16 @@ void WindowContext::set_standard_callbacks()
 
         glViewport(0, 0, width, height); 
     });
+
+    // Update normalized mouse position
+    glfwSetCursorPosCallback(m_window, [](GLFWwindow* window, double xpos, double ypos)
+    {
+		WindowContext *win = (WindowContext *)glfwGetWindowUserPointer(window);
+		
+        // * 2.0 - 1.0f to get range [-1, 1]
+        win->m_normalizedMousePosition.x = (static_cast<float>(xpos) / (float)win->m_FramebufferSize.width) * 2.0 - 1.0f;
+		win->m_normalizedMousePosition.y = (1 - (static_cast<float>(ypos) / (float)win->m_FramebufferSize.height)) * 2.0f - 1.0f;
+	}); 
 
     // Set sleep status when window is minimized
     glfwSetWindowIconifyCallback(m_window, [](GLFWwindow *window, int iconified)

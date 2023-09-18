@@ -8,14 +8,31 @@
 // local
 #include "../../systems/window/window_context.h"
 #include "../../systems/shader/shader.h"
-#include "../../systems/camera/perspective_camera.h"
 #include "../../systems/settings/render_settings.h"
+#include "../../systems/rendering/transform.h"
+#include "../../systems/rendering/perspective_camera.h"
 
 // https://github.com/c2d7fa/opengl-cube/blob/master/main.c
 
+constexpr glm::vec3 StartingRotation = glm::vec3(25.0f, 45.0f, 0.0f);
+//constexpr glm::vec3 StartingRotation = glm::vec3(0.0f, 0.0f, 0.0f);
+
 class CubeDemo
 {
+public:
+    CubeDemo(WindowContext& context, PerspectiveCamera& camera, RenderSettings& settings);
+
+    glm::vec4 clearColour = glm::vec4(0.18f, 0.18f, 0.18f, 1.0f);
+
+    std::function<void()> OnGUIUpdate;
+    std::function<void(float deltaTime)> OnGameUpdate;
 private:
+
+    GLFWwindow* m_window;
+    PerspectiveCamera& m_camera;
+    RenderSettings& m_renderSettings;
+
+
     float vertices[24] = {
         // Front face
         0.5,  0.5,  0.5,
@@ -69,17 +86,12 @@ private:
         0.4, 0.8, 0.8,
     };
 
-
-    PerspectiveCamera camera;
-
     const char *cubeVert =
-#include "../../resources/shaders/CubeDemo/cube_shader.vert"
+#include "../../resources/shaders/cube/cube_shader.vert"
 ;
     const char *cubeFrag =
-#include "../../resources/shaders/CubeDemo/cube_shader.frag"
+#include "../../resources/shaders/cube/cube_shader.frag"
 ;
-
-
     // Cube
     unsigned int cubeVBO, cubeVAO, cubeEBO;
 
@@ -89,20 +101,8 @@ private:
                         .Compile();
     // Cube Variables
     glm::vec4 cubeColor = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-    glm::vec3 cubeTranslation = glm::vec3(0.0f, 0.0f, 0.0f);
-    glm::vec3 cubeRotation = glm::vec3(25.0f, 45.0f, 0.0f);
-    glm::vec3 cubeScale = glm::vec3(1.0f, 1.0f, 1.0f);
+    TransformComponent Transform = TransformComponent();
 
-    OpenGLRenderSettings RenderSettings = OpenGLRenderSettings();
     
     void InitCube();
-
-public:
-    CubeDemo(WindowContext &context);
-
-    glm::vec4 clearColour = glm::vec4(0.18f, 0.18f, 0.18f, 1.0f);
-    GLFWwindow *window;
-
-    std::function<void()> UiUpdate;
-    std::function<void (float deltaTime)> GameUpdate;
 };

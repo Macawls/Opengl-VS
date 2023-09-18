@@ -11,6 +11,16 @@ struct PolygonModeConfig {
     }
 };
 
+struct DepthConfig {
+    bool enabled = true;
+    GLenum function = GL_LESS;
+
+    bool operator!=(const DepthConfig& other) const {
+        return (enabled != other.enabled) ||
+            (function != other.function);
+    }
+};
+
 struct PolygonSmoothingConfig {
     bool enabled = true;
     GLenum hint = GL_FASTEST;
@@ -21,15 +31,7 @@ struct PolygonSmoothingConfig {
     }
 };
 
-struct DepthConfig {
-    bool enabled = true;
-    GLenum function = GL_LESS;
 
-    bool operator!=(const DepthConfig& other) const {
-        return (enabled != other.enabled) || 
-        (function != other.function);
-    }
-};
 
 struct BlendingConfig {
     bool enabled = true;

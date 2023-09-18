@@ -71,7 +71,7 @@ static GLuint compileShader(GLenum shaderType, const char* source) {
         return 0;
     }
     
-    Logger::LogDebug("%s shader compiled successfully", shaderTypeToString(shaderType));
+    //Logger::LogDebug("%s shader compiled successfully", shaderTypeToString(shaderType));
     return shader;
 }
 
@@ -112,6 +112,6 @@ static GLuint createShaderProgram(GLuint count, ...) {
     }
     va_end(shaderList);
     
-    Logger::LogDebug("Shader with ID: %d compiled", program);
+    Logger::LogDebug("Shader %d compiled", program);
     return program;
 }

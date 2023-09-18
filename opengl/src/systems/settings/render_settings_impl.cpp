@@ -4,51 +4,57 @@
 #include <GLFW/glfw3.h>
 #include "render_settings.h"
 #include "../../utils/gl_call.h"
-#include "../window/window_context.h"
 
-OpenGLRenderSettings::OpenGLRenderSettings(const RenderConfig &settings)
+
+RenderSettings::RenderSettings(const RenderConfig &settings, bool applyDefaults)
 {
     m_io = &ImGui::GetIO();
     this->m_config = settings;
+    
+    if (!applyDefaults) return;
+    Apply();
 }
 
-OpenGLRenderSettings::OpenGLRenderSettings()
+RenderSettings::RenderSettings(bool applyDefaults)
 {
     m_io = &ImGui::GetIO();
     this->m_config = RenderConfig();
+
+    if (!applyDefaults) return;
+    Apply();
 }
 
-OpenGLRenderSettings &OpenGLRenderSettings::PolygonMode(PolygonModeConfig config)
+RenderSettings &RenderSettings::PolygonMode(PolygonModeConfig config)
 {
     m_config.polygonMode = config;
     return *this;
 }
 
-OpenGLRenderSettings &OpenGLRenderSettings::PolygonSmoothing(PolygonSmoothingConfig config)
+RenderSettings &RenderSettings::PolygonSmoothing(PolygonSmoothingConfig config)
 {
     m_config.polygonSmoothing = config;
     return *this;
 }
 
-OpenGLRenderSettings &OpenGLRenderSettings::Depth(DepthConfig config)
+RenderSettings &RenderSettings::Depth(DepthConfig config)
 {
     m_config.depth = config;
     return *this;
 }
 
-OpenGLRenderSettings &OpenGLRenderSettings::Blending(BlendingConfig config)
+RenderSettings &RenderSettings::Blending(BlendingConfig config)
 {
     m_config.blending = config;
     return *this;
 }
 
-OpenGLRenderSettings &OpenGLRenderSettings::Culling(CullingConfig config)
+RenderSettings &RenderSettings::Culling(CullingConfig config)
 {
     m_config.culling = config;
     return *this;
 }
 
-OpenGLRenderSettings &OpenGLRenderSettings::Apply()
+RenderSettings &RenderSettings::Apply()
 {
     GLCall(glPolygonMode(m_config.polygonMode.face, m_config.polygonMode.mode));
 
@@ -97,7 +103,7 @@ OpenGLRenderSettings &OpenGLRenderSettings::Apply()
     return *this;
 }
 
-void OpenGLRenderSettings::show_polygon_mode_controls()
+void RenderSettings::show_polygon_mode_controls()
 {
     ImGui::Text("Mode");
     if (ImGui::RadioButton("Fill##PolygonFill", m_config.polygonMode.mode == GL_FILL))
@@ -157,7 +163,7 @@ void OpenGLRenderSettings::show_polygon_mode_controls()
     }
 }
 
-void OpenGLRenderSettings::show_depth_controls()
+void RenderSettings::show_depth_controls()
 {
     ImGui::Checkbox("Enabled##DepthEnabled", &m_config.depth.enabled);
     if (m_config.depth.enabled)
@@ -213,7 +219,7 @@ void OpenGLRenderSettings::show_depth_controls()
     }
 }
 
-void OpenGLRenderSettings::show_blending_controls()
+void RenderSettings::show_blending_controls()
 {
     ImGui::Checkbox("Enabled##BlendingEnabled", &m_config.blending.enabled);
     if (m_config.blending.enabled)
@@ -256,7 +262,7 @@ void OpenGLRenderSettings::show_blending_controls()
     }
 }
 
-void OpenGLRenderSettings::show_culling_controls()
+void RenderSettings::show_culling_controls()
 {
     ImGui::Checkbox("Enabled##CullingEnabled", &m_config.culling.enabled);
     if (m_config.culling.enabled)
@@ -290,7 +296,7 @@ void OpenGLRenderSettings::show_culling_controls()
     }
 }
 
-void OpenGLRenderSettings::ShowImGuiTabBar()
+void RenderSettings::ShowImGuiTabBar()
 {
     static RenderConfig defaultConfig = RenderConfig();
     // Note on imgui, syntax means {display}##{internal id}
@@ -340,7 +346,7 @@ void OpenGLRenderSettings::ShowImGuiTabBar()
     }
 }
 
-void OpenGLRenderSettings::ShowInfo(double updateRate)
+void RenderSettings::ShowInfo(double updateRate)
 {
     static double lastUpdateTime = 0.0;
     double currentTime = glfwGetTime();
@@ -348,22 +354,27 @@ void OpenGLRenderSettings::ShowInfo(double updateRate)
     static float lastFPS = 0.0f;
     static bool isVSync = false;
 
+    static double mouseX;
+    static double mouseY;
+
     if (currentTime - lastUpdateTime >= updateRate)
     {
         lastFPS = m_io->Framerate;
         lastFrameTime = 1000.0f / m_io->Framerate;
         lastUpdateTime = currentTime;
     }
-
+    
     ImGui::Spacing();
+    ImGui::Text("Renderer:       %s", glGetString(GL_RENDERER));
     if (ImGui::Checkbox("VSync", &isVSync)){ WindowContext::ToggleVSync(isVSync); }
     ImGui::SameLine();
     ImGui::Text("       FPS: %.2f", lastFPS);
     ImGui::Spacing();
-    ImGui::Text("Frame Time:     %.4fms", lastFrameTime);
+    ImGui::Text("Frame Time:     %.3fms", lastFrameTime);
     ImGui::Spacing();
     ImGui::Text("Window Size:    %.0fpx X %.0fpx ", m_io->DisplaySize.x, m_io->DisplaySize.y);
     ImGui::Spacing();
-    ImGui::Text("Renderer:       %s", glGetString(GL_RENDERER));
-    ImGui::Spacing();
+
+    //NormalizedMousePosition *pos = context.GetNormalizedMousePosition();
+    //ImGui::Text("Mouse: %.0fpx X %.0fpx ", pos->x, pos->y);
 }

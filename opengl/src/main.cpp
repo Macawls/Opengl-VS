@@ -1,24 +1,31 @@
 #include "utils/logger.h"
 #include "systems/window/window_context.h"
 
-#include "demos/cube/cube.h"
+#include "demos/task-one/task_one.h"
 #include "resources/images/icon/icon.h"
+#include "systems/rendering/perspective_camera.h"
+#include "systems/settings/render_settings.h"
 
 #define ICON_DATA { image_width, image_height, image_data }
-#define WINDOW_PARAMS { 1600, 650, "Cube Demo", 22.0f, ICON_DATA }
+#define WINDOW_PARAMS { 1600, 800, "Cube Demo", 22.0f, ICON_DATA }
 
-
+// N.B always do camera update last
 int main(void)
 {
     Logger::SetPriority(Logger::LogPriority::Debug);
+    
     WindowContext context = WindowContext(WINDOW_PARAMS);
-
-    CubeDemo demo = CubeDemo(context);
+    PerspectiveCamera camera = PerspectiveCamera(context);
+    RenderSettings settings = RenderSettings(true);
+    
+    TaskOne demo = TaskOne(context, camera, settings);
 
     auto update = [&](float deltaTime)
     {
-        demo.GameUpdate(deltaTime);
-        demo.UiUpdate();
+        demo.OnGameUpdate(deltaTime);
+        demo.OnGUIUpdate();
+        //camera.HandleKeyInput(deltaTime);
+        camera.OnUpdate(deltaTime);
     };
 
     context.SetDeltaUpdate(update);

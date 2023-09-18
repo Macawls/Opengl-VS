@@ -14,21 +14,14 @@
 #include "../../utils/logger.h"
 #include "../../utils/gl_call.h"
 
-CubeDemo::CubeDemo(WindowContext &context)
+CubeDemo::CubeDemo(WindowContext& context, PerspectiveCamera& camera, RenderSettings& settings)
+    : m_camera(camera), m_window(context.GetGLFWWindow()), m_renderSettings(settings)
 {
-    window = context.GetGLFWWindow();
-    camera = PerspectiveCamera(context);
-
-    RenderSettings
-        .PolygonMode({GL_FRONT_AND_BACK, GL_FILL})
-        .Depth({true, GL_LESS})
-        .Blending({true, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_FUNC_ADD})
-        .Culling({true, GL_BACK, GL_CCW})
-        .Apply();
+    Transform.SetRotation(StartingRotation);
 
     InitCube();
 
-    GameUpdate = [&](float deltaTime)
+    OnGameUpdate = [&](float deltaTime)
     {
         glClearColor(clearColour.r, clearColour.g, clearColour.b, clearColour.a);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -36,14 +29,8 @@ CubeDemo::CubeDemo(WindowContext &context)
         glm::mat4 projection = camera.GetProjectionMatrix();
         glm::mat4 view = camera.GetViewMatrix();
 
-        glm::mat4 scale = glm::scale(glm::mat4(1.0f), cubeScale);
-        glm::mat4 translation = glm::translate(glm::mat4(1.0f), cubeTranslation);
-        glm::mat4 rotation = glm::eulerAngleXYZ(glm::radians(cubeRotation.x), glm::radians(cubeRotation.y), glm::radians(cubeRotation.z));
-
-        glm::mat4 model = translation * rotation * scale;
-
         // Calculate the MVP matrix
-        glm::mat4 mvp = projection * view * model;
+        glm::mat4 mvp = projection * view * Transform.GetModelMatrix();
 
         cubeShader.Use().SetMat4("mvp", mvp);
 
@@ -51,21 +38,21 @@ CubeDemo::CubeDemo(WindowContext &context)
         glBindVertexArray(cubeVAO);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
-
-        // Update camera
-        camera.OnUpdate(deltaTime);
     };
 
-    UiUpdate = [&]()
+    OnGUIUpdate = [&]()
     {
         ImGui::SetNextWindowPos(ImVec2(context.ImGUI.IO->DisplaySize.x - 490, 20));
         ImGui::SetNextWindowSize(ImVec2(470, 0));
         
         ImGui::Begin("Rendering");
-        RenderSettings.ShowInfo();
+        m_renderSettings.ShowInfo();
+        NormalizedMousePosition *pos = context.GetNormalizedMousePosition();
+        ImGui::Spacing();
+        ImGui::Text("Cursor Pos:     %.3f, %.3f", pos->x, pos->y);
         ImGui::Separator();
         ImGui::Text("Settings");
-        RenderSettings.ShowImGuiTabBar();
+        m_renderSettings.ShowImGuiTabBar();
         ImGui::End();
 
         ImGui::SetNextWindowPos(ImVec2(20, 20));
@@ -80,15 +67,13 @@ CubeDemo::CubeDemo(WindowContext &context)
                 {
                     if (ImGui::BeginTabItem("Cube"))
                     {
-                        ImGui::SliderFloat3("Translation", glm::value_ptr(cubeTranslation), -5.0f, 5.0f);
-                        ImGui::SliderFloat3("Rotation", glm::value_ptr(cubeRotation), -180.0f, 180.0f);
-                        ImGui::SliderFloat3("Scale", glm::value_ptr(cubeScale), 0.1f, 10.0f);
+                        ImGui::SliderFloat3("Position", glm::value_ptr(Transform.Position), -5.0f, 5.0f);
+                        ImGui::SliderFloat3("Rotation", glm::value_ptr(Transform.Rotation), -180.0f, 180.0f);
+                        ImGui::SliderFloat3("Scale", glm::value_ptr(Transform.Scale), 0.1f, 10.0f);
 
                         if (ImGui::Button("Reset"))
                         {
-                            cubeTranslation = glm::vec3(0.0f, 0.0f, 0.0f);
-                            cubeRotation = glm::vec3(25.0f, 45.0f, 0.0f);
-                            cubeScale = glm::vec3(1.0f, 1.0f, 1.0f);
+                            Transform.Reset().SetRotation(StartingRotation);
                         }
 
                         ImGui::EndTabItem();
@@ -96,14 +81,19 @@ CubeDemo::CubeDemo(WindowContext &context)
 
                     if (ImGui::BeginTabItem("Camera"))
                     {
-                        ImGui::SliderFloat3("Position", glm::value_ptr(camera.position), -3.0f, 3.0f);
-                        ImGui::SliderFloat3("Front", glm::value_ptr(camera.front), -3.0f, 3.0f);
-                        ImGui::SliderFloat3("Up", glm::value_ptr(camera.up), -3.0f, 3.0f);
-                        ImGui::SliderFloat("FOV", &camera.fov, 0.0f, 120.0f);
+                        ImGui::SliderFloat3("Position", glm::value_ptr(camera.Transform.Position), -3.0f, 15.0f);
+                        ImGui::SliderFloat3("Rotation##Cam", glm::value_ptr(camera.Transform.Rotation), -180.0f, 180.0f);
+                        
+                        ImGui::SliderFloat("FOV", &camera.Settings.Fov, 5.0f, 140.0f);
+                        ImGui::SliderFloat("Speed", &camera.Settings.Speed, 2.0f, 10.0f);
 
                         if (ImGui::Button("Reset"))
                         {
-                            camera = PerspectiveCamera(context);
+                            camera.Transform
+                                .Reset()
+                                .SetPosition(CAMERA_STARTING_POSITION);
+
+                            camera.Settings = CameraSettings();
                         }
 
                         ImGui::EndTabItem();
@@ -172,3 +162,5 @@ void CubeDemo::InitCube()
     GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
     GLCall(glBindVertexArray(0));
 }
+
+

@@ -1,23 +1,36 @@
 #pragma once
-#include "render_config.h"
+#include "configs.h"
 
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 
-class OpenGLRenderSettings
+#include "../window/window_context.h"
+
+////////////////////////////////////////////
+//    Set Opengl Context before calling Apply()
+//    Configuration Example:
+//    settings
+//      .PolygonMode({ GL_FRONT_AND_BACK, GL_FILL })
+//      .Depth({ true, GL_LESS })
+//      .Blending({ true, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_FUNC_ADD })
+//      .Culling({ true, GL_BACK, GL_CCW })
+//      .Apply();
+// 
+////////////////////////////////////////////
+class RenderSettings
 {
 public:
-    OpenGLRenderSettings(const RenderConfig& config);
-    OpenGLRenderSettings();
+    RenderSettings(const RenderConfig& config, bool applyDefaults);
+    RenderSettings(bool applyDefaults);
 
 
-    OpenGLRenderSettings& PolygonMode(PolygonModeConfig config);
-    OpenGLRenderSettings& PolygonSmoothing(PolygonSmoothingConfig config);
-    OpenGLRenderSettings& Depth(DepthConfig config);
-    OpenGLRenderSettings& Blending(BlendingConfig config);
-    OpenGLRenderSettings& Culling(CullingConfig config);
+    RenderSettings& PolygonMode(PolygonModeConfig config);
+    RenderSettings& PolygonSmoothing(PolygonSmoothingConfig config);
+    RenderSettings& Depth(DepthConfig config);
+    RenderSettings& Blending(BlendingConfig config);
+    RenderSettings& Culling(CullingConfig config);
     
-    OpenGLRenderSettings& Apply();
+    RenderSettings& Apply();
 
     void ShowImGuiTabBar();
     void ShowInfo(double updateRate = 0.08);

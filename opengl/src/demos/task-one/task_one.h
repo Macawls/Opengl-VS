@@ -68,7 +68,7 @@ private:
         
         TransformComponent(glm::vec3(0.0f, m_camDistance, m_camDistance), glm::vec3(45.0f, 0.0f, 0.0f), glm::vec3(1.0f)),
         
-        TransformComponent(glm::vec3(0.0f, 0.0f, m_camDistance), glm::vec3(0.0f), glm::vec3(1.0f))
+        TransformComponent(glm::vec3(0.0f, m_camDistance, 0.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(1.0f))
 	};
 
     std::vector<Cube> generate_chess_board();

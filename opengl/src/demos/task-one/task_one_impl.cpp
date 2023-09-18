@@ -25,8 +25,8 @@ static void RandomizeHeightOffsets(std::vector<Cube>& cells, float maxOffset)
 }
 
 // Terrain needs to be 50x50
-#define TERRAIN_PARAMS { 50, 50, 32.0f }
-#define TERRAIN_PATH "src/resources/images/terrain/cape-town.png"
+#define TERRAIN_PARAMS { 50, 50, 22.0f }
+#define TERRAIN_PATH "src/resources/images/terrain/berg-river.png"
 
 TaskOne::TaskOne(WindowContext& context, PerspectiveCamera& camera, RenderSettings& settings)
     : m_camera(camera), m_window(context.GetGLFWWindow()), m_renderSettings(settings), m_context(context)

@@ -15,6 +15,11 @@
 #include "../../systems/rendering/primitives/cube.h"
 #include "../../systems/rendering/terrain.h"
 
+// Tweens
+#include "pTween.h"
+
+static bool camTweenPlaying = false;
+
 class TaskOne
 {
 public:
@@ -55,12 +60,22 @@ private:
     std::vector<Cube> m_cells;
 
     Terrain* m_terrain = nullptr;
+    pTweenObject terrainTween;
 
     
     bool m_cameraUnlocked = false;
     int m_currentCamIndex = 0;
     TransformComponent m_newCamPosition;
 
+    pTweenObject m_cameraTweenPosX;
+    pTweenObject m_cameraTweenPosY;
+    pTweenObject m_cameraTweenPosZ;
+
+    pTweenObject m_cameraTweenRotX;
+    pTweenObject m_cameraTweenRotY;
+    pTweenObject m_cameraTweenRotZ;
+
+   
     const float m_camDistance = 9.0f;
     const TransformComponent m_cameraPositions[3] = {
         

@@ -6,8 +6,10 @@
 #include "systems/rendering/perspective_camera.h"
 #include "systems/settings/render_settings.h"
 
+#include "pTween.h"
+
 #define ICON_DATA { image_width, image_height, image_data }
-#define WINDOW_PARAMS { 1600, 800, "Task 1", 22.0f, ICON_DATA }
+#define WINDOW_PARAMS { 1600, 900, "Task 1", 22.0f, ICON_DATA }
 
 // N.B always do camera update last
 int main(void)
@@ -22,9 +24,11 @@ int main(void)
 
     auto update = [&](float deltaTime)
     {
+        pTween::pTweenStep(glfwGetTime());
+
         demo.OnGameUpdate(deltaTime);
         demo.OnGUIUpdate();
-        //camera.HandleKeyInput(deltaTime);
+        camera.HandleKeyInput(deltaTime);
         camera.OnUpdate(deltaTime);
     };
 

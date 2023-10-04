@@ -8,15 +8,15 @@
 
 #include "pTween.h"
 
-#define ICON_DATA { image_width, image_height, image_data }
-#define WINDOW_PARAMS { 1600, 900, "Task 1", 22.0f, ICON_DATA }
+const GLFWimage icon = { image_width, image_height, image_data };
+const WindowParameters params = { 1600, 900, "Task 1", 22.0f, icon };
 
 // N.B always do camera update last
 int main(void)
 {
     Logger::SetPriority(Logger::LogPriority::Debug);
     
-    WindowContext context = WindowContext(WINDOW_PARAMS);
+    WindowContext context = WindowContext(params);
     PerspectiveCamera camera = PerspectiveCamera(context);
     RenderSettings settings = RenderSettings(true);
     

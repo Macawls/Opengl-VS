@@ -16,7 +16,7 @@ struct WindowStatus
     bool isVSync = false;
 };
 
-struct WindowParams
+struct WindowParameters
 {
     int width;
     int height;
@@ -43,7 +43,7 @@ struct NormalizedMousePosition
 class WindowContext
 {
 public:
-    WindowContext(WindowParams params);
+    WindowContext(WindowParameters params);
     ~WindowContext();
     ImGUIModule ImGUI = ImGUIModule();
     
@@ -83,7 +83,7 @@ private:
     FramebufferSize m_FramebufferSize;
     NormalizedMousePosition m_normalizedMousePosition;
     
-    bool init(WindowParams params);
+    bool init(WindowParameters params);
     void set_standard_callbacks();
     void set_standard_window_hints();
 };

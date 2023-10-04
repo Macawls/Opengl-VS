@@ -5,7 +5,7 @@
 
 #define CLASS_NAME(className) #className
 
-WindowContext::WindowContext(WindowParams params)
+WindowContext::WindowContext(WindowParameters params)
 {
     if (!init(params))
     {
@@ -53,7 +53,7 @@ void WindowContext::BeginLoop()
     }
 }
 
-bool WindowContext::init(WindowParams params)
+bool WindowContext::init(WindowParameters params)
 {
     if (!glfwInit())
     {

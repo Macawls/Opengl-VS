@@ -87,12 +87,14 @@ private:
 	};
 
     std::vector<Cube> generate_chess_board();
+    std::vector<pTweenObject> cellTweens = std::vector<pTweenObject>();
     
     void render_ui();
     void next_cam_pos();
     void prev_cam_pos();
     void check_new_cam_pos();
     void handle_input();
+    void play_cell_anim();
 };
 
 

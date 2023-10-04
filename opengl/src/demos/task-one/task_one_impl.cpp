@@ -25,9 +25,14 @@ static void RandomizeHeightOffsets(std::vector<Cube>& cells, float maxOffset)
     }
 }
 
+static bool cellAnimationBusy = false;
+
 const char* TERRAIN_PATH = "src/resources/images/terrain/berg-river.png";
 const float TERRAIN_TWEEN_DURATION = 40.0f;
 const TerrainOptions TERRAIN_PARAMS = { 200, 200, 30.0f };
+
+const double CUBE_WAIT_TIME = 1.0;
+double timeToRenderCubes = CUBE_WAIT_TIME;
 
 TaskOne::TaskOne(WindowContext& context, PerspectiveCamera& camera, RenderSettings& settings)
     : m_camera(camera), m_window(context.GetGLFWWindow()), m_renderSettings(settings), m_context(context)
@@ -53,6 +58,8 @@ TaskOne::TaskOne(WindowContext& context, PerspectiveCamera& camera, RenderSettin
     // Setup chess board
     m_cells = generate_chess_board();
     RandomizeHeightOffsets(m_cells, m_cellMaxOffset);
+
+
     
     // Setup border
     Shader borderShader = Shader(m_cubeVertSource, m_cubeFragSource);
@@ -63,16 +70,21 @@ TaskOne::TaskOne(WindowContext& context, PerspectiveCamera& camera, RenderSettin
     // slightly lower avoid clipping
     m_chessBorder->Transform.Position = glm::vec3(0.0f, -0.2f, 0.0f);
 
+    play_cell_anim();
+
     OnGameUpdate = [&](float deltaTime)
     {
         glClearColor(m_clearColor.r, m_clearColor.g, m_clearColor.b, m_clearColor.a);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        for (Cube& cell : m_cells)
+        if (glfwGetTime() > timeToRenderCubes)
         {
-            cell.Draw(m_camera);
+            for (Cube& cell : m_cells)
+            {
+                cell.Draw(m_camera);
+            }
         }
-        
+
         m_chessBorder->Draw(m_camera, RainbowColor(static_cast<float>(glfwGetTime() * 0.2)));
         m_terrain->Draw(m_camera);
 
@@ -108,16 +120,9 @@ std::vector<Cube> TaskOne::generate_chess_board()
         {
             glm::vec3 color;
             
-            if ((i + j) % 2 == 0)
-            {
-                // White
-                color = glm::vec3(1.0f, 1.0f, 1.0f);
-            }
-            else
-            {
-                // Black
-                color = glm::vec3(0.0f, 0.0f, 0.0f);
-            }
+            // White piece cord is divisible by 2
+            color = (i + j) % 2 == 0 ? glm::vec3(1.0f, 1.0f, 1.0f) : color = glm::vec3(0.0f, 0.0f, 0.0f);
+
 
             Shader shader = Shader()
                 .SetVertexSource(m_cubeVertSource)
@@ -230,6 +235,24 @@ void TaskOne::handle_input() {
     }
 }
 
+void TaskOne::play_cell_anim()
+{
+    timeToRenderCubes = glfwGetTime() + CUBE_WAIT_TIME;
+
+    for (Cube& cell : m_cells)
+    {
+        float randomHeight = Random01() * m_cellMaxOffset;
+            
+        pTween::pTween(&cell.Transform.Position.y)
+            ->From(30.0f)
+            ->To(randomHeight)
+            ->Duration((double)(Random01() * 1.5f) + 2.0)
+            ->Delay(Random01() * 1.0f)
+            ->Transition(pTween::pTweenTransitions::EaseInOutBounce)
+            ->Play();
+    };
+}
+
 void TaskOne::render_ui()
 {
     ImGui::SetNextWindowPos(ImVec2(m_context.ImGUI.IO->DisplaySize.x - 490, 20));
@@ -301,8 +324,10 @@ void TaskOne::render_ui()
                     ImGui::Text("Use offset to change max height");
                     ImGui::SliderFloat("Max Offset", &m_cellMaxOffset, 0.0f, 1.0f);
 
+                    if (ImGui::Button("Play Animation")) play_cell_anim();
                     if (ImGui::Button("Randomize Cell Heights")) RandomizeHeightOffsets(m_cells, m_cellMaxOffset);
                     if (ImGui::Button("Reset")) RandomizeHeightOffsets(m_cells, 0.0f);
+                    
 
                     ImGui::EndTabItem();
                 }

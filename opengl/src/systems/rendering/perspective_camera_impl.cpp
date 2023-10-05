@@ -27,8 +27,8 @@ void PerspectiveCamera::update_projection_matrix()
     m_projectionMatrix = glm::perspective(
         glm::radians(Settings.Fov), 
         m_aspectRatio,
-        ClippingPlane.Near, 
-        ClippingPlane.Far);
+        Settings.ClippingPlane.Near, 
+        Settings.ClippingPlane.Far);
 }
 
 void PerspectiveCamera::update_view_matrix() {

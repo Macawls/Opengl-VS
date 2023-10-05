@@ -24,6 +24,7 @@ struct CameraSettings
     float Fov = 60.0f;
     float Speed = 3.0f;
     float Sensitivity = 30.0f;
+    ClipPlane ClippingPlane = ClipPlane();
 };
 
 enum CameraMode
@@ -58,7 +59,6 @@ class PerspectiveCamera
 public:
     PerspectiveCamera(WindowContext& windowContext, glm::vec3 Position = CAMERA_STARTING_POSITION);
 
-    ClipPlane ClippingPlane;
     CameraSettings Settings;
     TransformComponent Transform = TransformComponent().SetPosition(CAMERA_STARTING_POSITION);
 
@@ -70,6 +70,11 @@ public:
     {
         update_projection_matrix();
         update_view_matrix();
+    }
+
+    void Reset() {
+        Transform.Reset();
+        Settings = CameraSettings();
     }
 
     void HandleKeyInput(float deltaTime);

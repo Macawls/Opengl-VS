@@ -15,12 +15,12 @@ RenderSettings::RenderSettings(const RenderConfig &settings, bool applyDefaults)
     Apply();
 }
 
-RenderSettings::RenderSettings(bool applyDefaults)
+RenderSettings::RenderSettings(bool applyDefaultsOnInit)
 {
     m_io = &ImGui::GetIO();
     this->m_config = RenderConfig();
 
-    if (!applyDefaults) return;
+    if (!applyDefaultsOnInit) return;
     Apply();
 }
 

@@ -1,37 +1,25 @@
 #pragma once
+#include "../demo-base.h"
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <functional>
-#include <vector>
-
-// local
-#include "../../systems/window/window_context.h"
-#include "../../systems/shader/shader.h"
-#include "../../systems/settings/render_settings.h"
-#include "../../systems/rendering/transform.h"
-#include "../../systems/rendering/perspective_camera.h"
-#include "../../systems/rendering/primitives/cube.h"
-#include "../../systems/rendering/terrain.h"
-
-// Tweens
-#include "pTween.h"
 
 static bool camTweenPlaying = false;
 
-class TaskOne
-{
+class TaskOne : virtual public DemoBase {
 public:
+    using DemoBase::DemoBase; // inherit constructor
+    
     TaskOne(WindowContext& context, PerspectiveCamera& camera, RenderSettings& settings);
+    const char* GetTitle() override { return "Task One Demo"; }
+
     ~TaskOne()
     { 
         m_chessBorder = nullptr;
         m_terrain = nullptr;
     }
-
-    std::function<void()> OnGUIUpdate;
-    std::function<void(float deltaTime)> OnGameUpdate;
+    
+    void OnSetup() override;
+    void OnUpdate(float deltaTime) override;
+    void OnGUI() override;
 
 private:
     const char* m_cubeVertSource =
@@ -46,12 +34,6 @@ private:
     const char* m_terrainFragSource =
 #include "../../resources/shaders/terrain.frag"
 ;
-
-    
-    WindowContext& m_context;
-    GLFWwindow* m_window;
-    PerspectiveCamera& m_camera;
-    RenderSettings& m_renderSettings;
 
     glm::vec4 m_clearColor = glm::vec4(0.18f, 0.18f, 0.18f, 1.0f);
 

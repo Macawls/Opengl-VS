@@ -34,79 +34,89 @@ const TerrainOptions TERRAIN_PARAMS = { 200, 200, 30.0f };
 const double CUBE_WAIT_TIME = 1.0;
 double timeToRenderCubes = CUBE_WAIT_TIME;
 
-TaskOne::TaskOne(WindowContext& context, PerspectiveCamera& camera, RenderSettings& settings)
-    : m_camera(camera), m_window(context.GetGLFWWindow()), m_renderSettings(settings), m_context(context)
+TaskOne::TaskOne(WindowContext& context, PerspectiveCamera& camera, RenderSettings& settings) 
+    : DemoBase(context, camera, settings)
 {
     m_camera.Transform = m_cameraPositions[m_currentCamIndex];
     m_newCamPosition = m_camera.Transform;
 
-    // farther plane to avoid clipping terrain
-    m_camera.ClippingPlane = ClipPlane{ 0.1f, 500.0f };
-    m_camera.Settings.Fov = 90.0f;
-
     // Setup terrain
     Shader terrainShader = Shader(m_terrainVertSource, m_terrainFragSource);
-    m_terrain = new Terrain( TERRAIN_PATH, terrainShader, TERRAIN_PARAMS);
+    m_terrain = new Terrain(TERRAIN_PATH, terrainShader, TERRAIN_PARAMS);
     m_terrain->Transform.Position.y = -2.0f;
+
+    // Setup chess board
+    m_cells = generate_chess_board();
+    
+    // Setup border
+    Shader borderShader = Shader(m_cubeVertSource, m_cubeFragSource);
+    m_chessBorder = new Cube(borderShader, glm::vec3(0.0f, 0.0f, 0.0f));
+
+    // width of board is 9
+    m_chessBorder->Transform.Scale = glm::vec3(9.0f, 0.5f, 9.0f);
+    // slightly lower avoid clipping
+    m_chessBorder->Transform.Position = glm::vec3(0.0f, -0.2f, 0.0f);
+}
+
+
+void TaskOne::OnSetup()
+{
+    m_camera.Reset();
+
+    // farther plane to avoid clipping terrain
+    m_camera.Settings.ClippingPlane = ClipPlane{ 0.1f, 500.0f };
+    m_camera.Settings.Fov = 90.0f;
+
+    m_camera.Transform = m_cameraPositions[m_currentCamIndex];
+    m_newCamPosition = m_camera.Transform;
+    
+    RandomizeHeightOffsets(m_cells, m_cellMaxOffset);
+    
+
 
     // Rotate Terrain
     terrainTween = pTween::pTween(&m_terrain->Transform.Rotation.y)
         ->To(360.0f)
         ->Duration(TERRAIN_TWEEN_DURATION)
         ->Play();
-    
-    // Setup chess board
-    m_cells = generate_chess_board();
-    RandomizeHeightOffsets(m_cells, m_cellMaxOffset);
 
-
-    
-    // Setup border
-    Shader borderShader = Shader(m_cubeVertSource, m_cubeFragSource);
-    m_chessBorder = new Cube(borderShader, glm::vec3(0.0f, 0.0f, 0.0f));
-    
-    // width of board is 9
-    m_chessBorder->Transform.Scale = glm::vec3(9.0f, 0.5f, 9.0f);
-    // slightly lower avoid clipping
-    m_chessBorder->Transform.Position = glm::vec3(0.0f, -0.2f, 0.0f);
 
     play_cell_anim();
+}
 
-    OnGameUpdate = [&](float deltaTime)
+void TaskOne::OnUpdate(float deltaTime)
+{
+    glClearColor(m_clearColor.r, m_clearColor.g, m_clearColor.b, m_clearColor.a);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    if (glfwGetTime() > timeToRenderCubes)
     {
-        glClearColor(m_clearColor.r, m_clearColor.g, m_clearColor.b, m_clearColor.a);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        if (glfwGetTime() > timeToRenderCubes)
+        for (Cube& cell : m_cells)
         {
-            for (Cube& cell : m_cells)
-            {
-                cell.Draw(m_camera);
-            }
+            cell.Draw(m_camera);
         }
+    }
 
-        m_chessBorder->Draw(m_camera, RainbowColor(static_cast<float>(glfwGetTime() * 0.2)));
-        m_terrain->Draw(m_camera);
+    m_chessBorder->Draw(m_camera, RainbowColor(static_cast<float>(glfwGetTime() * 0.2)));
+    m_terrain->Draw(m_camera);
 
-        // loop tween
-        if (m_terrain->Transform.Rotation.y > 359.0f) {
-            
-            terrainTween->Pause();
-            m_terrain->Transform.Rotation.y = 0.0f;
+    // loop tween
+    if (m_terrain->Transform.Rotation.y > 359.0f) {
 
-            terrainTween = pTween::pTween(&m_terrain->Transform.Rotation.y)
-                ->To(360.0f)
-                ->Duration(TERRAIN_TWEEN_DURATION)
-                ->Play();
-        }
-    };
+        terrainTween->Pause();
+        m_terrain->Transform.Rotation.y = 0.0f;
 
-    // handle input after rendering ui because of imgui glfw callbacks
-    OnGUIUpdate = [&]()
-    {
-        render_ui();
-        handle_input();
-    };
+        terrainTween = pTween::pTween(&m_terrain->Transform.Rotation.y)
+            ->To(360.0f)
+            ->Duration(TERRAIN_TWEEN_DURATION)
+            ->Play();
+    }
+}
+
+void TaskOne::OnGUI()
+{
+	render_ui();
+	handle_input();
 }
 
 std::vector<Cube> TaskOne::generate_chess_board()
@@ -237,8 +247,6 @@ void TaskOne::handle_input() {
 
 void TaskOne::play_cell_anim()
 {
-    timeToRenderCubes = glfwGetTime() + CUBE_WAIT_TIME;
-
     for (Cube& cell : m_cells)
     {
         float randomHeight = Random01() * m_cellMaxOffset;
@@ -255,12 +263,12 @@ void TaskOne::play_cell_anim()
 
 void TaskOne::render_ui()
 {
-    ImGui::SetNextWindowPos(ImVec2(m_context.ImGUI.IO->DisplaySize.x - 490, 20));
+    ImGui::SetNextWindowPos(ImVec2(Context.ImGUI.IO->DisplaySize.x - 490, 20));
     ImGui::SetNextWindowSize(ImVec2(470, 0));
 
     ImGui::Begin("Rendering");
     m_renderSettings.ShowInfo();
-    NormalizedMousePosition* pos = m_context.GetNormalizedMousePosition();
+    NormalizedMousePosition* pos = Context.GetNormalizedMousePosition();
     ImGui::Spacing();
     ImGui::Text("Cursor Pos:     %.3f, %.3f", pos->x, pos->y);
     ImGui::Separator();

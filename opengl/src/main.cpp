@@ -1,40 +1,49 @@
 #include "utils/logger.h"
-#include "systems/window/window_context.h"
+#include <unordered_map>
 
+// demos
+#include "demos/demo-selection.h"
 #include "demos/task-one/task_one.h"
+#include "demos/cube/cube.h"
+
 #include "resources/images/icon/icon.h"
+#include "systems/window/window_context.h"
 #include "systems/rendering/perspective_camera.h"
 #include "systems/settings/render_settings.h"
-
 #include "pTween.h"
 
 const GLFWimage icon = { image_width, image_height, image_data };
-const WindowParameters params = { 1600, 900, "Task 1", 22.0f, icon };
+const WindowParameters windowParams = { 1600, 900, "Task 1", 22.0f, icon };
 
-// N.B always do camera update last
+// N.B Do camera update after rendering the scene
 int main(void)
 {
     Logger::SetPriority(Logger::LogPriority::Debug);
     
-    WindowContext context = WindowContext(params);
+    WindowContext context = WindowContext(windowParams);
     PerspectiveCamera camera = PerspectiveCamera(context);
     RenderSettings settings = RenderSettings(true);
-    
-    TaskOne demo = TaskOne(context, camera, settings);
 
-    auto update = [&](float deltaTime)
+    DemoSelection demos = DemoSelection()
+        .AddDemo("Task 1",  new TaskOne(context, camera, settings))
+        .AddDemo("Cube",    new CubeDemo(context, camera, settings))
+        .Init();
+
+    auto applicationUpdate = [&](float deltaTime)
     {
-        pTween::pTweenStep(glfwGetTime());
+        demos.Current->OnUpdate(deltaTime);
+        demos.Current->OnGUI();
 
-        demo.OnGameUpdate(deltaTime);
-        demo.OnGUIUpdate();
         camera.HandleKeyInput(deltaTime);
         camera.OnUpdate(deltaTime);
+
+        demos.ShowSelectionWindow();
+        pTween::pTweenStep(glfwGetTime());
     };
 
-    context.SetDeltaUpdate(update);
+    context.SetDeltaUpdate(applicationUpdate);
     context.BeginLoop();
-
+    
     Logger::Log("Exiting...");
     return 0;
 }

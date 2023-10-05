@@ -1,37 +1,22 @@
 #pragma once
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <functional>
-
-// local
-#include "../../systems/window/window_context.h"
-#include "../../systems/shader/shader.h"
-#include "../../systems/settings/render_settings.h"
-#include "../../systems/rendering/transform.h"
-#include "../../systems/rendering/perspective_camera.h"
+#include "../demo-base.h"
 
 // https://github.com/c2d7fa/opengl-cube/blob/master/main.c
 
-constexpr glm::vec3 StartingRotation = glm::vec3(25.0f, 45.0f, 0.0f);
-//constexpr glm::vec3 StartingRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
-class CubeDemo
+class CubeDemo : virtual public DemoBase
 {
 public:
+    using DemoBase::DemoBase;
     CubeDemo(WindowContext& context, PerspectiveCamera& camera, RenderSettings& settings);
 
     glm::vec4 clearColour = glm::vec4(0.18f, 0.18f, 0.18f, 1.0f);
 
-    std::function<void()> OnGUIUpdate;
-    std::function<void(float deltaTime)> OnGameUpdate;
+    const char* GetTitle() override { return "Cube Demo"; }
+    void OnSetup() override;
+    void OnUpdate(float deltaTime) override;
+    void OnGUI() override;
 private:
-
-    GLFWwindow* m_window;
-    PerspectiveCamera& m_camera;
-    RenderSettings& m_renderSettings;
-
 
     float vertices[24] = {
         // Front face

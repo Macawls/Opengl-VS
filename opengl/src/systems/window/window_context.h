@@ -75,6 +75,10 @@ public:
     
     // Returns the framebuffer aspect ratio
     float GetFrameBufferAspectRatio() { return (float)m_FramebufferSize.width / (float)m_FramebufferSize.height; }
+
+    // Changes title of the window
+    void SetWindowTitle(const char* title) { glfwSetWindowTitle(m_window, title); }
+
 private:
     GLFWwindow *m_window;
     

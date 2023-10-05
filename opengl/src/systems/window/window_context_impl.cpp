@@ -27,7 +27,7 @@ WindowContext::WindowContext(WindowParameters params)
 WindowContext::~WindowContext()
 {
     // imgui shutdown is already called in it's destructor
-    glfwDestroyWindow(m_window);
+    //glfwDestroyWindow(m_window);
     glfwTerminate();
 }
 

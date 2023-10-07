@@ -5,3 +5,4 @@ bin-int/
 
 # Exclude
 !vendor/bin
+opengl/imgui.ini

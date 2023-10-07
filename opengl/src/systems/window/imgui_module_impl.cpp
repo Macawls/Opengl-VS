@@ -2,6 +2,7 @@
 
 #include "../../utils/logger.h"
 #include "../../resources/fonts/jetbrainsmono.h"
+#include "../../resources/fonts/forkawesome-icons.h"
 
 bool ImGUIModule::Init(const char *glsl_version, GLFWwindow *window, float fontSize)
 {
@@ -14,6 +15,22 @@ bool ImGUIModule::Init(const char *glsl_version, GLFWwindow *window, float fontS
     IO->Fonts->AddFontFromMemoryCompressedTTF(
         jetbrainsmono_compressed_data, 
         jetbrainsmono_compressed_size, fontSize);
+
+    // https://github.com/ocornut/imgui/blob/master/docs/FONTS.md
+
+    // add forkawesome icons
+    ImFontConfig config;
+    config.MergeMode = true;
+    config.GlyphMinAdvanceX = 13.0f; // monospaced
+    config.PixelSnapH = true;
+
+    static const ImWchar icon_ranges[] = { ICON_MIN_FK, ICON_MAX_FK, 0 };
+    IO->Fonts->AddFontFromMemoryCompressedTTF(
+		forkawesome_compressed_data, 
+        forkawesome_compressed_size,
+		fontSize, 
+		&config, 
+		icon_ranges);
 
     // check if imgui init was successful
     if (ImGui::GetCurrentContext() == nullptr)
@@ -75,9 +92,9 @@ void ImGUIModule::use_theme()
   colors[ImGuiCol_Button]                 = ImVec4(0.05f, 0.05f, 0.05f, 0.54f);
   colors[ImGuiCol_ButtonHovered]          = ImVec4(0.19f, 0.19f, 0.19f, 0.54f);
   colors[ImGuiCol_ButtonActive]           = ImVec4(0.20f, 0.22f, 0.23f, 1.00f);
-  colors[ImGuiCol_Header]                 = ImVec4(0.00f, 0.00f, 0.00f, 0.52f);
-  colors[ImGuiCol_HeaderHovered]          = ImVec4(0.00f, 0.00f, 0.00f, 0.36f);
-  colors[ImGuiCol_HeaderActive]           = ImVec4(0.20f, 0.22f, 0.23f, 0.33f);
+  colors[ImGuiCol_Header]                 = ImVec4(0.00f, 0.00f, 0.00f, 0.32f);
+  colors[ImGuiCol_HeaderHovered]          = ImVec4(0.20f, 0.22f, 0.23f, 0.34f);
+  colors[ImGuiCol_HeaderActive]           = ImVec4(0.20f, 0.22f, 0.23f, 0.34f);
   colors[ImGuiCol_Separator]              = ImVec4(0.28f, 0.28f, 0.28f, 0.29f);
   colors[ImGuiCol_SeparatorHovered]       = ImVec4(0.44f, 0.44f, 0.44f, 0.29f);
   colors[ImGuiCol_SeparatorActive]        = ImVec4(0.40f, 0.44f, 0.47f, 1.00f);
@@ -108,10 +125,10 @@ void ImGUIModule::use_theme()
   colors[ImGuiCol_ModalWindowDimBg]       = ImVec4(1.00f, 0.00f, 0.00f, 0.35f);
 
   ImGuiStyle& style = ImGui::GetStyle();
-  style.WindowPadding                     = ImVec2(8.00f, 8.00f);
+  style.WindowPadding                     = ImVec2(20.00f, 20.00f);
   style.FramePadding                      = ImVec2(5.00f, 2.00f);
   style.CellPadding                       = ImVec2(6.00f, 6.00f);
-  style.ItemSpacing                       = ImVec2(6.00f, 6.00f);
+  style.ItemSpacing                       = ImVec2(6.00f, 8.00f);
   style.ItemInnerSpacing                  = ImVec2(6.00f, 6.00f);
   style.TouchExtraPadding                 = ImVec2(0.00f, 0.00f);
   style.IndentSpacing                     = 25;
@@ -122,7 +139,7 @@ void ImGUIModule::use_theme()
   style.PopupBorderSize                   = 1;
   style.FrameBorderSize                   = 1;
   style.TabBorderSize                     = 1;
-  style.WindowRounding                    = 7;
+  style.WindowRounding                    = 2;
   style.ChildRounding                     = 4;
   style.FrameRounding                     = 3;
   style.PopupRounding                     = 4;

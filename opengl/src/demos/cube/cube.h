@@ -12,7 +12,6 @@ public:
 
     glm::vec4 clearColour = glm::vec4(0.18f, 0.18f, 0.18f, 1.0f);
 
-    const char* GetTitle() override { return "Cube Demo"; }
     void OnSetup() override;
     void OnUpdate(float deltaTime) override;
     void OnGUI() override;
@@ -86,8 +85,5 @@ private:
                         .Compile();
     // Cube Variables
     glm::vec4 cubeColor = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-    TransformComponent Transform = TransformComponent();
-
-    
-    void InitCube();
+    TransformComponent cubeTransform = TransformComponent();
 };

@@ -263,151 +263,102 @@ void TaskOne::play_cell_anim()
 
 void TaskOne::render_ui()
 {
-    ImGui::SetNextWindowPos(ImVec2(Context.ImGUI.IO->DisplaySize.x - 490, 20));
-    ImGui::SetNextWindowSize(ImVec2(470, 0));
-
-    ImGui::Begin("Rendering");
-    m_renderSettings.ShowInfo();
-    NormalizedMousePosition* pos = Context.GetNormalizedMousePosition();
-    ImGui::Spacing();
-    ImGui::Text("Cursor Pos:     %.3f, %.3f", pos->x, pos->y);
-    ImGui::Separator();
-    ImGui::Text("Settings");
-    m_renderSettings.ShowImGuiTabBar();
-    ImGui::End();
-
-    ImGui::SetNextWindowPos(ImVec2(20, 20));
-    ImGui::SetNextWindowSize(ImVec2(550, 0), ImGuiCond_Always);
-
-    ImGui::Begin("Task One");
-    if (ImGui::BeginTabBar("Tabs"))
+    if (ImGui::BeginTabBar("Control Tabs"))
     {
-        if (ImGui::BeginTabItem("Parameters"))
+        if (ImGui::BeginTabItem("Terrain"))
         {
-            if (ImGui::BeginTabBar("Control Tabs"))
-            {
-                if (ImGui::BeginTabItem("Terrain"))
-                {
-                    static TerrainOptions userOptions = TERRAIN_PARAMS;
+            static TerrainOptions userOptions = TERRAIN_PARAMS;
 
-                    ImGui::Text("Options");
+            ImGui::Text("Options");
                    
-                    ImGui::SliderInt("X", &userOptions.desiredWidth, 20, 80);
-                    ImGui::SliderInt("Z", &userOptions.desiredLength, 10, 80);
-                    ImGui::SliderFloat("Max Height", &userOptions.maxHeight, 10.0f, 50.0f);
+            ImGui::SliderInt("X", &userOptions.desiredWidth, 20, 80);
+            ImGui::SliderInt("Z", &userOptions.desiredLength, 10, 80);
+            ImGui::SliderFloat("Max Height", &userOptions.maxHeight, 10.0f, 50.0f);
 
-                    if (ImGui::Button("Apply##TerrainOptions"))
-                    {
-                        m_terrain = new Terrain(
-                            TERRAIN_PATH,
-                            Shader(m_terrainVertSource, m_terrainFragSource), userOptions);
-                    }
-
-                    ImGui::Spacing();
-                    if (ImGui::Button("Reset##TerrainOptions"))
-                    {
-                        userOptions = TERRAIN_PARAMS;
-
-                        m_terrain = new Terrain(
-                            TERRAIN_PATH, 
-                            Shader(m_terrainVertSource, m_terrainFragSource), userOptions); 
-                    }
-
-                    ImGui::Separator();
-                    ImGui::Text("Transform");
-                    ImGui::SliderFloat3("Position##Terrain", glm::value_ptr(m_terrain->Transform.Position), -400.0f, 400.0f);
-                    ImGui::SliderFloat3("Rotation##Terrain", glm::value_ptr(m_terrain->Transform.Rotation), -180.0f, 180.0f);
-                    ImGui::SliderFloat3("Scale##Terrain", glm::value_ptr(m_terrain->Transform.Scale), 0.1f, 15.0f);
-
-                    if (ImGui::Button("Reset##TerrainTransform"))
-                    {
-                        m_terrain->Transform.Reset();
-                    }
-
-                    ImGui::EndTabItem();
-                }
-
-                if (ImGui::BeginTabItem("Chessboard"))
-                {
-                    ImGui::Text("Use offset to change max height");
-                    ImGui::SliderFloat("Max Offset", &m_cellMaxOffset, 0.0f, 1.0f);
-
-                    if (ImGui::Button("Play Animation")) play_cell_anim();
-                    if (ImGui::Button("Randomize Cell Heights")) RandomizeHeightOffsets(m_cells, m_cellMaxOffset);
-                    if (ImGui::Button("Reset")) RandomizeHeightOffsets(m_cells, 0.0f);
-                    
-
-                    ImGui::EndTabItem();
-                }
-
-                if (ImGui::BeginTabItem("Camera"))
-                {
-                    ImGui::Checkbox("Use Unlocked Mode", &m_cameraUnlocked);
-
-
-                    if (m_cameraUnlocked)
-                    {
-                        ImGui::SliderFloat3("Position##Cam", glm::value_ptr(m_camera.Transform.Position), -3.0f, 15.0f);
-                        ImGui::SliderFloat3("Rotation##Cam", glm::value_ptr(m_camera.Transform.Rotation), -180.0f, 180.0f);
-
-                        ImGui::SliderFloat("FOV##Cam", &m_camera.Settings.Fov, 5.0f, 140.0f);
-                        ImGui::SliderFloat("Speed##Cam", &m_camera.Settings.Speed, 2.0f, 10.0f);
-
-                        if (ImGui::Button("Reset##CamTransform"))
-                        {
-                            m_camera.Transform
-                                .Reset()
-                                .SetPosition(CAMERA_STARTING_POSITION);
-
-                            m_camera.Settings = CameraSettings();
-                        }
-                    }
-                    else
-                    {
-                        ImGui::Text("Camera Position [%d]", m_currentCamIndex);
-                        if (ImGui::Button("Next")) next_cam_pos();
-                        ImGui::SameLine(); 
-                        if (ImGui::Button("Previous")) prev_cam_pos();
-
-                        if (ImGui::Button("Reset"))
-                        {
-                            m_currentCamIndex = 0;
-                        }
-
-                    }
-
-                    ImGui::EndTabItem();
-                }
-
-                if (ImGui::BeginTabItem("Background"))
-                {
-                    ImGui::ColorEdit4("Background", glm::value_ptr(m_clearColor));
-                    ImGui::EndTabItem();
-
-                    if (ImGui::Button("Reset"))
-                    {
-                        m_clearColor = glm::vec4(0.18f, 0.18f, 0.18f, 1.0f);
-                    }
-                }
-
-                ImGui::EndTabBar();
+            if (ImGui::Button("Apply##TerrainOptions"))
+            {
+                m_terrain = new Terrain(
+                    TERRAIN_PATH,
+                    Shader(m_terrainVertSource, m_terrainFragSource), userOptions);
             }
+
+            ImGui::Spacing();
+            if (ImGui::Button("Reset##TerrainOptions"))
+            {
+                userOptions = TERRAIN_PARAMS;
+
+                m_terrain = new Terrain(
+                    TERRAIN_PATH, 
+                    Shader(m_terrainVertSource, m_terrainFragSource), userOptions); 
+            }
+
+            m_terrain->Transform.ShowControls();
+
             ImGui::EndTabItem();
         }
 
-        if (ImGui::BeginTabItem("Logs"))
+        if (ImGui::BeginTabItem("Chessboard"))
         {
-            ImGui::BeginChild("LogScrollRegion", ImVec2(0, 0), true, ImGuiWindowFlags_AlwaysVerticalScrollbar);
-            for (const std::string& logEntry : Logger::GetHistory())
-            {
-                ImGui::TextUnformatted(logEntry.c_str());
-            }
-            ImGui::EndChild();
+            ImGui::Text("Use offset to change max height");
+            ImGui::SliderFloat("Max Offset", &m_cellMaxOffset, 0.0f, 1.0f);
+
+            if (ImGui::Button("Play Animation")) play_cell_anim();
+            if (ImGui::Button("Randomize Cell Heights")) RandomizeHeightOffsets(m_cells, m_cellMaxOffset);
+            if (ImGui::Button("Reset")) RandomizeHeightOffsets(m_cells, 0.0f);
+                    
+
             ImGui::EndTabItem();
+        }
+
+        if (ImGui::BeginTabItem("Camera"))
+        {
+            ImGui::Checkbox("Use Unlocked Mode", &m_cameraUnlocked);
+
+
+            if (m_cameraUnlocked)
+            {
+                m_camera.Transform.ShowControlsExcludeScale();
+
+                ImGui::SliderFloat("FOV##Cam", &m_camera.Settings.Fov, 5.0f, 140.0f);
+                ImGui::SliderFloat("Speed##Cam", &m_camera.Settings.Speed, 2.0f, 10.0f);
+
+                if (ImGui::Button("Reset##CamTransform"))
+                {
+                    m_camera.Transform
+                        .Reset()
+                        .SetPosition(CAMERA_STARTING_POSITION);
+
+                    m_camera.Settings = CameraSettings();
+                }
+            }
+            else
+            {
+                ImGui::Text("Camera Position [%d]", m_currentCamIndex);
+                if (ImGui::Button("Next")) next_cam_pos();
+                ImGui::SameLine(); 
+                if (ImGui::Button("Previous")) prev_cam_pos();
+
+                if (ImGui::Button("Reset"))
+                {
+                    m_currentCamIndex = 0;
+                }
+
+            }
+
+            ImGui::EndTabItem();
+        }
+
+        if (ImGui::BeginTabItem("Background"))
+        {
+            ImGui::ColorEdit4("Background", glm::value_ptr(m_clearColor));
+            ImGui::EndTabItem();
+
+            if (ImGui::Button("Reset"))
+            {
+                m_clearColor = glm::vec4(0.18f, 0.18f, 0.18f, 1.0f);
+            }
         }
 
         ImGui::EndTabBar();
     }
-
-    ImGui::End();
 }

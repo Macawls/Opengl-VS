@@ -319,6 +319,7 @@
   <ItemGroup>
     <ClInclude Include="src\demos\demo-selection.h" />
     <ClInclude Include="src\demos\demo-base.h" />
+    <ClInclude Include="src\resources\fonts\forkawesome-icons.h" />
     <ClInclude Include="src\systems\rendering\primitives\cube.h" />
     <ClInclude Include="src\demos\cube\cube.h" />
     <ClInclude Include="src\resources\fonts\jetbrainsmono.h" />
@@ -635,6 +636,7 @@
     <ClInclude Include="src\systems\rendering\transform.h" />
     <ClInclude Include="src\demos\task-one\task_one.h" />
     <ClInclude Include="src\systems\rendering\terrain.h" />
+    <ClInclude Include="src\utils\gui.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="src\resources\images\terrain\berg-river.png" />

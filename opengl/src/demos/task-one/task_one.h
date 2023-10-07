@@ -9,7 +9,6 @@ public:
     using DemoBase::DemoBase; // inherit constructor
     
     TaskOne(WindowContext& context, PerspectiveCamera& camera, RenderSettings& settings);
-    const char* GetTitle() override { return "Task One Demo"; }
 
     ~TaskOne()
     { 

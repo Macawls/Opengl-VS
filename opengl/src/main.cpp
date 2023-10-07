@@ -6,11 +6,15 @@
 #include "demos/task-one/task_one.h"
 #include "demos/cube/cube.h"
 
+// systems
 #include "resources/images/icon/icon.h"
 #include "systems/window/window_context.h"
 #include "systems/rendering/perspective_camera.h"
+#include "utils/gui.h"
 #include "systems/settings/render_settings.h"
 #include "pTween.h"
+
+
 
 const GLFWimage icon = { image_width, image_height, image_data };
 const WindowParameters windowParams = { 1600, 900, "Task 1", 22.0f, icon };
@@ -22,22 +26,29 @@ int main(void)
     
     WindowContext context = WindowContext(windowParams);
     PerspectiveCamera camera = PerspectiveCamera(context);
-    RenderSettings settings = RenderSettings(true);
+    RenderSettings settings = RenderSettings(context);
 
     DemoSelection demos = DemoSelection()
         .AddDemo("Task 1",  new TaskOne(context, camera, settings))
         .AddDemo("Cube",    new CubeDemo(context, camera, settings))
         .Init();
 
+
     auto applicationUpdate = [&](float deltaTime)
     {
         demos.Current->OnUpdate(deltaTime);
-        demos.Current->OnGUI();
+        
+        ShowDemoWindow(demos.CurrentTitle, [&]() { 
+            demos.Current->OnGUI(); 
+        });
 
         camera.HandleKeyInput(deltaTime);
         camera.OnUpdate(deltaTime);
 
         demos.ShowSelectionWindow();
+        settings.ShowRenderingWindow();
+
+        
         pTween::pTweenStep(glfwGetTime());
     };
 

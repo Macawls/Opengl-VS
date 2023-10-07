@@ -20,8 +20,8 @@
 class RenderSettings
 {
 public:
-    RenderSettings(const RenderConfig& config, bool applyDefaults);
-    RenderSettings(bool applyDefaults);
+    RenderSettings(const RenderConfig& config, WindowContext& context);
+    RenderSettings(WindowContext& context);
 
 
     RenderSettings& PolygonMode(PolygonModeConfig config);
@@ -30,13 +30,19 @@ public:
     RenderSettings& Blending(BlendingConfig config);
     RenderSettings& Culling(CullingConfig config);
     
+    // Will only work if opengl context is set
     RenderSettings& Apply();
 
-    void ShowImGuiTabBar();
-    void ShowInfo(double updateRate = 0.08);
+
+    void ShowRenderingWindow();
+
 private:
-    ImGuiIO* m_io;
+    ImGuiIO* m_imguiIO;
     RenderConfig m_config;
+    WindowContext* m_context;
+
+    void show_settings_tabs();
+    void show_system_info(double updateRate = 0.08);
     void show_polygon_mode_controls();
     void show_depth_controls();
     void show_blending_controls();

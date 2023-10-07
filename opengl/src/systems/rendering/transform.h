@@ -27,7 +27,7 @@ public:
 	TransformComponent& SetScale(glm::vec3 scale);
 
 	// Copies values from another TransformComponent
-	void Set(const TransformComponent transform) {
+	void Copy(const TransformComponent transform) {
 		Position = transform.Position;
 		Rotation = transform.Rotation;
 		Scale = transform.Scale;
@@ -53,6 +53,9 @@ public:
 			(Scale == other.Scale);
 	}
 
+	// Show ImGui controls for this TransformComponent
+	void ShowControls(TransformComponent resetTarget = TransformComponent());
+	void ShowControlsExcludeScale(TransformComponent resetTarget = TransformComponent());
 
 private:
 	glm::mat4 m_identity = glm::mat4(1.0f); // identity matrix

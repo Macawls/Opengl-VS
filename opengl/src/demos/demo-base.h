@@ -10,6 +10,7 @@
 #include "../systems/rendering/perspective_camera.h"
 #include "../systems/rendering/primitives/cube.h"
 #include "../systems/rendering/terrain.h"
+#include "../utils/gui.h"
 
 // local utils
 #include "pTween.h"
@@ -36,7 +37,6 @@ public:
     
     WindowContext& Context;
 
-    virtual const char* GetTitle () = 0;
     virtual void OnSetup() = 0;
     virtual void OnUpdate(float deltaTime) = 0;
     virtual void OnGUI() = 0;

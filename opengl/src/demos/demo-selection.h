@@ -1,5 +1,8 @@
 #pragma once
 #include "demo-base.h"
+#include "../resources/fonts/forkawesome-icons.h"
+
+static const char* INFO_HEADER = ICON_FK_WINDOW_MAXIMIZE " Demo Selection";
 
 // Handles demo selection and switching
 class DemoSelection {
@@ -7,6 +10,7 @@ public:
     DemoSelection() { }
 
     DemoBase* Current = nullptr;
+    char* CurrentTitle = nullptr;
 
     DemoSelection& AddDemo(const char* title, DemoBase* demo) {
 		m_demoMap.insert({ title, demo });
@@ -26,8 +30,8 @@ public:
 
     void ShowSelectionWindow() {
         ImGui::SetNextWindowPos(ImVec2(20, ImGui::GetIO().DisplaySize.y - 120));
-        ImGui::SetNextWindowSize(ImVec2(400, 100));
-        ImGui::Begin("Demo Selection", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+        ImGui::SetNextWindowSize(ImVec2(440, 100));
+        ImGui::Begin(INFO_HEADER, nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 
         static int selectedItem = 0;
 
@@ -51,12 +55,13 @@ private:
     {
 		m_currentDemoIndex = index;
         auto title = m_demoTitles[m_currentDemoIndex];
+        CurrentTitle = const_cast<char*>(title);
 		
         Current = m_demoMap[title];
         Current->OnSetup();
         Current->Context.SetWindowTitle(title);
 
-        Logger::LogDebug("Current Demo: %s", title);
+        Logger::LogDebug("Switched to Demo: %s", title);
 	}
 };
 

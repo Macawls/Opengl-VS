@@ -14,32 +14,31 @@
 #include "systems/settings/render_settings.h"
 #include "pTween.h"
 
-
-
-const GLFWimage icon = { image_width, image_height, image_data };
-const WindowParameters windowParams = { 1600, 900, "Task 1", 22.0f, icon };
+const GLFWimage ICON = { image_width, image_height, image_data };
+const WindowParameters WINDOW_PARAMS = { 1600, 900, "opengl", 22.0f, ICON };
 
 // N.B Do camera update after rendering the scene
-int main(void)
+int main()
 {
     Logger::SetPriority(Logger::LogPriority::Debug);
-    
-    WindowContext context = WindowContext(windowParams);
-    PerspectiveCamera camera = PerspectiveCamera(context);
-    RenderSettings settings = RenderSettings(context);
+
+    auto context = WindowContext(WINDOW_PARAMS);
+
+    auto camera = PerspectiveCamera(context);
+    auto settings = RenderSettings(context);
 
     DemoSelection demos = DemoSelection()
         .AddDemo("Task 1",  new TaskOne(context, camera, settings))
         .AddDemo("Cube",    new CubeDemo(context, camera, settings))
         .Init();
 
-
-    auto applicationUpdate = [&](float deltaTime)
+    auto appUpdate = [&](const float deltaTime)
     {
         demos.Current->OnUpdate(deltaTime);
         
-        ShowDemoWindow(demos.CurrentTitle, [&]() { 
-            demos.Current->OnGUI(); 
+        ShowDemoWindow(demos.CurrentTitle, [&]
+        { 
+            demos.Current->OnGui(); 
         });
 
         camera.HandleKeyInput(deltaTime);
@@ -52,7 +51,7 @@ int main(void)
         pTween::pTweenStep(glfwGetTime());
     };
 
-    context.SetDeltaUpdate(applicationUpdate);
+    context.SetDeltaUpdate(appUpdate);
     context.BeginLoop();
     
     Logger::Log("Exiting...");

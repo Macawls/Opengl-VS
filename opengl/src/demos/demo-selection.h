@@ -7,7 +7,7 @@ static const char* INFO_HEADER = ICON_FK_WINDOW_MAXIMIZE " Demo Selection";
 // Handles demo selection and switching
 class DemoSelection {
 public:
-    DemoSelection() { }
+    DemoSelection() = default;
 
     DemoBase* Current = nullptr;
     char* CurrentTitle = nullptr;
@@ -51,10 +51,10 @@ private:
     std::vector<const char*> m_demoTitles = {};
     std::unordered_map<std::string, DemoBase*> m_demoMap = {};
 
-    void ChangeDemo(int index)
+    void ChangeDemo(const int index)
     {
 		m_currentDemoIndex = index;
-        auto title = m_demoTitles[m_currentDemoIndex];
+        const auto title = m_demoTitles[m_currentDemoIndex];
         CurrentTitle = const_cast<char*>(title);
 		
         Current = m_demoMap[title];

@@ -14,7 +14,7 @@ WindowContext::WindowContext(WindowParameters params)
         return;
     }
 
-    glfwSetWindowIcon(m_window, 1, &params.iconImage);
+    glfwSetWindowIcon(m_window, 1, &params.IconImage);
 
     Logger::LogDebug("%s Init Sucess", CLASS_NAME(WindowContext));
     Logger::LogDebug("%s Init Success, version: %s", CLASS_NAME(ImGUIModule),  IMGUI_VERSION);
@@ -38,16 +38,16 @@ void WindowContext::BeginLoop()
         glfwPollEvents();
 
         // Prevents crash when framebuffer is 0
-        if (WindowStatus.isMinimized)
+        if (WindowStatus.IsMinimized)
         {
             glfwWaitEvents();
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
             continue;
         }
 
-        ImGUI.BeginFrame();
+        ImGui.BeginFrame();
         m_update(ImGui::GetIO().DeltaTime);
-        ImGUI.EndFrame();
+        ImGui.EndFrame();
 
         glfwSwapBuffers(m_window);
     }
@@ -64,7 +64,7 @@ bool WindowContext::init(WindowParameters params)
     // Before window creation
     set_standard_window_hints();
 
-    m_window = glfwCreateWindow(params.width, params.height, params.title, nullptr, nullptr);
+    m_window = glfwCreateWindow(params.Width, params.Height, params.Title, nullptr, nullptr);
 
     if (!m_window)
     {
@@ -73,9 +73,9 @@ bool WindowContext::init(WindowParameters params)
     }
 
     // Get buffer size information
-    glfwGetFramebufferSize(m_window, &m_FramebufferSize.width, &m_FramebufferSize.height);
+    glfwGetFramebufferSize(m_window, &m_framebufferSize.Width, &m_framebufferSize.Height);
     // Set viewport
-    glViewport(0, 0, m_FramebufferSize.width, m_FramebufferSize.height);
+    glViewport(0, 0, m_framebufferSize.Width, m_framebufferSize.Height);
     // Set opengl context, before glew and imgui init
     glfwMakeContextCurrent(m_window);
     // Set user pointer to this class, so we can access it in callbacks
@@ -94,7 +94,7 @@ bool WindowContext::init(WindowParameters params)
     set_standard_callbacks();
 
     // Init ImGui with window context
-    bool success = ImGUI.Init("#version 330", m_window, params.imguiFontSize);
+    bool success = ImGui.Init("#version 330", m_window, params.ImguiFontSize);
     if (!success)
     {
         Logger::LogError("%s Init Failed", CLASS_NAME(ImGUIModule));
@@ -113,8 +113,8 @@ void WindowContext::set_standard_callbacks()
     {
         WindowContext *win = (WindowContext *)glfwGetWindowUserPointer(window);
         
-        win->m_FramebufferSize.width = width;
-        win->m_FramebufferSize.height = height;
+        win->m_framebufferSize.Width = width;
+        win->m_framebufferSize.Height = height;
 
         glViewport(0, 0, width, height); 
     });
@@ -125,15 +125,15 @@ void WindowContext::set_standard_callbacks()
 		WindowContext *win = (WindowContext *)glfwGetWindowUserPointer(window);
 		
         // * 2.0 - 1.0f to get range [-1, 1]
-        win->m_normalizedMousePosition.x = (static_cast<float>(xpos) / (float)win->m_FramebufferSize.width) * 2.0 - 1.0f;
-		win->m_normalizedMousePosition.y = (1 - (static_cast<float>(ypos) / (float)win->m_FramebufferSize.height)) * 2.0f - 1.0f;
+        win->m_normalizedMousePosition.X = (static_cast<float>(xpos) / (float)win->m_framebufferSize.Width) * 2.0 - 1.0f;
+		win->m_normalizedMousePosition.Y = (1 - (static_cast<float>(ypos) / (float)win->m_framebufferSize.Height)) * 2.0f - 1.0f;
 	}); 
 
     // Set sleep status when window is minimized
     glfwSetWindowIconifyCallback(m_window, [](GLFWwindow *window, int iconified)
     {
         WindowContext *win = (WindowContext *)glfwGetWindowUserPointer(window);
-        win->WindowStatus.isMinimized = iconified;
+        win->WindowStatus.IsMinimized = iconified;
     });
 
     glfwSetWindowCloseCallback(m_window, [](GLFWwindow *window)

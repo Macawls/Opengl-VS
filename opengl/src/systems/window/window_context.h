@@ -1,42 +1,43 @@
 #pragma once
 
+
 #define GLEW_STATIC
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include "../../utils/logger.h"
+
 #include "imgui_module.h"
 
 #include <functional>
 
 struct WindowStatus
 {
-    bool isFullscreen = false;
-    bool isMinimized = false;
-    bool isVSync = false;
+    bool IsFullscreen = false;
+    bool IsMinimized = false;
+    bool IsVSync = false;
 };
 
 struct WindowParameters
 {
-    int width;
-    int height;
-    const char *title;
-    float imguiFontSize;
-    GLFWimage iconImage;
+    int Width;
+    int Height;
+    const char *Title;
+    float ImguiFontSize;
+    GLFWimage IconImage;
 };
 
 struct FramebufferSize
 {
-    int width;
-    int height;
+    int Width;
+    int Height;
 };
 
 
 // (1, 1) is top right, (-1, -1) is bottom left
 struct NormalizedMousePosition
 {
-	float x;
-	float y;
+	float X;
+	float Y;
 };
 
 // A Wrapper for GLFWwindow, also manages ImGui and OpenGL context
@@ -45,13 +46,13 @@ class WindowContext
 public:
     WindowContext(WindowParameters params);
     ~WindowContext();
-    ImGUIModule ImGUI = ImGUIModule();
+    ImGUIModule ImGui = ImGUIModule();
     
     // Read only
     WindowStatus WindowStatus;
     
     // Sets the update function, called every frame
-    void SetDeltaUpdate(std::function<void(float deltaTime)> func) { this->m_update = func; }
+    void SetDeltaUpdate(const std::function<void(float deltaTime)>& func) { this->m_update = func; }
     
     // Closes the window
     void Close();
@@ -59,32 +60,32 @@ public:
     void BeginLoop();
 
     // Toggle's VSync, static because there's only one window really
-    static void ToggleVSync(bool enable) { glfwSwapInterval(enable ? 1 : 0); }
+    static void ToggleVSync(const bool enable) { glfwSwapInterval(enable ? 1 : 0); }
 
     // Returns the GLFWwindow pointer
-    GLFWwindow *GetGLFWWindow() const { return m_window; }
+    GLFWwindow *GetGlfwWindow() const { return m_window; }
     
     // Returns the video mode of the primary monitor
     static GLFWvidmode GetVideoMode() { return *glfwGetVideoMode(glfwGetPrimaryMonitor()); }
     
     // Returns the framebuffer size
-    FramebufferSize* GetFrameBufferSize() { return &m_FramebufferSize; }
+    FramebufferSize* GetFrameBufferSize() { return &m_framebufferSize; }
 
     // Returns the normalized mouse position
     NormalizedMousePosition* GetNormalizedMousePosition() { return &m_normalizedMousePosition; }
     
     // Returns the framebuffer aspect ratio
-    float GetFrameBufferAspectRatio() { return (float)m_FramebufferSize.width / (float)m_FramebufferSize.height; }
+    float GetFrameBufferAspectRatio() const { return (float)m_framebufferSize.Width / (float)m_framebufferSize.Height; }
 
     // Changes title of the window
-    void SetWindowTitle(const char* title) { glfwSetWindowTitle(m_window, title); }
+    void SetWindowTitle(const char* title) const { glfwSetWindowTitle(m_window, title); }
 
 private:
     GLFWwindow *m_window;
     
 
     std::function<void(float deltaTime)> m_update;
-    FramebufferSize m_FramebufferSize;
+    FramebufferSize m_framebufferSize;
     NormalizedMousePosition m_normalizedMousePosition;
     
     bool init(WindowParameters params);

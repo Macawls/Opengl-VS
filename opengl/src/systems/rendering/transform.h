@@ -27,19 +27,10 @@ public:
 	TransformComponent& SetScale(glm::vec3 scale);
 
 	// Copies values from another TransformComponent
-	void Copy(const TransformComponent transform) {
-		Position = transform.Position;
-		Rotation = transform.Rotation;
-		Scale = transform.Scale;
-	}
+	void Copy(const TransformComponent transform);
 
 	// Resets all values to default
-	TransformComponent& Reset() {
-		Position = glm::vec3(0.0f); 
-		Rotation = glm::vec3(0.0f); 
-		Scale = glm::vec3(1.0f);
-		return *this;
-	}
+	TransformComponent& Reset();
 
 	bool operator!=(const TransformComponent& other) const {
 		return (Position != other.Position) ||

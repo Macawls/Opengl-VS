@@ -477,7 +477,7 @@ void RenderSettings::show_system_info(double updateRate)
     ImGui::Text("Frametime         %.3fms", lastFrameTime);
     ImGui::Text("Window Size       %.0fpx X %.0fpx ", m_imguiIO->DisplaySize.x, m_imguiIO->DisplaySize.y);
     NormalizedMousePosition* pos = m_context->GetNormalizedMousePosition();
-    ImGui::Text("Cursor Pos        %.3f, %.3f", pos->x, pos->y);
+    ImGui::Text("Cursor Pos        %.3f, %.3f", pos->X, pos->Y);
     ImGui::Text("Tri Count         %d", m_imguiIO->MetricsRenderIndices / 3);
 }
 

@@ -177,6 +177,7 @@
     <ClCompile Include="src\systems\rendering\transform_impl.cpp" />
     <ClCompile Include="src\demos\task-one\task_one_impl.cpp" />
     <ClCompile Include="src\systems\rendering\terrain_impl.cpp" />
+    <ClCompile Include="src\demos\transform-test\transform_test_impl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\vendor\glm\detail\func_common.inl" />
@@ -324,9 +325,6 @@
     <ClInclude Include="src\demos\cube\cube.h" />
     <ClInclude Include="src\resources\fonts\jetbrainsmono.h" />
     <ClInclude Include="src\resources\images\icon\icon.h" />
-    <ClInclude Include="src\Shader.h" />
-    <ClInclude Include="src\IndexBuffer.h" />
-    <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\systems\rendering\perspective_camera.h" />
     <ClInclude Include="src\systems\settings\configs.h" />
     <ClInclude Include="src\systems\settings\render_settings.h" />
@@ -629,14 +627,11 @@
     <ClInclude Include="src\vendor\imgui\imstb_truetype.h" />
     <ClInclude Include="src\vendor\stb_image\stb_image.h" />
     <ClInclude Include="src\vendor\stb_image\stb_image_resize.h" />
-    <ClInclude Include="src\VertexBuffer.h" />
-    <ClInclude Include="src\VertexArray.h" />
-    <ClInclude Include="src\VertexBufferLayout.h" />
-    <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\systems\rendering\transform.h" />
     <ClInclude Include="src\demos\task-one\task_one.h" />
     <ClInclude Include="src\systems\rendering\terrain.h" />
     <ClInclude Include="src\utils\gui.h" />
+    <ClInclude Include="src\demos\transform-test\transform_test.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="src\resources\images\terrain\berg-river.png" />

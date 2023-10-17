@@ -59,7 +59,7 @@ void CubeDemo::OnSetup()
 
 void CubeDemo::OnUpdate(float deltaTime)
 {
-    glClearColor(clearColour.r, clearColour.g, clearColour.b, clearColour.a);
+    glClearColor(m_clearColour.r, m_clearColour.g, m_clearColour.b, m_clearColour.a);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glm::mat4 projection = m_camera.GetProjectionMatrix();
@@ -76,7 +76,7 @@ void CubeDemo::OnUpdate(float deltaTime)
     glBindVertexArray(0);
 }
 
-void CubeDemo::OnGUI()
+void CubeDemo::OnGui()
 {
     if (ImGui::BeginTabBar("Control Tabs"))
     {
@@ -108,12 +108,12 @@ void CubeDemo::OnGUI()
 
         if (ImGui::BeginTabItem("Background"))
         {
-            ImGui::ColorEdit4("Background", glm::value_ptr(clearColour));
+            ImGui::ColorEdit4("Background", glm::value_ptr(m_clearColour));
             ImGui::EndTabItem();
 
             if (ImGui::Button("Reset"))
             {
-                clearColour = glm::vec4(0.18f, 0.18f, 0.18f, 1.0f);
+                m_clearColour = glm::vec4(0.18f, 0.18f, 0.18f, 1.0f);
             }
         }
 

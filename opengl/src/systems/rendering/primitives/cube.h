@@ -16,7 +16,7 @@ public:
     TransformComponent Transform = TransformComponent();
    
 private:
-    unsigned int m_VAO, m_VBO, m_EBO;
+    unsigned int m_vao, m_vbo, m_ebo;
 
     Shader m_shader;
     glm::vec3 m_color;
@@ -26,16 +26,16 @@ private:
 
     const float m_vertices[36] = {
         // Front face
-         0.5,  0.5,  0.5,
-        -0.5,  0.5,  0.5,
-        -0.5, -0.5,  0.5,
-         0.5, -0.5,  0.5,
+         0.5f,  0.5,  0.5f,
+        -0.5f,  0.5,  0.5f,
+        -0.5f, -0.5,  0.5f,
+         0.5f, -0.5,  0.5f,
 
          // Back face
-         0.5,  0.5, -0.5,
-        -0.5,  0.5, -0.5,
-        -0.5, -0.5, -0.5,
-         0.5, -0.5, -0.5,
+         0.5f,  0.5f, -0.5f,
+        -0.5f,  0.5f, -0.5f,
+        -0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f, -0.5f,
     };
 
     const unsigned int m_indices[36] = {

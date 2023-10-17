@@ -14,20 +14,20 @@ Terrain::Terrain(const char* heightmapPath, Shader shader, TerrainOptions option
         &m_width, &m_height, &m_nChannels, 0);
 
     // Resize if necessary
-    if (options.desiredWidth != m_width || options.desiredLength != m_height)
+    if (options.DesiredWidth != m_width || options.DesiredLength != m_height)
     {
-        unsigned char* resizedData = new unsigned char[options.desiredWidth * options.desiredLength * m_nChannels];
-        stbir_resize_uint8(data, m_width, m_height, 0, resizedData, options.desiredWidth, options.desiredLength, 0, m_nChannels);
+        unsigned char* resizedData = new unsigned char[options.DesiredWidth * options.DesiredLength * m_nChannels];
+        stbir_resize_uint8(data, m_width, m_height, 0, resizedData, options.DesiredWidth, options.DesiredLength, 0, m_nChannels);
         stbi_image_free(data);
         data = resizedData;
-        m_width = options.desiredWidth;
-        m_height = options.desiredLength;
+        m_width = options.DesiredWidth;
+        m_height = options.DesiredLength;
     }
 
     // Generate vertices
     std::vector<float> vertices;
 
-    float yScale = options.maxHeight / 256.0f;
+    float yScale = options.MaxHeight / 256.0f;
     float yShift = 16.0f;
     for (unsigned int i = 0; i < m_height; i++)
     {
@@ -63,11 +63,11 @@ Terrain::Terrain(const char* heightmapPath, Shader shader, TerrainOptions option
         }
     }
 
-    glGenVertexArrays(1, &m_VAO);
-    glBindVertexArray(m_VAO);
+    glGenVertexArrays(1, &m_vao);
+    glBindVertexArray(m_vao);
 
-    glGenBuffers(1, &m_VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+    glGenBuffers(1, &m_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
     glBufferData(GL_ARRAY_BUFFER,
         vertices.size() * sizeof(float),
         &vertices[0],
@@ -77,8 +77,8 @@ Terrain::Terrain(const char* heightmapPath, Shader shader, TerrainOptions option
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
     glEnableVertexAttribArray(0);
 
-    glGenBuffers(1, &m_EBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
+    glGenBuffers(1, &m_ebo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER,
         indices.size() * sizeof(unsigned int),
         &indices[0],
@@ -96,7 +96,7 @@ void Terrain::Draw(PerspectiveCamera& camera)
         .SetMat4("model", Transform.GetModelMatrix());
 
     // draw mesh
-    glBindVertexArray(m_VAO);
+    glBindVertexArray(m_vao);
 
     // render the mesh triangle strip by triangle strip - each row at a time
     for (unsigned int strip = 0; strip < NUM_STRIPS; ++strip)

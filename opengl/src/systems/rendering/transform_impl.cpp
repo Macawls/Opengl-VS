@@ -49,6 +49,20 @@ glm::mat4 TransformComponent::GetModelMatrix() const
 	return translation * rotation * scale;
 }
 
+void TransformComponent::Copy(const TransformComponent transform) {
+    Position = transform.Position;
+    Rotation = transform.Rotation;
+    Scale = transform.Scale;
+}
+
+// Resets all values to default
+TransformComponent& TransformComponent::Reset() {
+    Position = glm::vec3(0.0f);
+    Rotation = glm::vec3(0.0f);
+    Scale = glm::vec3(1.0f);
+    return *this;
+}
+
 void TransformComponent::ShowControls(TransformComponent resetTarget)
 {
     ShowTitle(0.1f, HEADER);

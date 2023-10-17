@@ -57,7 +57,7 @@ Back View
 class PerspectiveCamera
 {
 public:
-    PerspectiveCamera(WindowContext& windowContext, glm::vec3 Position = CAMERA_STARTING_POSITION);
+    PerspectiveCamera(WindowContext& windowContext, const glm::vec3& position = CAMERA_STARTING_POSITION);
 
     CameraSettings Settings;
     TransformComponent Transform = TransformComponent().SetPosition(CAMERA_STARTING_POSITION);
@@ -80,7 +80,7 @@ public:
     void HandleKeyInput(float deltaTime);
     void HandleMouseInput(float deltaTime);
 
-    glm::vec3 OrbitAround(const glm::vec3& direction, const glm::vec3& target, float distance) {
+    static glm::vec3 OrbitAround(const glm::vec3& direction, const glm::vec3& target, float distance) {
         return target + (direction * distance);
     }
 
@@ -89,11 +89,11 @@ private:
     GLFWwindow* m_window;
 
     float m_aspectRatio;
-    double m_lastMouseX, m_lastMouseY = 0.0f;
+    double m_lastMouseX, m_lastMouseY = 0.0;
 
-    const glm::vec3 m_x_axis = glm::vec3(1.0f, 0.0f, 0.0f);
-    const glm::vec3 m_y_axis = glm::vec3(0.0f, 1.0f, 0.0f);
-    const glm::vec3 m_z_axis = glm::vec3(0.0f, 0.0f, 1.0f);
+    const glm::vec3 m_xAxis = glm::vec3(1.0f, 0.0f, 0.0f);
+    const glm::vec3 m_yAxis = glm::vec3(0.0f, 1.0f, 0.0f);
+    const glm::vec3 m_zAxis = glm::vec3(0.0f, 0.0f, 1.0f);
 
 
     glm::vec3 m_front = glm::vec3(0.0f, 0.0f, -1.0f);

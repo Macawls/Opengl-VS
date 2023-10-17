@@ -1,7 +1,7 @@
 #include "task_one.h"
 
 
-static glm::vec3 RainbowColor(float multiplier)
+static glm::vec3 rainbow_color(float multiplier)
 {
     float red = 0.5f * (1.0f + std::sin(glm::two_pi<float>() * multiplier));
     float green = 0.5f * (1.0f + std::sin(glm::two_pi<float>() * multiplier + glm::two_pi<float>() / 3.0f));
@@ -10,7 +10,7 @@ static glm::vec3 RainbowColor(float multiplier)
     return glm::vec3(red, green, blue);
 }
 
-static float Random01()
+static float random01()
 {
 	return static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 }
@@ -19,7 +19,7 @@ static void RandomizeHeightOffsets(std::vector<Cube>& cells, float maxOffset)
 {
     for (Cube& cell : cells) {
         glm::vec3 newPosition = cell.Transform.Position;
-        newPosition.y = (Random01() * maxOffset);
+        newPosition.y = (random01() * maxOffset);
         
         cell.Transform.SetPosition(newPosition);
     }
@@ -41,7 +41,7 @@ TaskOne::TaskOne(WindowContext& context, PerspectiveCamera& camera, RenderSettin
     m_newCamPosition = m_camera.Transform;
 
     // Setup terrain
-    Shader terrainShader = Shader(m_terrainVertSource, m_terrainFragSource);
+    auto terrainShader = Shader(m_terrainVertSource, m_terrainFragSource);
     m_terrain = new Terrain(TERRAIN_PATH, terrainShader, TERRAIN_PARAMS);
     m_terrain->Transform.Position.y = -2.0f;
 
@@ -49,7 +49,7 @@ TaskOne::TaskOne(WindowContext& context, PerspectiveCamera& camera, RenderSettin
     m_cells = generate_chess_board();
     
     // Setup border
-    Shader borderShader = Shader(m_cubeVertSource, m_cubeFragSource);
+    auto borderShader = Shader(m_cubeVertSource, m_cubeFragSource);
     m_chessBorder = new Cube(borderShader, glm::vec3(0.0f, 0.0f, 0.0f));
 
     // width of board is 9
@@ -72,10 +72,8 @@ void TaskOne::OnSetup()
     
     RandomizeHeightOffsets(m_cells, m_cellMaxOffset);
     
-
-
     // Rotate Terrain
-    terrainTween = pTween::pTween(&m_terrain->Transform.Rotation.y)
+    m_terrainTween = pTween::pTween(&m_terrain->Transform.Rotation.y)
         ->To(360.0f)
         ->Duration(TERRAIN_TWEEN_DURATION)
         ->Play();
@@ -86,7 +84,7 @@ void TaskOne::OnSetup()
 
 void TaskOne::OnUpdate(float deltaTime)
 {
-    glClearColor(m_clearColor.r, m_clearColor.g, m_clearColor.b, m_clearColor.a);
+    glClearColor(m_clearColour.r, m_clearColour.g, m_clearColour.b, m_clearColour.a);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     if (glfwGetTime() > timeToRenderCubes)
@@ -97,23 +95,24 @@ void TaskOne::OnUpdate(float deltaTime)
         }
     }
 
-    m_chessBorder->Draw(m_camera, RainbowColor(static_cast<float>(glfwGetTime() * 0.2)));
+    m_chessBorder->Draw(m_camera, rainbow_color(static_cast<float>(glfwGetTime() * 0.2)));
     m_terrain->Draw(m_camera);
 
     // loop tween
     if (m_terrain->Transform.Rotation.y > 359.0f) {
 
-        terrainTween->Pause();
+        m_terrain->Transform.Rotation.y = 360.0f;
+        m_terrainTween->Pause();
         m_terrain->Transform.Rotation.y = 0.0f;
 
-        terrainTween = pTween::pTween(&m_terrain->Transform.Rotation.y)
+        m_terrainTween = pTween::pTween(&m_terrain->Transform.Rotation.y)
             ->To(360.0f)
             ->Duration(TERRAIN_TWEEN_DURATION)
             ->Play();
     }
 }
 
-void TaskOne::OnGUI()
+void TaskOne::OnGui()
 {
 	render_ui();
 	handle_input();
@@ -175,7 +174,7 @@ void TaskOne::check_new_cam_pos() {
     // avoid setting position every frame
     if (m_newCamPosition != current)
     {
-        if (camTweenPlaying) {
+        if (CAM_TWEEN_PLAYING) {
 			m_cameraTweenPosX->Pause();
 			m_cameraTweenPosY->Pause();
 			m_cameraTweenPosZ->Pause();
@@ -187,11 +186,11 @@ void TaskOne::check_new_cam_pos() {
             ->Play()
             ->OnStartCallBack([]()
                 {
-                    camTweenPlaying = true;
+                    CAM_TWEEN_PLAYING = true;
                 })
             ->OnEndCallBack([]()
                 {
-                    camTweenPlaying = false;
+                    CAM_TWEEN_PLAYING = false;
                 });
 
         m_cameraTweenPosY = pTween::pTween(&m_camera.Transform.Position.y)
@@ -249,13 +248,13 @@ void TaskOne::play_cell_anim()
 {
     for (Cube& cell : m_cells)
     {
-        float randomHeight = Random01() * m_cellMaxOffset;
+        float randomHeight = random01() * m_cellMaxOffset;
             
         pTween::pTween(&cell.Transform.Position.y)
             ->From(30.0f)
             ->To(randomHeight)
-            ->Duration((double)(Random01() * 1.5f) + 2.0)
-            ->Delay(Random01() * 1.0f)
+            ->Duration((double)(random01() * 1.5f) + 2.0)
+            ->Delay(random01() * 1.0f)
             ->Transition(pTween::pTweenTransitions::EaseInOutBounce)
             ->Play();
     };
@@ -271,9 +270,9 @@ void TaskOne::render_ui()
 
             ImGui::Text("Options");
                    
-            ImGui::SliderInt("X", &userOptions.desiredWidth, 20, 80);
-            ImGui::SliderInt("Z", &userOptions.desiredLength, 10, 80);
-            ImGui::SliderFloat("Max Height", &userOptions.maxHeight, 10.0f, 50.0f);
+            ImGui::SliderInt("X", &userOptions.DesiredWidth, 20, 80);
+            ImGui::SliderInt("Z", &userOptions.DesiredLength, 10, 80);
+            ImGui::SliderFloat("Max Height", &userOptions.MaxHeight, 10.0f, 50.0f);
 
             if (ImGui::Button("Apply##TerrainOptions"))
             {
@@ -350,12 +349,12 @@ void TaskOne::render_ui()
 
         if (ImGui::BeginTabItem("Background"))
         {
-            ImGui::ColorEdit4("Background", glm::value_ptr(m_clearColor));
+            ImGui::ColorEdit4("Background", glm::value_ptr(m_clearColour));
             ImGui::EndTabItem();
 
             if (ImGui::Button("Reset"))
             {
-                m_clearColor = glm::vec4(0.18f, 0.18f, 0.18f, 1.0f);
+                m_clearColour = glm::vec4(0.18f, 0.18f, 0.18f, 1.0f);
             }
         }
 

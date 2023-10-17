@@ -25,10 +25,13 @@ protected:
     PerspectiveCamera& m_camera;
     GLFWwindow* m_window;
     RenderSettings& m_renderSettings;
+    glm::vec4 m_clearColour = glm::vec4(0.18f, 0.18f, 0.18f, 1.0f);
+
 public:
+    virtual ~DemoBase() = default;
     DemoBase(WindowContext& context, PerspectiveCamera& camera, RenderSettings& settings)
         : m_camera(camera),
-        m_window(context.GetGLFWWindow()),
+        m_window(context.GetGlfwWindow()),
         m_renderSettings(settings),
         Context(context) 
     { 
@@ -39,6 +42,6 @@ public:
 
     virtual void OnSetup() = 0;
     virtual void OnUpdate(float deltaTime) = 0;
-    virtual void OnGUI() = 0;
+    virtual void OnGui() = 0;
 };
 

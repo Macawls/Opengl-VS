@@ -20,14 +20,10 @@ static void RandomizeHeightOffsets(std::vector<Drawable*>& cells, float maxOffse
 {
     for (Drawable* cell : cells) {
         const float newY = random01() * maxOffset;
-
-        cell->Transform.Children.front()->SetPositionY(newY);
+        
         cell->Transform.SetPositionY(newY);
     }
 }
-
-
-
 
 TaskTwo::TaskTwo(WindowContext& context, PerspectiveCamera& camera, RenderSettings& settings) 
     : SceneBase(context, camera, settings)
@@ -35,7 +31,7 @@ TaskTwo::TaskTwo(WindowContext& context, PerspectiveCamera& camera, RenderSettin
     m_camera.Transform = m_cameraPositions[m_currentCamIndex];
     m_newCamPosition = m_camera.Transform;
 
-    // Setup terrain
+    // Terrain
     m_terrain = new Terrain(m_terrainHeightPath,
         Shader(m_terrainVertSourceTex, m_terrainFragSourceTex),
         Texture(m_terrainTexturePath), terrain_params);
@@ -43,34 +39,44 @@ TaskTwo::TaskTwo(WindowContext& context, PerspectiveCamera& camera, RenderSettin
     m_terrain->Transform.Position.y = -2.0f;
     SceneHierarchy.AddDrawable(m_terrain);
     
-    // Setup chess board border
+    // Chess Board Border
     m_chessBorder = new Cube(Shader(m_basicVertTex, m_basicFragTex), glm::vec3(0.0f), Texture(borderTexturePath));
     m_chessBorder->Transform.SetParent(&SceneHierarchy.RootTransform);
     m_chessBorder->Transform.GuiDisplay = "Board";
-
-    constexpr auto darkPieceColor = glm::vec3(0.64f, 0.40f, 0.22f);
-    constexpr auto lightPieceColor = glm::vec3(0.89f, 0.79f, 0.54f);
-
-    // Setup Board
-    m_chessCells = generate_chess_board(pieceTexturePath, darkPieceColor, lightPieceColor);
-
-    for (const auto cell : m_chessCells)
-    {
-        SceneHierarchy.AddDrawable(cell);
-    }
-
     // width of board is 9
     m_chessBorder->Transform.Scale = glm::vec3(9.0f, 0.5f, 9.0f);
     // slightly lower avoid clipping
     m_chessBorder->Transform.Position = glm::vec3(0.0f, -0.2f, 0.0f);
+
+    constexpr auto darkPieceColor = glm::vec3(0.64f, 0.40f, 0.22f);
+    constexpr auto lightPieceColor = glm::vec3(0.89f, 0.79f, 0.54f);
+    
+    auto isChessPiece = [](const TransformComponent& transform){
+            const std::string& name = transform.GuiDisplay;
+            return name == "King" || name == "Queen" || name == "Pawn" ||
+                name == "Rook" || name == "Bishop" || name == "Knight";
+    };
+
+    // Setup Pieces and Tiles
+    // gen chess board also returns the tiles along with the pieces as drawables so we filter them
+    for (const auto drawable : generate_chess_board(cellTexturePath, pieceTexturePath, darkPieceColor, lightPieceColor))
+    {
+        // pieces
+        if (isChessPiece(drawable->Transform))
+        {
+            m_chessPieces.push_back(drawable);
+        }
+        else
+        {
+            m_chessCells.push_back(drawable);
+            SceneHierarchy.AddDrawable(drawable);
+        }
+    }
 }
-
-
 
 void TaskTwo::OnSetup()
 {
     m_camera.Reset();
-
     // farther plane to avoid clipping terrain
     m_camera.Settings.ClippingPlane = ClipPlane{ 0.1f, 300.0f };
     m_camera.Settings.Fov = 90.0f;
@@ -79,11 +85,10 @@ void TaskTwo::OnSetup()
     m_newCamPosition = m_camera.Transform;
 
     ScreenClearColor = glm::vec4(0.5, 0.85, 1.0f, 1.0f);
-    
-    //RandomizeHeightOffsets(m_chessCells, m_cellMaxOffset);
 
     // more exciting
-    //SceneHierarchy.RootTransform.SetRotationZ(10.0f);
+    RandomizeHeightOffsets(m_chessCells, m_cellMaxOffset);
+    play_piece_anim();
 }
 
 void TaskTwo::OnUpdate(float deltaTime)
@@ -93,15 +98,23 @@ void TaskTwo::OnUpdate(float deltaTime)
     
     glClearColor(ScreenClearColor.r, ScreenClearColor.g, ScreenClearColor.b, ScreenClearColor.a);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     
     // rotate scene
     constexpr float rotateSpeed = 20.0f;
     SceneHierarchy.RootTransform.Rotation.y += rotateSpeed * deltaTime;
     SceneHierarchy.RootTransform.Rotation.y = fmod(SceneHierarchy.RootTransform.Rotation.y, 360.0f); // clamp
-
+    
+    // Draw
     SceneHierarchy.DrawAll(m_camera);
-    m_chessBorder->Draw(m_camera, rainbow_color(static_cast<float>(time * 0.2)));
+    m_chessBorder->Draw(m_camera, glm::vec3(1.0f));
+
+    if (m_chessAnimShowPieces)
+    {
+        for (const auto piece : m_chessPieces)
+        {
+            piece->Draw(m_camera);
+        }
+    }
 }
 
 void TaskTwo::OnGui()
@@ -110,8 +123,9 @@ void TaskTwo::OnGui()
 	handle_input();
 }
 
-
-std::vector<Drawable*> TaskTwo::generate_chess_board(const char* pieceTexturePath,
+// Returns all the objects
+// the objects are either cells (Cubes) or pieces
+std::vector<Drawable*> TaskTwo::generate_chess_board(const char* cellTexturePath, const char* pieceTexturePath,
     const glm::vec3& darkPieceColor, const glm::vec3& lightPieceColor) const
 {
     auto pieces = std::vector<Drawable*>();
@@ -127,7 +141,7 @@ std::vector<Drawable*> TaskTwo::generate_chess_board(const char* pieceTexturePat
                 glm::vec3(1.0f) : glm::vec3(0.0f);
 
             // blocks
-            const auto cell = new Cube(Shader(m_basicVert, m_basicFrag), cellColor);
+            const auto cell = new Cube(Shader(m_basicVertTex, m_basicFragTex), cellColor, Texture(cellTexturePath));
             const glm::vec3 cubePosition(i - boardCenterPos.x, 0.0f, j - boardCenterPos.z);
             cell->Transform.GuiDisplay = "Cell (" + std::to_string(i) + ", " + std::to_string(j) + ")";
             cell->Transform.Position = cubePosition;
@@ -260,7 +274,6 @@ void TaskTwo::check_new_cam_pos() {
     const float duration = 0.5f;
 
     // avoid setting position every frame
-    /*
     if (m_newCamPosition != current)
     {
         if (CAM_TWEEN_PLAYING) {
@@ -307,15 +320,51 @@ void TaskTwo::check_new_cam_pos() {
             ->Duration(duration)
             ->Play();
     }
-    */
+    
 }
 
 // flags are used to avoid setting every frame
 void TaskTwo::handle_input() {
     static bool right = false;
     static bool left = false;
+    
     const int rightState = glfwGetKey(m_window, GLFW_KEY_RIGHT);
     const int leftState = glfwGetKey(m_window, GLFW_KEY_LEFT);
+    const int playAnimState = glfwGetKey(m_window, GLFW_KEY_SPACE);
+
+    // show pieces because at the start, looks like pieces are teleporting
+    if (playAnimState == GLFW_PRESS)
+    {
+        constexpr float animTime = 4.0f;
+        constexpr float timeToShowPieces = 1.0f;
+        
+        if (m_chessAnimIsPlaying == true)
+        {
+            return;
+        }
+        
+        play_piece_anim();
+        m_chessAnimIsPlaying = true;
+        m_chessAnimShowPieces = false;
+
+        pTween::pTween(&m_chessBorder->Transform.Position.z) // dummy pointer, we only care about end callback
+        ->From(0.0f)
+        ->To(0.0f)
+        ->Duration(timeToShowPieces)
+        ->Play()->OnEndCallBack([]
+        {
+            m_chessAnimShowPieces = true;
+        });
+        
+        pTween::pTween(&m_chessBorder->Transform.Position.z) // dummy pointer, we only care about end callback
+        ->From(0.0f)
+        ->To(0.0f)
+        ->Duration(animTime)
+        ->Play()->OnEndCallBack([]
+        {
+            m_chessAnimIsPlaying = false;
+        });
+    }
 
     if (rightState == GLFW_PRESS && !right) {
         next_cam_pos();
@@ -334,14 +383,13 @@ void TaskTwo::handle_input() {
     }
 }
 
-void TaskTwo::play_cell_anim()
+void TaskTwo::play_piece_anim()
 {
-    
-    for (Drawable* cell : m_chessCells)
+    for (Drawable* piece : m_chessPieces)
     {
-        pTween::pTween(&cell->Transform.Position.y)
-            ->From(30.0f)
-            ->To(0.0f)
+        pTween::pTween(&piece->Transform.Position.y)
+            ->From(50.0f)
+            ->To(0.5f)
             ->Duration(static_cast<float>(static_cast<double>(random01() * 1.5f) + 2.0))
             ->Delay(random01() * 1.0f)
             ->Transition(pTween::pTweenTransitions::EaseInOutBounce)
@@ -359,46 +407,44 @@ void TaskTwo::render_ui()
             SceneHierarchy.ShowDrawablesTree();
             ImGui::EndTabItem();
         }
-        
-        if (ImGui::BeginTabItem("Terrain"))
-        {
-            static TerrainOptions userOptions = terrain_params;
-
-            ImGui::Text("Options");
-                   
-            ImGui::SliderInt("X", &userOptions.DesiredWidth, 20, 80);
-            ImGui::SliderInt("Z", &userOptions.DesiredLength, 10, 80);
-            ImGui::SliderFloat("Max Height", &userOptions.MaxHeight, 10.0f, 50.0f);
-
-            if (ImGui::Button("Apply##TerrainOptions"))
-            {
-                m_terrain = new Terrain(
-                    m_terrainHeightPath,
-                    Shader(m_terrainVertSource, m_terrainFragSource), userOptions);
-            }
-
-            ImGui::Spacing();
-            if (ImGui::Button("Reset##TerrainOptions"))
-            {
-                userOptions = terrain_params;
-
-                m_terrain = new Terrain(
-                    m_terrainHeightPath, 
-                    Shader(m_terrainVertSource, m_terrainFragSource), userOptions); 
-            }
-
-            m_terrain->Transform.ShowControls();
-
-            ImGui::EndTabItem();
-        }
 
         if (ImGui::BeginTabItem("Chessboard"))
         {
             ImGui::Text("Use offset to change max height");
             ImGui::SliderFloat("Max Offset", &m_cellMaxOffset, 0.0f, 1.0f);
+            if (ImGui::Button("Play Animation"))
+            {
+                constexpr float animTime = 4.0f;
+                constexpr float timeToShowPieces = 1.0f;
+        
+                if (m_chessAnimIsPlaying == true)
+                {
+                    return;
+                }
+        
+                play_piece_anim();
+                m_chessAnimIsPlaying = true;
+                m_chessAnimShowPieces = false;
 
-            if (ImGui::Button("Play Animation")) play_cell_anim();
-            //if (ImGui::Button("Randomize Cell Heights")) RandomizeHeightOffsets(m_chessCells, m_cellMaxOffset);
+                pTween::pTween(&m_chessBorder->Transform.Position.z) // dummy pointer, we only care about end callback
+                ->From(0.0f)
+                ->To(0.0f)
+                ->Duration(timeToShowPieces)
+                ->Play()->OnEndCallBack([]
+                {
+                    m_chessAnimShowPieces = true;
+                });
+        
+                pTween::pTween(&m_chessBorder->Transform.Position.z) // dummy pointer, we only care about end callback
+                ->From(0.0f)
+                ->To(0.0f)
+                ->Duration(animTime)
+                ->Play()->OnEndCallBack([]
+                {
+                    m_chessAnimIsPlaying = false;
+                });
+            }
+            if (ImGui::Button("Randomize Cell Heights")) RandomizeHeightOffsets(m_chessCells, m_cellMaxOffset);
             //if (ImGui::Button("Reset")) RandomizeHeightOffsets(m_cells, 0.0f);
                     
 
@@ -408,8 +454,7 @@ void TaskTwo::render_ui()
         if (ImGui::BeginTabItem("Camera"))
         {
             ImGui::Checkbox("Use Unlocked Mode", &m_cameraUnlocked);
-
-
+            
             if (m_cameraUnlocked)
             {
                 m_camera.Transform.ShowControlsExcludeScale();

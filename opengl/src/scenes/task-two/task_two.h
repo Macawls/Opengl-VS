@@ -1,9 +1,6 @@
 #pragma once
 #include "../scene_base.h"
 
-
-
-
 class TaskTwo : virtual public SceneBase {
 public:
     using SceneBase::SceneBase; // inherit constructor
@@ -21,10 +18,7 @@ public:
     void OnGui() override;
 
 private:
-    
-
-    
-    // Textures
+    // Shaders
     inline static const char* m_basicVert =
 #include "../../resources/shaders/basic.vert"
 ;
@@ -50,12 +44,15 @@ private:
 #include "../../resources/shaders/terrainTex.frag"
 ;
 
-    // textures
-    const char* pieceTexturePath = "src/resources/textures/ground.png";
-    const char* borderTexturePath = "src/resources/textures/metal.png";
+    // Textures
+    const char* pieceTexturePath = "src/resources/textures/metal.png";
+    const char* cellTexturePath = "src/resources/textures/ground.png";
+    const char* borderTexturePath = "src/resources/textures/cobble.png";
     const char* m_terrainHeightPath = "src/resources/images/terrain/berg-river.png";
     const char* m_terrainTexturePath = "src/resources/textures/rock.png";
-    
+
+    // Terrain
+    Terrain* m_terrain = nullptr;
     inline static constexpr TerrainOptions terrain_params = {
             200, // width
             200, // height
@@ -63,13 +60,15 @@ private:
         { 10.0f, 10.0f } // repeat factor
     };
 
+    // Cells
     float m_cellMaxOffset = 0.5f;
     Drawable* m_chessBorder = nullptr;
+    std::vector<Drawable*> m_chessPieces;
     std::vector<Drawable*> m_chessCells;
-
-    Terrain* m_terrain = nullptr;
-    pTweenObject m_terrainTween;
+    inline static bool m_chessAnimIsPlaying;
+    inline static bool m_chessAnimShowPieces = true;
     
+    // Camera
     bool m_cameraUnlocked = false;
     int m_currentCamIndex = 0;
     TransformComponent m_newCamPosition;
@@ -93,14 +92,23 @@ private:
             glm::vec3(1.0f))
 	};
 
-    std::vector<Drawable*> generate_chess_board(const char* pieceTexturePath, const glm::vec3& darkPieceColor, const glm::vec3& lightPieceColor) const;
+    inline static bool CAM_TWEEN_PLAYING;
+    
+    pTweenObject m_cameraTweenPosX;
+    pTweenObject m_cameraTweenPosY;
+    pTweenObject m_cameraTweenPosZ;
+    pTweenObject m_cameraTweenRotX;
+    pTweenObject m_cameraTweenRotY;
+    pTweenObject m_cameraTweenRotZ;
+
+    std::vector<Drawable*> generate_chess_board(const char* cellTexturePath, const char* pieceTexturePath, const glm::vec3& darkPieceColor, const glm::vec3& lightPieceColor) const;
     
     void render_ui();
     void next_cam_pos();
     void prev_cam_pos();
     void check_new_cam_pos();
     void handle_input();
-    void play_cell_anim();
+    void play_piece_anim();
 };
 
 

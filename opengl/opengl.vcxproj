@@ -99,7 +99,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)dependencies\GLFW\lib-vc2022;$(SolutionDir)dependencies\GLEW\lib\Release\Win32;$(SolutionDir)dependencies\PTween\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;pTween.lib</AdditionalDependencies>
+      <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;pTween.lib;rpcrt4.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -119,7 +119,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)dependencies\GLFW\lib-vc2022;$(SolutionDir)dependencies\GLEW\lib\Release\Win32;$(SolutionDir)dependencies\PTween\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;pTween.lib</AdditionalDependencies>
+      <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;pTween.lib;rpcrt4.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -157,10 +157,165 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\systems\rendering\primitives\cube_impl.cpp" />
-    <ClCompile Include="src\demos\cube\cube.cpp" />
+    <ClCompile Include="src\scenes\cube\cube_test_impl.cpp" />
+    <ClCompile Include="src\scenes\scene_hierarchy_impl.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\scenes\task-two\task_two_impl.cpp">
+      <RuntimeLibrary>MultiThreadedDebugDll</RuntimeLibrary>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <Optimization>Disabled</Optimization>
+      <SupportJustMyCode>true</SupportJustMyCode>
+      <AssemblerOutput>NoListing</AssemblerOutput>
+      <AssemblerListingLocation>D:\Projects\CPP\opengl\\bin\intermediates\Win32\Debug\</AssemblerListingLocation>
+      <UndefineAllPreprocessorDefinitions>false</UndefineAllPreprocessorDefinitions>
+      <BrowseInformation>false</BrowseInformation>
+      <BrowseInformationFile>D:\Projects\CPP\opengl\\bin\intermediates\Win32\Debug\</BrowseInformationFile>
+      <CompileAs>Default</CompileAs>
+      <ConformanceMode>true</ConformanceMode>
+      <DiagnosticsFormat>Column</DiagnosticsFormat>
+      <DisableLanguageExtensions>false</DisableLanguageExtensions>
+      <ErrorReporting>Prompt</ErrorReporting>
+      <ExpandAttributedSource>false</ExpandAttributedSource>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <EnableASAN>false</EnableASAN>
+      <EnableFuzzer>false</EnableFuzzer>
+      <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
+      <GenerateModuleDependencies>false</GenerateModuleDependencies>
+      <GenerateSourceDependencies>false</GenerateSourceDependencies>
+      <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard_C>Default</LanguageStandard_C>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ModuleDependenciesFile>D:\Projects\CPP\opengl\\bin\intermediates\Win32\Debug\</ModuleDependenciesFile>
+      <ModuleOutputFile>D:\Projects\CPP\opengl\\bin\intermediates\Win32\Debug\</ModuleOutputFile>
+      <OmitDefaultLibName>false</OmitDefaultLibName>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <ObjectFileName>D:\Projects\CPP\opengl\\bin\intermediates\Win32\Debug\</ObjectFileName>
+      <CallingConvention>Cdecl</CallingConvention>
+      <ProgramDataBaseFileName>D:\Projects\CPP\opengl\\bin\intermediates\Win32\Debug\vc143.pdb</ProgramDataBaseFileName>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>D:\Projects\CPP\opengl\\bin\intermediates\Win32\Debug\opengl.pch</PrecompiledHeaderOutputFile>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessKeepComments>false</PreprocessKeepComments>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
+      <RemoveUnreferencedCodeData>true</RemoveUnreferencedCodeData>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+      <ShowIncludes>false</ShowIncludes>
+      <SourceDependenciesFile>D:\Projects\CPP\opengl\\bin\intermediates\Win32\Debug\</SourceDependenciesFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <SmallerTypeCheck>false</SmallerTypeCheck>
+      <SpectreMitigation>false</SpectreMitigation>
+      <StructMemberAlignment>Default</StructMemberAlignment>
+      <TrackerLogDirectory>D:\Projects\CPP\opengl\\bin\intermediates\Win32\Debug\opengl.tlog\</TrackerLogDirectory>
+      <TranslateIncludes>false</TranslateIncludes>
+      <MinimalRebuildFromTracking>true</MinimalRebuildFromTracking>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <UseFullPaths>true</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <XMLDocumentationFileName>D:\Projects\CPP\opengl\\bin\intermediates\Win32\Debug\</XMLDocumentationFileName>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <IntelJCCErratum>false</IntelJCCErratum>
+      <TreatAngleIncludeAsExternal>false</TreatAngleIncludeAsExternal>
+      <ExternalWarningLevel>InheritWarningLevel</ExternalWarningLevel>
+      <TreatExternalTemplatesAsInternal>true</TreatExternalTemplatesAsInternal>
+      <DisableAnalyzeExternal>false</DisableAnalyzeExternal>
+      <BuildStlModules>true</BuildStlModules>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <EnablePREfast>false</EnablePREfast>
+      <OmitFramePointers>false</OmitFramePointers>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>src\vendor\;D:\Projects\CPP\opengl\dependencies\GLFW\include;D:\Projects\CPP\opengl\dependencies\GLEW\include;D:\Projects\CPP\opengl\dependencies\PTween\include</AdditionalIncludeDirectories>
+      <LinkCompiled>true</LinkCompiled>
+    </ClCompile>
+    <ClCompile Include="src\systems\drawable\terrain_impl.cpp">
+      <RuntimeLibrary>MultiThreadedDebugDll</RuntimeLibrary>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <Optimization>Disabled</Optimization>
+      <SupportJustMyCode>true</SupportJustMyCode>
+      <AssemblerOutput>NoListing</AssemblerOutput>
+      <AssemblerListingLocation>D:\Projects\CPP\opengl\\bin\intermediates\Win32\Debug\</AssemblerListingLocation>
+      <UndefineAllPreprocessorDefinitions>false</UndefineAllPreprocessorDefinitions>
+      <BrowseInformation>false</BrowseInformation>
+      <BrowseInformationFile>D:\Projects\CPP\opengl\\bin\intermediates\Win32\Debug\</BrowseInformationFile>
+      <CompileAs>Default</CompileAs>
+      <ConformanceMode>true</ConformanceMode>
+      <DiagnosticsFormat>Column</DiagnosticsFormat>
+      <DisableLanguageExtensions>false</DisableLanguageExtensions>
+      <ErrorReporting>Prompt</ErrorReporting>
+      <ExpandAttributedSource>false</ExpandAttributedSource>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <EnableASAN>false</EnableASAN>
+      <EnableFuzzer>false</EnableFuzzer>
+      <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
+      <GenerateModuleDependencies>false</GenerateModuleDependencies>
+      <GenerateSourceDependencies>false</GenerateSourceDependencies>
+      <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard_C>Default</LanguageStandard_C>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ModuleDependenciesFile>D:\Projects\CPP\opengl\\bin\intermediates\Win32\Debug\</ModuleDependenciesFile>
+      <ModuleOutputFile>D:\Projects\CPP\opengl\\bin\intermediates\Win32\Debug\</ModuleOutputFile>
+      <OmitDefaultLibName>false</OmitDefaultLibName>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <ObjectFileName>D:\Projects\CPP\opengl\\bin\intermediates\Win32\Debug\</ObjectFileName>
+      <CallingConvention>Cdecl</CallingConvention>
+      <ProgramDataBaseFileName>D:\Projects\CPP\opengl\\bin\intermediates\Win32\Debug\vc143.pdb</ProgramDataBaseFileName>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>D:\Projects\CPP\opengl\\bin\intermediates\Win32\Debug\opengl.pch</PrecompiledHeaderOutputFile>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessKeepComments>false</PreprocessKeepComments>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
+      <RemoveUnreferencedCodeData>true</RemoveUnreferencedCodeData>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+      <ShowIncludes>false</ShowIncludes>
+      <SourceDependenciesFile>D:\Projects\CPP\opengl\\bin\intermediates\Win32\Debug\</SourceDependenciesFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <SmallerTypeCheck>false</SmallerTypeCheck>
+      <SpectreMitigation>false</SpectreMitigation>
+      <StructMemberAlignment>Default</StructMemberAlignment>
+      <TrackerLogDirectory>D:\Projects\CPP\opengl\\bin\intermediates\Win32\Debug\opengl.tlog\</TrackerLogDirectory>
+      <TranslateIncludes>false</TranslateIncludes>
+      <MinimalRebuildFromTracking>true</MinimalRebuildFromTracking>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <UseFullPaths>true</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <XMLDocumentationFileName>D:\Projects\CPP\opengl\\bin\intermediates\Win32\Debug\</XMLDocumentationFileName>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <IntelJCCErratum>false</IntelJCCErratum>
+      <TreatAngleIncludeAsExternal>false</TreatAngleIncludeAsExternal>
+      <ExternalWarningLevel>InheritWarningLevel</ExternalWarningLevel>
+      <TreatExternalTemplatesAsInternal>true</TreatExternalTemplatesAsInternal>
+      <DisableAnalyzeExternal>false</DisableAnalyzeExternal>
+      <BuildStlModules>true</BuildStlModules>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <EnablePREfast>false</EnablePREfast>
+      <OmitFramePointers>false</OmitFramePointers>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>src\vendor\;D:\Projects\CPP\opengl\dependencies\GLFW\include;D:\Projects\CPP\opengl\dependencies\GLEW\include;D:\Projects\CPP\opengl\dependencies\PTween\include</AdditionalIncludeDirectories>
+      <LinkCompiled>true</LinkCompiled>
+    </ClCompile>
     <ClCompile Include="src\systems\rendering\perspective_camera_impl.cpp" />
+    <ClCompile Include="src\systems\rendering\texture_impl.cpp" />
     <ClCompile Include="src\systems\settings\render_settings_impl.cpp" />
     <ClCompile Include="src\systems\shader\shader_impl.cpp" />
     <ClCompile Include="src\systems\window\imgui_module_impl.cpp" />
@@ -175,9 +330,8 @@
     <ClCompile Include="src\vendor\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\vendor\stb_image\stb_image.cpp" />
     <ClCompile Include="src\systems\rendering\transform_impl.cpp" />
-    <ClCompile Include="src\demos\task-one\task_one_impl.cpp" />
-    <ClCompile Include="src\systems\rendering\terrain_impl.cpp" />
-    <ClCompile Include="src\demos\transform-test\transform_test_impl.cpp" />
+    <ClCompile Include="src\scenes\task-one\task_one_impl.cpp" />
+    <ClCompile Include="src\scenes\chess-pieces\chess_pieces_impl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\vendor\glm\detail\func_common.inl" />
@@ -318,22 +472,41 @@
     <None Include="src\vendor\glm\gtx\wrap.inl" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\demos\demo-selection.h" />
-    <ClInclude Include="src\demos\demo-base.h" />
+    <ClInclude Include="src\scenes\scene_selection.h" />
+    <ClInclude Include="src\scenes\scene_base.h" />
+    <ClInclude Include="src\scenes\scene_hierarchy.h" />
+    <ClInclude Include="src\main_menu_bar.h" />
     <ClInclude Include="src\resources\fonts\forkawesome-icons.h" />
-    <ClInclude Include="src\systems\rendering\primitives\cube.h" />
-    <ClInclude Include="src\demos\cube\cube.h" />
+    <ClInclude Include="src\scenes\cube\cube_test.h" />
     <ClInclude Include="src\resources\fonts\jetbrainsmono.h" />
     <ClInclude Include="src\resources\images\icon\icon.h" />
+    <ClInclude Include="src\scenes\task-two\task_two.h" />
+    <ClInclude Include="src\systems\drawable\empty.h" />
+    <ClInclude Include="src\systems\drawable\gen_data.h" />
+    <ClInclude Include="src\systems\drawable\impl\cone.h" />
+    <ClInclude Include="src\systems\drawable\impl\cube.h" />
+    <ClInclude Include="src\systems\drawable\impl\cylinder.h" />
+    <ClInclude Include="src\systems\drawable\impl\sphere.h" />
+    <ClInclude Include="src\systems\drawable\drawable.h" />
+    <ClInclude Include="src\systems\drawable\terrain.h" />
     <ClInclude Include="src\systems\rendering\perspective_camera.h" />
+    <ClInclude Include="src\systems\rendering\texture.h" />
     <ClInclude Include="src\systems\settings\configs.h" />
     <ClInclude Include="src\systems\settings\render_settings.h" />
     <ClInclude Include="src\systems\shader\shader.h" />
     <ClInclude Include="src\systems\shader\shader_utils.h" />
     <ClInclude Include="src\systems\window\imgui_module.h" />
     <ClInclude Include="src\systems\window\window_context.h" />
+    <ClInclude Include="src\utils\gen_uuid.h" />
     <ClInclude Include="src\utils\gl_call.h" />
     <ClInclude Include="src\utils\logger.h" />
+    <ClInclude Include="src\utils\pieces\chess_pieces.h" />
+    <ClInclude Include="src\utils\pieces\impl\bishop.h" />
+    <ClInclude Include="src\utils\pieces\impl\king.h" />
+    <ClInclude Include="src\utils\pieces\impl\knight.h" />
+    <ClInclude Include="src\utils\pieces\impl\pawn.h" />
+    <ClInclude Include="src\utils\pieces\impl\queen.h" />
+    <ClInclude Include="src\utils\pieces\impl\rook.h" />
     <ClInclude Include="src\vendor\glm\common.hpp" />
     <ClInclude Include="src\vendor\glm\detail\compute_common.hpp" />
     <ClInclude Include="src\vendor\glm\detail\compute_vector_relational.hpp" />
@@ -628,10 +801,9 @@
     <ClInclude Include="src\vendor\stb_image\stb_image.h" />
     <ClInclude Include="src\vendor\stb_image\stb_image_resize.h" />
     <ClInclude Include="src\systems\rendering\transform.h" />
-    <ClInclude Include="src\demos\task-one\task_one.h" />
-    <ClInclude Include="src\systems\rendering\terrain.h" />
+    <ClInclude Include="src\scenes\task-one\task_one.h" />
     <ClInclude Include="src\utils\gui.h" />
-    <ClInclude Include="src\demos\transform-test\transform_test.h" />
+    <ClInclude Include="src\scenes\chess-pieces\chess_pieces.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="src\resources\images\terrain\berg-river.png" />

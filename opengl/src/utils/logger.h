@@ -25,7 +25,7 @@ public:
     };
 
 #define DEFAULT_PRIORITY LogPriority::Info
-#define DEFAULT_MAX_HISTORY_SIZE 50
+#define DEFAULT_MAX_HISTORY_SIZE 100
 #define DEFAULT_MESSAGE_BUFFER_SIZE 256
 
     // Set minimum priority level, default is Info

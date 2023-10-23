@@ -8,9 +8,24 @@
 #include "../systems/settings/render_settings.h"
 #include "../systems/rendering/transform.h"
 #include "../systems/rendering/perspective_camera.h"
-#include "../systems/rendering/primitives/cube.h"
-#include "../systems/rendering/terrain.h"
+#include "../resources/fonts/forkawesome-icons.h"
+
+// drawables
+#include "../systems/drawable/impl/cone.h"
+#include "../systems/drawable/impl/cone.h"
+#include "../systems/drawable/impl/cone.h"
+
+// chess pieces
+#include "../utils/pieces/impl/pawn.h"
+#include "../utils/pieces/impl/king.h"
+#include "../utils/pieces/impl/queen.h"
+#include "../utils/pieces/impl/knight.h"
+#include "../utils/pieces/impl/bishop.h"
+#include "../utils/pieces/impl/rook.h"
+#include "../systems/drawable/terrain.h"
 #include "../utils/gui.h"
+
+#include "scene_hierarchy.h"
 
 // local utils
 #include "pTween.h"
@@ -20,16 +35,16 @@
 #include <functional>
 #include <vector>
 
-class DemoBase {
+class SceneBase {
 protected:
     PerspectiveCamera& m_camera;
     GLFWwindow* m_window;
     RenderSettings& m_renderSettings;
-    glm::vec4 m_clearColour = glm::vec4(0.18f, 0.18f, 0.18f, 1.0f);
-
 public:
-    virtual ~DemoBase() = default;
-    DemoBase(WindowContext& context, PerspectiveCamera& camera, RenderSettings& settings)
+    SceneHierarchy SceneHierarchy;
+    glm::vec4 ScreenClearColor = glm::vec4(0.18f, 0.18f, 0.18f, 1.0f);
+    virtual ~SceneBase() = default;
+    SceneBase(WindowContext& context, PerspectiveCamera& camera, RenderSettings& settings)
         : m_camera(camera),
         m_window(context.GetGlfwWindow()),
         m_renderSettings(settings),
@@ -37,7 +52,7 @@ public:
     { 
         
     }
-    
+
     WindowContext& Context;
 
     virtual void OnSetup() = 0;

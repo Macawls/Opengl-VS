@@ -16,7 +16,7 @@ WindowContext::WindowContext(WindowParameters params)
 
     glfwSetWindowIcon(m_window, 1, &params.IconImage);
 
-    Logger::LogDebug("%s Init Sucess", CLASS_NAME(WindowContext));
+    Logger::LogDebug("%s Init Success", CLASS_NAME(WindowContext));
     Logger::LogDebug("%s Init Success, version: %s", CLASS_NAME(ImGUIModule),  IMGUI_VERSION);
     
     Logger::LogDebug("OpenGL Version: %s", glGetString(GL_VERSION));

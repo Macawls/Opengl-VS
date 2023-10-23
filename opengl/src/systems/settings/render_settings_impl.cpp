@@ -4,20 +4,16 @@
 #include <GLFW/glfw3.h>
 #include "render_settings.h"
 #include "../../utils/gl_call.h"
-#include "../resources/fonts/forkawesome-icons.h"
+
 #include "../../utils/gui.h"
 
 static RenderConfig previousConfig = RenderConfig();
 
-static const char* SETTINGS_HEADER = ICON_FK_COGS " Settings";
-static const char* INFO_HEADER = ICON_FK_TELEVISION " Information";
-static const char* LOGS_HEADER = ICON_FK_BARS " Logs";
-static const char* CONFIG_HEADER = ICON_FK_WRENCH " Configuration";
-static const char* WINDOW_HEADER = "System";
+
 
 void RenderSettings::ShowRenderingWindow()
 {
-    ImGui::SetNextWindowPos(ImVec2(m_imguiIO->DisplaySize.x - 490, 20));
+    ImGui::SetNextWindowPos(ImVec2(m_imguiIO->DisplaySize.x - 500, 40));
     ImGui::SetNextWindowSize(ImVec2(470, 0));
     ImGui::Begin(WINDOW_HEADER);
 
@@ -46,6 +42,28 @@ void RenderSettings::ShowRenderingWindow()
 
     ImGui::End();
 }
+
+void RenderSettings::ShowInfoChild()
+{
+    ImGui::BeginChild(WINDOW_HEADER, ImVec2(450, 200), false, ImGuiWindowFlags_NoCollapse );
+    show_system_info();
+    ImGui::EndChild();
+}
+
+void RenderSettings::ShowSettingsChild()
+{
+    ImGui::BeginChild(WINDOW_HEADER, ImVec2(400, 380), false);
+    show_settings_tabs();
+    ImGui::EndChild();
+}
+
+void RenderSettings::ShowLogsChild()
+{
+    ImGui::BeginChild(WINDOW_HEADER, ImVec2(500, 400), false);
+    ShowLogsWindow();
+    ImGui::EndChild();
+}
+
 
 
 RenderSettings::RenderSettings(const RenderConfig &config, WindowContext& context)

@@ -1,4 +1,4 @@
-#include "cube.h"
+#include "cube_test.h"
 
 #define GLEW_STATIC
 #include <GL/glew.h>
@@ -14,14 +14,13 @@
 #include "../../utils/logger.h"
 #include "../../utils/gl_call.h"
 
-const TransformComponent StartingTransform = TransformComponent()
-    .SetRotation(glm::vec3(25.0f, 45.0f, 0.0f));
 
 
-CubeDemo::CubeDemo(WindowContext& context, PerspectiveCamera& camera, RenderSettings& settings)
-    : DemoBase(context, camera, settings)
+
+CubeTestScene::CubeTestScene(WindowContext& context, PerspectiveCamera& camera, RenderSettings& settings)
+    : SceneBase(context, camera, settings)
 {
-    cubeTransform.Copy(StartingTransform);
+    m_cubeTransform.Copy(StartingTransform);
     
     // VAO
     GLCall(glGenVertexArrays(1, &cubeVAO));
@@ -51,22 +50,22 @@ CubeDemo::CubeDemo(WindowContext& context, PerspectiveCamera& camera, RenderSett
     GLCall(glBindVertexArray(0));
 }
 
-void CubeDemo::OnSetup()
+void CubeTestScene::OnSetup()
 {
     m_camera.Reset();
     m_camera.Transform.SetPosition(CAMERA_STARTING_POSITION);
 }
 
-void CubeDemo::OnUpdate(float deltaTime)
+void CubeTestScene::OnUpdate(float deltaTime)
 {
-    glClearColor(m_clearColour.r, m_clearColour.g, m_clearColour.b, m_clearColour.a);
+    glClearColor(ScreenClearColor.r, ScreenClearColor.g, ScreenClearColor.b, ScreenClearColor.a);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glm::mat4 projection = m_camera.GetProjectionMatrix();
-    glm::mat4 view = m_camera.GetViewMatrix();
+    const glm::mat4 projection = m_camera.GetProjectionMatrix();
+    const glm::mat4 view = m_camera.GetViewMatrix();
 
     // Calculate the MVP matrix
-    glm::mat4 mvp = projection * view * cubeTransform.GetModelMatrix();
+    const glm::mat4 mvp = projection * view * m_cubeTransform.GetModelMatrix();
 
     cubeShader.Use().SetMat4("mvp", mvp);
 
@@ -76,13 +75,13 @@ void CubeDemo::OnUpdate(float deltaTime)
     glBindVertexArray(0);
 }
 
-void CubeDemo::OnGui()
+void CubeTestScene::OnGui()
 {
     if (ImGui::BeginTabBar("Control Tabs"))
     {
         if (ImGui::BeginTabItem("Cube"))
         {
-            cubeTransform.ShowControls(StartingTransform);
+            m_cubeTransform.ShowControls(StartingTransform.Position, StartingTransform.Rotation);
             ImGui::EndTabItem();
         }
 
@@ -108,12 +107,12 @@ void CubeDemo::OnGui()
 
         if (ImGui::BeginTabItem("Background"))
         {
-            ImGui::ColorEdit4("Background", glm::value_ptr(m_clearColour));
+            ImGui::ColorEdit4("Background", glm::value_ptr(ScreenClearColor));
             ImGui::EndTabItem();
 
             if (ImGui::Button("Reset"))
             {
-                m_clearColour = glm::vec4(0.18f, 0.18f, 0.18f, 1.0f);
+                ScreenClearColor = glm::vec4(0.18f, 0.18f, 0.18f, 1.0f);
             }
         }
 

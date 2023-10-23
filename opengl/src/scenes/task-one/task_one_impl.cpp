@@ -35,7 +35,7 @@ const double CUBE_WAIT_TIME = 1.0;
 double timeToRenderCubes = CUBE_WAIT_TIME;
 
 TaskOne::TaskOne(WindowContext& context, PerspectiveCamera& camera, RenderSettings& settings) 
-    : DemoBase(context, camera, settings)
+    : SceneBase(context, camera, settings)
 {
     m_camera.Transform = m_cameraPositions[m_currentCamIndex];
     m_newCamPosition = m_camera.Transform;
@@ -84,7 +84,7 @@ void TaskOne::OnSetup()
 
 void TaskOne::OnUpdate(float deltaTime)
 {
-    glClearColor(m_clearColour.r, m_clearColour.g, m_clearColour.b, m_clearColour.a);
+    glClearColor(ScreenClearColor.r, ScreenClearColor.g, ScreenClearColor.b, ScreenClearColor.a);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     if (glfwGetTime() > timeToRenderCubes)
@@ -253,7 +253,7 @@ void TaskOne::play_cell_anim()
         pTween::pTween(&cell.Transform.Position.y)
             ->From(30.0f)
             ->To(randomHeight)
-            ->Duration((double)(random01() * 1.5f) + 2.0)
+            ->Duration(static_cast<float>(static_cast<double>(random01() * 1.5f) + 2.0))
             ->Delay(random01() * 1.0f)
             ->Transition(pTween::pTweenTransitions::EaseInOutBounce)
             ->Play();
@@ -349,12 +349,12 @@ void TaskOne::render_ui()
 
         if (ImGui::BeginTabItem("Background"))
         {
-            ImGui::ColorEdit4("Background", glm::value_ptr(m_clearColour));
+            ImGui::ColorEdit4("Background", glm::value_ptr(ScreenClearColor));
             ImGui::EndTabItem();
 
             if (ImGui::Button("Reset"))
             {
-                m_clearColour = glm::vec4(0.18f, 0.18f, 0.18f, 1.0f);
+                ScreenClearColor = glm::vec4(0.18f, 0.18f, 0.18f, 1.0f);
             }
         }
 

@@ -66,6 +66,8 @@ public:
 
     glm::mat4 GetProjectionMatrix() const { return m_projectionMatrix; }
 
+    glm::mat4 CalculateMvp(const TransformComponent& transform) const;
+
     void OnUpdate(float deltaTime)
     {
         update_projection_matrix();

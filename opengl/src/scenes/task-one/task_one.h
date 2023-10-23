@@ -1,12 +1,10 @@
 #pragma once
-#include "../demo-base.h"
+#include "../scene_base.h"
 
 
-static bool CAM_TWEEN_PLAYING = false;
-
-class TaskOne : virtual public DemoBase {
+class TaskOne : virtual public SceneBase {
 public:
-    using DemoBase::DemoBase; // inherit constructor
+    using SceneBase::SceneBase; // inherit constructor
     
     TaskOne(WindowContext& context, PerspectiveCamera& camera, RenderSettings& settings);
 
@@ -33,6 +31,8 @@ private:
     const char* m_terrainFragSource =
 #include "../../resources/shaders/terrain.frag"
 ;
+
+    inline static bool CAM_TWEEN_PLAYING = false;
 
     float m_cellMaxOffset = 0.5f;
     Cube* m_chessBorder = nullptr;

@@ -112,6 +112,6 @@ static GLuint createShaderProgram(GLuint count, ...) {
     }
     va_end(shaderList);
     
-    Logger::LogDebug("Shader %d compiled", program);
+    //Logger::LogDebug("Shader %d compiled", program);
     return program;
 }

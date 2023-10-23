@@ -1,58 +1,138 @@
 #include "transform.h"
 #include "imgui/imgui_impl_glfw.h"
-#include "../../utils/gui.h"
 #include "../resources/fonts/forkawesome-icons.h"
 
 static const float WIDGETWIDTH = 90.0f;
 static const float ROTMAX = 360.0f;
 static const float ROTMIN = 0.0f;
-static const ImVec2 HORIZONTAL = ImVec2(120.0f, 0.0f);
+static const ImVec2 HORIZONTAL = ImVec2(140.0f, 0.0f);
 static const ImVec2 BUTTON_SIZE = ImVec2(150, 30);
 
 static const char* HEADER = ICON_FK_CUBE " Transform";
 
-TransformComponent::TransformComponent(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
+
+TransformComponent::TransformComponent()
+{
+	Uuid = generate_uuid_string();
+}
+
+TransformComponent::TransformComponent(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale)
 {
 	Position = position;
 	Rotation = rotation;
 	Scale = scale;
+	Uuid = generate_uuid_string();
 }
 
-TransformComponent& TransformComponent::SetPosition(glm::vec3 position)
+TransformComponent::~TransformComponent()
+{
+	Parent = nullptr;
+}
+
+TransformComponent& TransformComponent::SetPosition(const glm::vec3& position)
 {
 	Position = position;
 	return *this;
 }
 
-TransformComponent& TransformComponent::SetRotation(glm::vec3 rotation)
-{
-	Rotation = rotation;
-	return *this;
-}
 
-TransformComponent& TransformComponent::SetScale(glm::vec3 scale)
-{
-	Scale = scale;
-	return *this;
-}
+
+
 
 glm::mat4 TransformComponent::GetModelMatrix() const
 {
-	glm::mat4 scale = glm::scale(m_identity, Scale);
-	glm::mat4 rotation = glm::eulerAngleXYZ(
+	const glm::mat4 scale = glm::scale(m_identity, Scale);
+	const glm::mat4 rotation = glm::eulerAngleXYZ(
 		glm::radians(Rotation.x), 
 		glm::radians(Rotation.y), 
 		glm::radians(Rotation.z));
-	
-	glm::mat4 translation = glm::translate(m_identity, Position);
 
-	return translation * rotation * scale;
+	const glm::mat4 translation = glm::translate(m_identity, Position);
+	const glm::mat4 model = translation * rotation * scale;
+
+	return Parent ? Parent->GetModelMatrix() * model : model;
 }
 
-void TransformComponent::Copy(const TransformComponent transform) {
+TransformComponent& TransformComponent::SetPositionX(float pos)
+{
+	Position = glm::vec3(pos, Position.y, Position.z);
+	return *this;
+}
+TransformComponent& TransformComponent::SetPositionY(float pos)
+{
+	Position = glm::vec3(Position.x, pos, Position.z);
+	return *this;
+}
+TransformComponent& TransformComponent::SetPositionZ(float pos)
+{
+	Position = glm::vec3(Position.x, Position.y, pos);
+	return *this;
+}
+//////////////////////////////////
+// Rotation
+TransformComponent& TransformComponent::SetRotation(const glm::vec3& rotation)
+{
+	Rotation = rotation;
+	return *this;
+}
+TransformComponent& TransformComponent::SetRotationX(float rot)
+{
+	Rotation = glm::vec3(rot, Rotation.y, Rotation.z);
+	return *this;
+}
+TransformComponent& TransformComponent::SetRotationY(float rot)
+{
+	Rotation = glm::vec3(Rotation.x, rot, Rotation.z);
+	return *this;
+}
+TransformComponent& TransformComponent::SetRotationZ(float rot)
+{
+	Rotation = glm::vec3(Rotation.x, Rotation.y, rot);
+	return *this;
+}
+//////////////////////////////////
+// Scale
+TransformComponent& TransformComponent::SetScale(const glm::vec3& scale)
+{
+	Scale = scale;
+	return *this;
+}
+TransformComponent& TransformComponent::SetScaleX(float scale)
+{
+	Scale = glm::vec3(scale, Scale.y, Scale.z);
+	return *this;
+}
+TransformComponent& TransformComponent::SetScaleY(float scale)
+{
+	Scale = glm::vec3(Scale.x, scale, Scale.z);
+	return *this;
+}
+TransformComponent& TransformComponent::SetScaleZ(float scale)
+{
+	Scale = glm::vec3(Scale.x, Scale.y, scale);
+	return *this;
+}
+
+//////////////////////////////////
+
+void TransformComponent::Copy(const TransformComponent& transform) {
     Position = transform.Position;
     Rotation = transform.Rotation;
     Scale = transform.Scale;
+}
+
+TransformComponent& TransformComponent::SetParent(TransformComponent* parent)
+{
+	Parent = parent; // set pointer to new parent
+	Parent->Children.push_back(this); // add child to parent
+	return *this;
+}
+
+TransformComponent& TransformComponent::AddChild(TransformComponent* child)
+{
+	Children.push_back(child); // add child to children
+	child->Parent = this; // set child's parent
+	return *this;
 }
 
 // Resets all values to default
@@ -63,126 +143,129 @@ TransformComponent& TransformComponent::Reset() {
     return *this;
 }
 
-void TransformComponent::ShowControls(TransformComponent resetTarget)
+void TransformComponent::ShowControls(const glm::vec3& resetPos, const glm::vec3& resetRot, const glm::vec3& resetScale)
 {
-    ShowTitle(0.1f, HEADER);
+	ShowTitle(0.15f, HEADER);
+	// Position
+	ImGui::Text("Position");
+	ImGui::SameLine(HORIZONTAL.x);
 
-    // Position
-    ImGui::Text("Position");
-    ImGui::SameLine(HORIZONTAL.x);
-
-    ImGui::Text("X");
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(WIDGETWIDTH);
-    ImGui::DragFloat("##PosX", &Position.x, 0.1f);
-    ImGui::SameLine();
+	ImGui::Text("X");
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(WIDGETWIDTH);
+	ImGui::DragFloat(("##PosX" + Uuid).c_str(), &Position.x, 0.1f);
+	ImGui::SameLine();
     
-    ImGui::Text("Y");
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(WIDGETWIDTH);
-    ImGui::DragFloat("##PosY", &Position.y, 0.1f);
-    ImGui::SameLine();
+	ImGui::Text("Y");
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(WIDGETWIDTH);
+	ImGui::DragFloat(("##PosY" + Uuid).c_str(), &Position.y, 0.1f);
+	ImGui::SameLine();
 
-    ImGui::Text("Z");
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(WIDGETWIDTH);
-    ImGui::DragFloat("##PosZ", &Position.z, 0.1f);
+	ImGui::Text("Z");
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(WIDGETWIDTH);
+	ImGui::DragFloat(("##PosZ" + Uuid).c_str(), &Position.z, 0.1f);
 
-    // Rotation
-    ImGui::Text("Rotation");
-    ImGui::SameLine(HORIZONTAL.x);
+	// Rotation
+	ImGui::Text("Rotation");
+	ImGui::SameLine(HORIZONTAL.x);
 
-    ImGui::Text("X");
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(WIDGETWIDTH);
-    ImGui::DragFloat("##RotX", &Rotation.x, 1.0f, ROTMIN, ROTMAX);
-    ImGui::SameLine();
+	ImGui::Text("X");
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(WIDGETWIDTH);
+	ImGui::DragFloat(("##RotX" + Uuid).c_str(), &Rotation.x, 1.0f, ROTMIN, ROTMAX);
+	ImGui::SameLine();
 
-    ImGui::Text("Y");
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(WIDGETWIDTH);
-    ImGui::DragFloat("##RotY", &Rotation.y, 1.0f, ROTMIN, ROTMAX);
-    ImGui::SameLine();
+	ImGui::Text("Y");
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(WIDGETWIDTH);
+	ImGui::DragFloat(("##RotY" + Uuid).c_str(), &Rotation.y, 1.0f, ROTMIN, ROTMAX);
+	ImGui::SameLine();
 
-    ImGui::Text("Z");
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(WIDGETWIDTH);
-    ImGui::DragFloat("##RotZ", &Rotation.z, 1.0f, ROTMIN, ROTMAX);
+	ImGui::Text("Z");
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(WIDGETWIDTH);
+	ImGui::DragFloat(("##RotZ" + Uuid).c_str(), &Rotation.z, 1.0f, ROTMIN, ROTMAX);
 
-    // Scale
-    ImGui::Text("Scale");
-    ImGui::SameLine(HORIZONTAL.x);
-    ImGui::Text("X");
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(WIDGETWIDTH);
-    ImGui::DragFloat("##ScaleX", &Scale.x, 0.1f);
-    ImGui::SameLine();
+	// Scale
+	ImGui::Text("Scale");
+	ImGui::SameLine(HORIZONTAL.x);
+	ImGui::Text("X");
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(WIDGETWIDTH);
+	ImGui::DragFloat(("##ScaleX" + Uuid).c_str(), &Scale.x, 0.1f);
+	ImGui::SameLine();
 
-    ImGui::Text("Y");
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(WIDGETWIDTH);
-    ImGui::DragFloat("##ScaleY", &Scale.y, 0.1f);
-    ImGui::SameLine();
+	ImGui::Text("Y");
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(WIDGETWIDTH);
+	ImGui::DragFloat(("##ScaleY" + Uuid).c_str(), &Scale.y, 0.1f);
+	ImGui::SameLine();
 
-    ImGui::Text("Z");
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(WIDGETWIDTH);
-    ImGui::DragFloat("##ScaleZ", &Scale.z, 0.1f);
+	ImGui::Text("Z");
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(WIDGETWIDTH);
+	ImGui::DragFloat(("##ScaleZ" + Uuid).c_str(), &Scale.z, 0.1f);
 
-    if (ImGui::Button("Reset", BUTTON_SIZE))
-    {
-        Copy(resetTarget);
+	if (ImGui::Button("Reset", BUTTON_SIZE))
+	{
+		Position = resetPos;
+		Rotation = resetRot;
+		Scale = resetScale;
 	}
 }
 
-void TransformComponent::ShowControlsExcludeScale(TransformComponent resetTarget)
+void TransformComponent::ShowControlsExcludeScale(const glm::vec3& resetPos, const glm::vec3& resetRot, const glm::vec3& resetScale)
 {
-    ShowTitle(0.1f, HEADER);
+	ShowTitle(0.1f, HEADER);
+	// Position
+	ImGui::Text("Position");
+	ImGui::SameLine(HORIZONTAL.x);
 
-    // Position
-    ImGui::Text("Position");
-    ImGui::SameLine(HORIZONTAL.x);
+	ImGui::Text("X");
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(WIDGETWIDTH);
+	ImGui::DragFloat(("##PosX" + Uuid).c_str(), &Position.x, 0.1f);
+	ImGui::SameLine();
+    
+	ImGui::Text("Y");
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(WIDGETWIDTH);
+	ImGui::DragFloat(("##PosY" + Uuid).c_str(), &Position.y, 0.1f);
+	ImGui::SameLine();
 
-    ImGui::Text("X");
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(WIDGETWIDTH);
-    ImGui::DragFloat("##PosX", &Position.x, 0.1f);
-    ImGui::SameLine();
+	ImGui::Text("Z");
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(WIDGETWIDTH);
+	ImGui::DragFloat(("##PosZ" + Uuid).c_str(), &Position.z, 0.1f);
 
-    ImGui::Text("Y");
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(WIDGETWIDTH);
-    ImGui::DragFloat("##PosY", &Position.y, 0.1f);
-    ImGui::SameLine();
+	// Rotation
+	ImGui::Text("Rotation");
+	ImGui::SameLine(HORIZONTAL.x);
 
-    ImGui::Text("Z");
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(WIDGETWIDTH);
-    ImGui::DragFloat("##PosZ", &Position.z, 0.1f);
+	ImGui::Text("X");
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(WIDGETWIDTH);
+	ImGui::DragFloat(("##RotX" + Uuid).c_str(), &Rotation.x, 1.0f, ROTMIN, ROTMAX);
+	ImGui::SameLine();
 
-    // Rotation
-    ImGui::Text("Rotation");
-    ImGui::SameLine(HORIZONTAL.x);
+	ImGui::Text("Y");
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(WIDGETWIDTH);
+	ImGui::DragFloat(("##RotY" + Uuid).c_str(), &Rotation.y, 1.0f, ROTMIN, ROTMAX);
+	ImGui::SameLine();
 
-    ImGui::Text("X");
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(WIDGETWIDTH);
-    ImGui::DragFloat("##RotX", &Rotation.x, 1.0f, ROTMIN, ROTMAX);
-    ImGui::SameLine();
+	ImGui::Text("Z");
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(WIDGETWIDTH);
+	ImGui::DragFloat(("##RotZ" + Uuid).c_str(), &Rotation.z, 1.0f, ROTMIN, ROTMAX);
 
-    ImGui::Text("Y");
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(WIDGETWIDTH);
-    ImGui::DragFloat("##RotY", &Rotation.y, 1.0f, ROTMIN, ROTMAX);
-    ImGui::SameLine();
-
-    ImGui::Text("Z");
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(WIDGETWIDTH);
-    ImGui::DragFloat("##RotZ", &Rotation.z, 1.0f, ROTMIN, ROTMAX);
-
-    if (ImGui::Button("Reset", BUTTON_SIZE))
-    {
-        Copy(resetTarget);
-    }
+	if (ImGui::Button("Reset", BUTTON_SIZE))
+	{
+		Position = resetPos;
+		Rotation = resetRot;
+		Scale = resetScale;
+	}
 }
+

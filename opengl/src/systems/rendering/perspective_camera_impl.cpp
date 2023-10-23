@@ -19,6 +19,9 @@ glm::mat4 PerspectiveCamera::GetViewMatrix() const
 {
     return m_viewMatrix;
 }
+glm::mat4 PerspectiveCamera::CalculateMvp(const TransformComponent& transform) const {
+    return GetProjectionMatrix() * GetViewMatrix() * transform.GetModelMatrix();
+}
 
 void PerspectiveCamera::update_projection_matrix()
 {

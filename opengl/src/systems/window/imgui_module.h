@@ -11,7 +11,7 @@ public:
     ~ImGUIModule();
 
     // Creates ImGui context, requires glsl version, e.g. "#version 330"
-    bool Init(const char *glsl_version, GLFWwindow *glfwWindow, float fontSize);
+    bool Init(const char *glslVersion, GLFWwindow *glfwWindow, float fontSize);
     // Run before imgui calls
     void BeginFrame();
     // Run after imgui calls

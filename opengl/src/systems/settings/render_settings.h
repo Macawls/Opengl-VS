@@ -4,6 +4,8 @@
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 
+#include "../resources/fonts/forkawesome-icons.h"
+
 #include "../window/window_context.h"
 
 ////////////////////////////////////////////
@@ -20,6 +22,11 @@
 class RenderSettings
 {
 public:
+    inline static const char* SETTINGS_HEADER = ICON_FK_COGS " Settings";
+    inline static const char* INFO_HEADER = ICON_FK_TELEVISION " Information";
+    inline static const char* LOGS_HEADER = ICON_FK_BARS " Logs";
+    inline static const char* CONFIG_HEADER = ICON_FK_WRENCH " Configuration";
+    inline static const char* WINDOW_HEADER = "System";
     RenderSettings(const RenderConfig& config, WindowContext& context);
     RenderSettings(WindowContext& context);
 
@@ -35,6 +42,9 @@ public:
 
 
     void ShowRenderingWindow();
+    void ShowInfoChild();
+    void ShowSettingsChild();
+    void ShowLogsChild();
 
 private:
     ImGuiIO* m_imguiIO;

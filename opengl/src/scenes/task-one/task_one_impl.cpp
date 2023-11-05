@@ -41,7 +41,7 @@ TaskOne::TaskOne(WindowContext& context, PerspectiveCamera& camera, RenderSettin
     m_newCamPosition = m_camera.Transform;
 
     // Setup terrain
-    auto terrainShader = Shader(m_terrainVertSource, m_terrainFragSource);
+    auto terrainShader = ShaderComponent(m_terrainVertSource, m_terrainFragSource);
     m_terrain = new Terrain(TERRAIN_PATH, terrainShader, TERRAIN_PARAMS);
     m_terrain->Transform.Position.y = -2.0f;
 
@@ -49,7 +49,7 @@ TaskOne::TaskOne(WindowContext& context, PerspectiveCamera& camera, RenderSettin
     m_cells = generate_chess_board();
     
     // Setup border
-    auto borderShader = Shader(m_cubeVertSource, m_cubeFragSource);
+    auto borderShader = ShaderComponent(m_cubeVertSource, m_cubeFragSource);
     m_chessBorder = new Cube(borderShader, glm::vec3(0.0f, 0.0f, 0.0f));
 
     // width of board is 9
@@ -133,7 +133,7 @@ std::vector<Cube> TaskOne::generate_chess_board()
             color = (i + j) % 2 == 0 ? glm::vec3(1.0f, 1.0f, 1.0f) : color = glm::vec3(0.0f, 0.0f, 0.0f);
 
 
-            Shader shader = Shader()
+            ShaderComponent shader = ShaderComponent()
                 .SetVertexSource(m_cubeVertSource)
                 .SetFragmentSource(m_cubeFragSource)
                 .Compile();
@@ -278,7 +278,7 @@ void TaskOne::render_ui()
             {
                 m_terrain = new Terrain(
                     TERRAIN_PATH,
-                    Shader(m_terrainVertSource, m_terrainFragSource), userOptions);
+                    ShaderComponent(m_terrainVertSource, m_terrainFragSource), userOptions);
             }
 
             ImGui::Spacing();
@@ -288,7 +288,7 @@ void TaskOne::render_ui()
 
                 m_terrain = new Terrain(
                     TERRAIN_PATH, 
-                    Shader(m_terrainVertSource, m_terrainFragSource), userOptions); 
+                    ShaderComponent(m_terrainVertSource, m_terrainFragSource), userOptions); 
             }
 
             m_terrain->Transform.ShowControls();

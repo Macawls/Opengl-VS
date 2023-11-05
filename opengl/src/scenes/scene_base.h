@@ -4,7 +4,7 @@
 #include "../systems/rendering/perspective_camera.h"
 #include "../systems/settings/render_settings.h"
 #include "../systems/window/window_context.h"
-#include "../systems/shader/shader.h"
+#include "..\systems\shader\shader_component.h"
 #include "../systems/settings/render_settings.h"
 #include "../systems/rendering/transform.h"
 #include "../systems/rendering/perspective_camera.h"

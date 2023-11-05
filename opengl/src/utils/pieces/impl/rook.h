@@ -1,24 +1,30 @@
 ﻿#pragma once
 
 #include "../systems/drawable/drawable.h"
-#include "../chess_pieces.h"
+#include "..\chess_piece_generation.h"
 
 class Rook : public Drawable
 {
 public:
     using Drawable::Drawable;
     std::vector<Drawable*> Pieces;
-    
-    Rook(const Shader& shader, const glm::vec3& color) : Drawable(shader, color)
+
+    Rook(const ShaderComponent& shader) : Drawable(shader)
     {
         Transform.GuiDisplay = "Rook";
-        Pieces = ChessPieces::GenerateRook(color, Transform);
+        Pieces = ChessPieceGeneration::GenerateRook(Color, Transform);
+    }
+    
+    Rook(const ShaderComponent& shader, const glm::vec3& color) : Drawable(shader, color)
+    {
+        Transform.GuiDisplay = "Rook";
+        Pieces = ChessPieceGeneration::GenerateRook(color, Transform);
     }
 
-    Rook(const Shader& shader, const glm::vec3& color, const Texture& texture) : Drawable(shader, color, texture)
+    Rook(const ShaderComponent& shader, const glm::vec3& color, const TextureComponent& texture) : Drawable(shader, color, texture)
     {
         Transform.GuiDisplay = "Rook";
-        Pieces = ChessPieces::GenerateRook(color, texture, Transform);
+        Pieces = ChessPieceGeneration::GenerateRook(color, Transform, texture);
     }
     
     void Draw(PerspectiveCamera& camera) override
@@ -28,6 +34,7 @@ public:
             piece->Draw(camera);
         }
     }
+    
     void Draw(PerspectiveCamera& camera, const glm::vec3& color) override
     {
         for (const auto piece : Pieces)
@@ -36,7 +43,7 @@ public:
         }
     }
 
-    virtual ~Rook()
+    ~Rook() override
     {
         Pieces.clear();
     }

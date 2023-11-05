@@ -10,15 +10,21 @@ ChessPiecesScene::ChessPiecesScene(WindowContext& context, PerspectiveCamera& ca
 	: SceneBase(context, camera, settings)
 {
 	constexpr auto pieceColor = glm::vec3(1.0f);
-	const auto tex = Texture("src/resources/textures/ground.png");
+	const auto pieceTexture = TextureComponent(texPath);
 	
-	SceneHierarchy
-	.AddDrawable(new Pawn(Shader(m_basicVertTex, m_basicFragTex), pieceColor, tex))
-	.AddDrawable(new Rook(Shader(m_basicVertTex, m_basicFragTex), pieceColor, tex))
-	.AddDrawable(new King(Shader(m_basicVertTex, m_basicFragTex), pieceColor, tex))
-	.AddDrawable(new Queen(Shader(m_basicVertTex, m_basicFragTex), pieceColor, tex))
-	.AddDrawable(new Bishop(Shader(m_basicVertTex, m_basicFragTex), pieceColor, tex))
-	.AddDrawable(new Knight(Shader(m_basicVertTex, m_basicFragTex), pieceColor, tex));
+	const auto pawn = new Pawn(ShaderComponent(m_basicVertTex, m_basicFragTex), pieceColor, pieceTexture);
+	const auto rook = new Rook(ShaderComponent(m_basicVertTex, m_basicFragTex), pieceColor, pieceTexture);
+	const auto king = new King(ShaderComponent(m_basicVertTex, m_basicFragTex), pieceColor, pieceTexture);
+	const auto queen = new Queen(ShaderComponent(m_basicVertTex, m_basicFragTex), pieceColor, pieceTexture);
+	const auto bishop = new Bishop(ShaderComponent(m_basicVertTex, m_basicFragTex), pieceColor, pieceTexture);
+	const auto knight = new Knight(ShaderComponent(m_basicVertTex, m_basicFragTex), pieceColor, pieceTexture);
+	
+	SceneHierarchy.AddDrawable(pawn)
+	.AddDrawable(rook)
+	.AddDrawable(king)
+	.AddDrawable(queen)
+	.AddDrawable(bishop)
+	.AddDrawable(knight);
 }
 
 void ChessPiecesScene::OnSetup()

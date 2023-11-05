@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "../systems/drawable/drawable.h"
-#include "../chess_pieces.h"
+#include "../chess_piece_generation.h"
 
 class Bishop : public Drawable
 {
@@ -9,34 +9,40 @@ public:
     using Drawable::Drawable;
     std::vector<Drawable*> Pieces;
     
-    Bishop(const Shader& shader, const glm::vec3& color) : Drawable(shader, color)
+    Bishop(const ShaderComponent& shader) : Drawable(shader)
     {
         Transform.GuiDisplay = "Bishop";
-        Pieces = ChessPieces::GenerateBishop(color, Transform);
+        Pieces = ChessPieceGeneration::GenerateBishop(Color, Transform);
     }
 
-    Bishop(const Shader& shader, const glm::vec3& color, const Texture& texture) : Drawable(shader, color, texture)
+    Bishop(const ShaderComponent& shader, const glm::vec3& color) : Drawable(shader, color)
     {
         Transform.GuiDisplay = "Bishop";
-        Pieces = ChessPieces::GenerateBishop(color, texture, Transform);
+        Pieces = ChessPieceGeneration::GenerateBishop(color, Transform);
+    }
+
+    Bishop(const ShaderComponent& shader, const glm::vec3& color, const TextureComponent& texture) : Drawable(shader, color, texture)
+    {
+        Transform.GuiDisplay = "Bishop";
+        Pieces = ChessPieceGeneration::GenerateBishop(color, Transform, texture);
     }
     
     void Draw(PerspectiveCamera& camera) override
     {
-        for (const auto piece : Pieces)
+        for (size_t i = 0; i < Pieces.size(); i++)
         {
-            piece->Draw(camera);
+            Pieces[i]->Draw(camera);
         }
     }
     void Draw(PerspectiveCamera& camera, const glm::vec3& color) override
     {
-        for (const auto piece : Pieces)
+        for (size_t i = 0; i < Pieces.size(); i++)
         {
-            piece->Draw(camera, color);
+            Pieces[i]->Draw(camera, color);
         }
     }
 
-    virtual ~Bishop()
+    ~Bishop() override
     {
         Pieces.clear();
     }

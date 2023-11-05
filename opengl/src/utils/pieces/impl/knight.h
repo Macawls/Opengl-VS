@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "../systems/drawable/drawable.h"
-#include "../chess_pieces.h"
+#include "..\chess_piece_generation.h"
 
 class Knight : public Drawable
 {
@@ -9,16 +9,22 @@ public:
     using Drawable::Drawable;
     std::vector<Drawable*> Pieces;
     
-    Knight(const Shader& shader, const glm::vec3& color) : Drawable(shader, color)
+    Knight(const ShaderComponent& shader) : Drawable(shader)
     {
         Transform.GuiDisplay = "Knight";
-        Pieces = ChessPieces::GenerateKnight(color, Transform);
+        Pieces = ChessPieceGeneration::GenerateKnight(Color, Transform);
     }
     
-    Knight(const Shader& shader, const glm::vec3& color, const Texture& texture) : Drawable(shader, color, texture)
+    Knight(const ShaderComponent& shader, const glm::vec3& color) : Drawable(shader, color)
     {
         Transform.GuiDisplay = "Knight";
-        Pieces = ChessPieces::GenerateKnight(color, texture, Transform);
+        Pieces = ChessPieceGeneration::GenerateKnight(color, Transform);
+    }
+    
+    Knight(const ShaderComponent& shader, const glm::vec3& color, const TextureComponent& texture) : Drawable(shader, color)
+    {
+        Transform.GuiDisplay = "Knight";
+        Pieces = ChessPieceGeneration::GenerateKnight(color, Transform, texture);
     }
     
     void Draw(PerspectiveCamera& camera) override
@@ -28,6 +34,7 @@ public:
             piece->Draw(camera);
         }
     }
+    
     void Draw(PerspectiveCamera& camera, const glm::vec3& color) override
     {
         for (const auto piece : Pieces)
@@ -36,7 +43,7 @@ public:
         }
     }
 
-    virtual ~Knight()
+    ~Knight() override
     {
         Pieces.clear();
     }

@@ -1,24 +1,30 @@
 ﻿#pragma once
 
 #include "../systems/drawable/drawable.h"
-#include "../chess_pieces.h"
+#include "../chess_piece_generation.h"
 
 class Pawn : public Drawable
 {
 public:
     using Drawable::Drawable;
-    std::vector<Drawable*> Pieces;
-    
-    Pawn(const Shader& shader, const glm::vec3& color) : Drawable(shader, color)
+    std::vector<Drawable*> Pieces{};
+
+    Pawn(const ShaderComponent& shader) : Drawable(shader)
     {
         Transform.GuiDisplay = "Pawn";
-        Pieces = ChessPieces::GeneratePawn(color, Transform);
+        Pieces = ChessPieceGeneration::GeneratePawn(Color, Transform);
+    }
+    
+    Pawn(const ShaderComponent& shader, const glm::vec3& color) : Drawable(shader, color)
+    {
+        Transform.GuiDisplay = "Pawn";
+        Pieces = ChessPieceGeneration::GeneratePawn(color, Transform);
     }
 
-    Pawn(const Shader& shader, const glm::vec3& color, const Texture& texture) : Drawable(shader, color, texture)
+    Pawn(const ShaderComponent& shader, const glm::vec3& color, const TextureComponent& texture) : Drawable(shader, color)
     {
         Transform.GuiDisplay = "Pawn";
-        Pieces = ChessPieces::GeneratePawn(color, texture, Transform);
+        Pieces = ChessPieceGeneration::GeneratePawn(color, Transform, texture);
     }
     
     void Draw(PerspectiveCamera& camera) override
@@ -28,6 +34,7 @@ public:
             piece->Draw(camera);
         }
     }
+    
     void Draw(PerspectiveCamera& camera, const glm::vec3& color) override
     {
         for (const auto piece : Pieces)
@@ -36,7 +43,7 @@ public:
         }
     }
 
-    virtual ~Pawn()
+    ~Pawn() override
     {
         Pieces.clear();
     }

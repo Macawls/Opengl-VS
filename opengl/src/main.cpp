@@ -12,18 +12,17 @@
 #include "main_menu_bar.h"
 #include "pTween.h"
 #include "resources/images/icon/icon.h"
-
+#include "scenes/lighting/lighting_test.h"
 #include "systems/rendering/perspective_camera.h"
 #include "systems/settings/render_settings.h"
 #include "systems/window/window_context.h"
 #include "utils/gui.h"
 
-
-
 const GLFWimage ICON = { image_width, image_height, image_data };
 const WindowParameters WINDOW_PARAMS = { 1600, 900, "opengl", 22.0f, ICON };
 
 static bool UI_ENABLED = true;
+
 
 // N.B Do camera update after rendering the scene
 int main()
@@ -35,9 +34,11 @@ int main()
     auto settings = RenderSettings(context);
 
     SceneSelection demos = SceneSelection()
+    .AddScene("Lighting Test", new LightingTestScene(context, camera, settings))
+    //.AddScene("Task Three",     new TaskThree(context, camera, settings))
     .AddScene("Task Two",       new TaskTwo(context, camera, settings))
     .AddScene("Chess Pieces",   new ChessPiecesScene(context, camera, settings))
-    .AddScene("Task One",       new TaskOne(context, camera, settings))
+    //.AddScene("Task One",       new TaskOne(context, camera, settings))
     .AddScene("Cube Test",      new CubeTestScene(context, camera, settings))
     .Init();
 

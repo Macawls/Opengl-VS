@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "glm/ext/scalar_constants.hpp"
 static constexpr float PI = glm::pi<float>();
 
 // Stacks ->    Vertical divisions

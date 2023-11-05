@@ -24,10 +24,8 @@ class Terrain : public Drawable
 {
 public:
 	using Drawable::Drawable;
-	Terrain(const char* heightmapPath, const Shader& shader, const TerrainOptions& options);
-	Terrain(const char* heightmapPath, const Shader& shader, const Texture& texture, const TerrainOptions& options);
+	Terrain(const char* heightmapPath, const ShaderComponent& shader, const TerrainOptions& options);
 	void Draw(PerspectiveCamera& camera) override;
-	void Draw(PerspectiveCamera& camera, const glm::vec3& color) override;
 
 private:
 	unsigned int m_desiredSize;

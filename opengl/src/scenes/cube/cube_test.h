@@ -84,7 +84,7 @@ private:
     // Cube
     unsigned int cubeVBO, cubeVAO, cubeEBO;
 
-    Shader cubeShader = Shader()
+    ShaderComponent cubeShader = ShaderComponent()
                         .SetVertexSource(cubeVert)
                         .SetFragmentSource(cubeFrag)
                         .Compile();

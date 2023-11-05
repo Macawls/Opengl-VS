@@ -33,14 +33,17 @@ TaskTwo::TaskTwo(WindowContext& context, PerspectiveCamera& camera, RenderSettin
 
     // Terrain
     m_terrain = new Terrain(m_terrainHeightPath,
-        Shader(m_terrainVertSourceTex, m_terrainFragSourceTex),
-        Texture(m_terrainTexturePath), terrain_params);
+        ShaderComponent(m_terrainVertSourceTex, m_terrainFragSourceTex), terrain_params);
+
+    m_terrain->Texture = TextureComponent(m_terrainTexturePath);
 
     m_terrain->Transform.Position.y = -2.0f;
     SceneHierarchy.AddDrawable(m_terrain);
     
     // Chess Board Border
-    m_chessBorder = new Cube(Shader(m_basicVertTex, m_basicFragTex), glm::vec3(0.0f), Texture(borderTexturePath));
+    m_chessBorder = new Cube(ShaderComponent(m_basicVertTex, m_basicFragTex), glm::vec3(0.0f));
+    m_chessBorder->Texture = TextureComponent(borderTexturePath);
+
     m_chessBorder->Transform.SetParent(&SceneHierarchy.RootTransform);
     m_chessBorder->Transform.GuiDisplay = "Board";
     // width of board is 9
@@ -130,7 +133,7 @@ std::vector<Drawable*> TaskTwo::generate_chess_board(const char* cellTexturePath
 {
     auto pieces = std::vector<Drawable*>();
     constexpr glm::vec3 boardCenterPos(3.5f, 0.0f, 3.5f);
-    const auto pieceTexture = Texture(pieceTexturePath);
+    const auto pieceTexture = TextureComponent(pieceTexturePath);
 
     for (int i = 0; i < 8; i++)
     {
@@ -141,7 +144,9 @@ std::vector<Drawable*> TaskTwo::generate_chess_board(const char* cellTexturePath
                 glm::vec3(1.0f) : glm::vec3(0.0f);
 
             // blocks
-            const auto cell = new Cube(Shader(m_basicVertTex, m_basicFragTex), cellColor, Texture(cellTexturePath));
+            const auto cell = new Cube(ShaderComponent(m_basicVertTex, m_basicFragTex), cellColor);
+            cell->Texture = TextureComponent(cellTexturePath);
+
             const glm::vec3 cubePosition(i - boardCenterPos.x, 0.0f, j - boardCenterPos.z);
             cell->Transform.GuiDisplay = "Cell (" + std::to_string(i) + ", " + std::to_string(j) + ")";
             cell->Transform.Position = cubePosition;
@@ -157,14 +162,14 @@ std::vector<Drawable*> TaskTwo::generate_chess_board(const char* cellTexturePath
             if (i == 1)
             {
                 // Dark
-                const auto pawn = new Pawn(Shader(m_basicVertTex, m_basicFragTex), darkPieceColor, pieceTexture);
+                const auto pawn = new Pawn(ShaderComponent(m_basicVertTex, m_basicFragTex), darkPieceColor, pieceTexture);
                 pawn->Transform.SetScaleX(scaleX).SetScaleZ(scaleZ).SetPositionY(posY).SetParent(&cell->Transform);
                 pieces.push_back(pawn);
             }
             else if (i == 6)
             {
                 // Light
-                const auto pawn = new Pawn(Shader(m_basicVertTex, m_basicFragTex), lightPieceColor, pieceTexture);
+                const auto pawn = new Pawn(ShaderComponent(m_basicVertTex, m_basicFragTex), lightPieceColor, pieceTexture);
                 pawn->Transform.SetScaleX(scaleX).SetScaleZ(scaleZ).SetPositionY(posY).SetParent(&cell->Transform);
                 pieces.push_back(pawn);
             }
@@ -175,35 +180,35 @@ std::vector<Drawable*> TaskTwo::generate_chess_board(const char* cellTexturePath
                 if (j == 0 || j == 7)
                 {
                     // Dark Rooks
-                    const auto rook = new Rook(Shader(m_basicVertTex, m_basicFragTex), darkPieceColor, pieceTexture);
+                    const auto rook = new Rook(ShaderComponent(m_basicVertTex, m_basicFragTex), darkPieceColor, pieceTexture);
                     rook->Transform.SetScaleX(scaleX).SetScaleZ(scaleZ).SetPositionY(posY).SetParent(&cell->Transform);
                     pieces.push_back(rook);
                 }
                 else if (j == 1 || j == 6)
                 {
                     // Dark Knights
-                    const auto knight = new Knight(Shader(m_basicVertTex, m_basicFragTex), darkPieceColor, pieceTexture);
+                    const auto knight = new Knight(ShaderComponent(m_basicVertTex, m_basicFragTex), darkPieceColor, pieceTexture);
                     knight->Transform.SetScaleX(scaleX).SetScaleZ(scaleZ).SetPositionY(posY).SetParent(&cell->Transform);
                     pieces.push_back(knight);
                 }
                 else if (j == 2 || j == 5)
                 {
                     // Dark Bishops
-                    const auto bishop = new Bishop(Shader(m_basicVertTex, m_basicFragTex), darkPieceColor, pieceTexture);
+                    const auto bishop = new Bishop(ShaderComponent(m_basicVertTex, m_basicFragTex), darkPieceColor, pieceTexture);
                     bishop->Transform.SetScaleX(scaleX).SetScaleZ(scaleZ).SetPositionY(posY).SetParent(&cell->Transform);
                     pieces.push_back(bishop);
                 }
                 else if (j == 3)
                 {
                     // Dark Queen
-                    const auto queen = new Queen(Shader(m_basicVertTex, m_basicFragTex), darkPieceColor, pieceTexture);
+                    const auto queen = new Queen(ShaderComponent(m_basicVertTex, m_basicFragTex), darkPieceColor, pieceTexture);
                     queen->Transform.SetScaleX(scaleX).SetScaleZ(scaleZ).SetPositionY(posY).SetParent(&cell->Transform);
                     pieces.push_back(queen);
                 }
                 else if (j == 4)
                 {
                     // Dark King
-                    const auto king = new King(Shader(m_basicVertTex, m_basicFragTex), darkPieceColor, pieceTexture);
+                    const auto king = new King(ShaderComponent(m_basicVertTex, m_basicFragTex), darkPieceColor, pieceTexture);
                     king->Transform.SetScaleX(scaleX).SetScaleZ(scaleZ).SetPositionY(posY).SetParent(&cell->Transform);
                     pieces.push_back(king);
                 }
@@ -214,35 +219,35 @@ std::vector<Drawable*> TaskTwo::generate_chess_board(const char* cellTexturePath
                 if (j == 0 || j == 7)
                 {
                     // Light Rooks
-                    const auto rook = new Rook(Shader(m_basicVertTex, m_basicFragTex), lightPieceColor, pieceTexture);
+                    const auto rook = new Rook(ShaderComponent(m_basicVertTex, m_basicFragTex), lightPieceColor, pieceTexture);
                     rook->Transform.SetScaleX(scaleX).SetScaleZ(scaleZ).SetPositionY(posY).SetParent(&cell->Transform);
                     pieces.push_back(rook);
                 }
                 else if (j == 1 || j == 6)
                 {
                     // Light Knights
-                    const auto knight = new Knight(Shader(m_basicVertTex, m_basicFragTex), lightPieceColor, pieceTexture);
+                    const auto knight = new Knight(ShaderComponent(m_basicVertTex, m_basicFragTex), lightPieceColor, pieceTexture);
                     knight->Transform.SetScaleX(scaleX).SetScaleZ(scaleZ).SetPositionY(posY).SetParent(&cell->Transform);
                     pieces.push_back(knight);
                 }
                 else if (j == 2 || j == 5)
                 {
                     // Light Bishops
-                    const auto bishop = new Bishop(Shader(m_basicVertTex, m_basicFragTex), lightPieceColor, pieceTexture);
+                    const auto bishop = new Bishop(ShaderComponent(m_basicVertTex, m_basicFragTex), lightPieceColor, pieceTexture);
                     bishop->Transform.SetScaleX(scaleX).SetScaleZ(scaleZ).SetPositionY(posY).SetParent(&cell->Transform);
                     pieces.push_back(bishop);
                 }
                 else if (j == 3)
                 {
                     // Light Queen
-                    const auto queen = new Queen(Shader(m_basicVertTex, m_basicFragTex), lightPieceColor, pieceTexture);
+                    const auto queen = new Queen(ShaderComponent(m_basicVertTex, m_basicFragTex), lightPieceColor, pieceTexture);
                     queen->Transform.SetScaleX(scaleX).SetScaleZ(scaleZ).SetPositionY(posY).SetParent(&cell->Transform);
                     pieces.push_back(queen);
                 }
                 else if (j == 4)
                 {
                     // Light King
-                    const auto king = new King(Shader(m_basicVertTex, m_basicFragTex), lightPieceColor, pieceTexture);
+                    const auto king = new King(ShaderComponent(m_basicVertTex, m_basicFragTex), lightPieceColor, pieceTexture);
                     king->Transform.SetScaleX(scaleX).SetScaleZ(scaleZ).SetPositionY(posY).SetParent(&cell->Transform);
                     pieces.push_back(king);
                 }

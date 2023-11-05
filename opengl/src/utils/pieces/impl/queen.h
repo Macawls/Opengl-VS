@@ -1,24 +1,30 @@
 ﻿#pragma once
 
 #include "../systems/drawable/drawable.h"
-#include "../chess_pieces.h"
+#include "..\chess_piece_generation.h"
 
 class Queen : public Drawable
 {
 public:
     using Drawable::Drawable;
     std::vector<Drawable*> Pieces;
-    
-    Queen(const Shader& shader, const glm::vec3& color) : Drawable(shader, color)
+
+    Queen(const ShaderComponent& shader) : Drawable(shader)
     {
         Transform.GuiDisplay = "Queen";
-        Pieces = ChessPieces::GenerateQueen(color, Transform);
+        Pieces = ChessPieceGeneration::GenerateQueen(Color, Transform);
+    }
+    
+    Queen(const ShaderComponent& shader, const glm::vec3& color) : Drawable(shader, color)
+    {
+        Transform.GuiDisplay = "Queen";
+        Pieces = ChessPieceGeneration::GenerateQueen(color, Transform);
     }
 
-    Queen(const Shader& shader, const glm::vec3& color, const Texture& texture) : Drawable(shader, color, texture)
+    Queen(const ShaderComponent& shader, const glm::vec3& color, const TextureComponent& texture) : Drawable(shader, color)
     {
         Transform.GuiDisplay = "Queen";
-        Pieces = ChessPieces::GenerateQueen(color, texture, Transform);
+        Pieces = ChessPieceGeneration::GenerateQueen(color, Transform, texture);
     }
     
     void Draw(PerspectiveCamera& camera) override
@@ -28,6 +34,7 @@ public:
             piece->Draw(camera);
         }
     }
+    
     void Draw(PerspectiveCamera& camera, const glm::vec3& color) override
     {
         for (const auto piece : Pieces)
@@ -36,7 +43,7 @@ public:
         }
     }
 
-    virtual ~Queen()
+    ~Queen() override
     {
         Pieces.clear();
     }

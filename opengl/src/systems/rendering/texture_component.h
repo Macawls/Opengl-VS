@@ -5,11 +5,13 @@
 #include <GLFW/glfw3.h>
 
 #include "../../utils/logger.h"
-
-class Texture {
+/**
+ * \brief Handles Textures
+ */
+class TextureComponent {
 public:
-    Texture() = default;
-    Texture(const char* path);
+    TextureComponent() = default;
+    TextureComponent(const char* path);
     // Bind the texture to a specific texture unit
     void Bind(unsigned int unit) const;
 
@@ -21,6 +23,8 @@ public:
 
     // Get the height of the texture
     int GetHeight() const { return m_height; }
+
+    const char* TexturePath;
 
 private:
     unsigned int m_id;

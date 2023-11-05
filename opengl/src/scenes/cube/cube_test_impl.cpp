@@ -27,27 +27,27 @@ CubeTestScene::CubeTestScene(WindowContext& context, PerspectiveCamera& camera, 
     GLCall(glBindVertexArray(cubeVAO));
 
     // VBO
-    GLCall(glGenBuffers(1, &cubeVBO));
-    GLCall(glBindBuffer(GL_ARRAY_BUFFER, cubeVBO));
-    GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) + sizeof(colors), NULL, GL_STATIC_DRAW));
-    GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices));
-    GLCall(glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices), sizeof(colors), colors));
+    glGenBuffers(1, &cubeVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof vertices + sizeof colors, NULL, GL_STATIC_DRAW);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof vertices, vertices);
+    glBufferSubData(GL_ARRAY_BUFFER, sizeof vertices, sizeof colors, colors);
 
     // EBO
-    GLCall(glGenBuffers(1, &cubeEBO));
-    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cubeEBO));
-    GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW));
+    glGenBuffers(1, &cubeEBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cubeEBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     // Set up vertex attribute pointers for position and color
     GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0));
     GLCall(glEnableVertexAttribArray(0));
 
-    GLCall(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)sizeof(vertices)));
-    GLCall(glEnableVertexAttribArray(1));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)sizeof vertices);
+    glEnableVertexAttribArray(1);
 
     // Unbind VBO and VAO
-    GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
-    GLCall(glBindVertexArray(0));
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
 }
 
 void CubeTestScene::OnSetup()
@@ -63,6 +63,8 @@ void CubeTestScene::OnUpdate(float deltaTime)
 
     const glm::mat4 projection = m_camera.GetProjectionMatrix();
     const glm::mat4 view = m_camera.GetViewMatrix();
+
+    m_cubeTransform.Rotation.y += 20.0f * deltaTime;
 
     // Calculate the MVP matrix
     const glm::mat4 mvp = projection * view * m_cubeTransform.GetModelMatrix();

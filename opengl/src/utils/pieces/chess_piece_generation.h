@@ -6,18 +6,16 @@
 #include "../systems/drawable/impl/sphere.h"
 #include "../systems/drawable/drawable.h"
 
-
-
-class ChessPieces {
+class ChessPieceGeneration {
 public:
     static std::vector<Drawable*> GeneratePawn(const glm::vec3& color, TransformComponent& parent)
     {
         std::vector<Drawable*> pieces;
 
-        const auto sphere = new Sphere(Shader(m_basicVert, m_basicFrag), color);
-        const auto cylinderTop = new Cylinder(Shader(m_basicVert, m_basicFrag), color);
-        const auto cone = new Cone(Shader(m_basicVert, m_basicFrag), color);
-        const auto cylinderBase = new Cylinder(Shader(m_basicVert, m_basicFrag), color);
+        const auto sphere = new Sphere(ShaderComponent(m_basicVert, m_basicFrag), color);
+        const auto cylinderTop = new Cylinder(ShaderComponent(m_basicVert, m_basicFrag), color);
+        const auto cone = new Cone(ShaderComponent(m_basicVert, m_basicFrag), color);
+        const auto cylinderBase = new Cylinder(ShaderComponent(m_basicVert, m_basicFrag), color);
         
         sphere->Transform.SetPositionY(1.8f).SetParent(&parent);
         cylinderTop->Transform.SetPositionY(1.3f).SetRotationX(90.f).SetScaleZ(0.2f).SetParent(&parent);
@@ -31,15 +29,15 @@ public:
 
         return pieces;
     }
-
-    static std::vector<Drawable*> GeneratePawn(const glm::vec3& color, const Texture& texture, TransformComponent& parent)
+    
+    static std::vector<Drawable*> GeneratePawn(const glm::vec3& color, TransformComponent& parent, const TextureComponent& texture)
     {
         std::vector<Drawable*> pieces;
 
-        const auto sphere = new Sphere(Shader(m_basicVertTex, m_basicFragTex), color, texture);
-        const auto cylinderTop = new Cylinder(Shader(m_basicVertTex, m_basicFragTex), color, texture);
-        const auto cone = new Cone(Shader(m_basicVertTex, m_basicFragTex), color, texture);
-        const auto cylinderBase = new Cylinder(Shader(m_basicVertTex, m_basicFragTex), color, texture);
+        const auto sphere = new Sphere(ShaderComponent(m_basicVertTex, m_basicFragTex), color, texture);
+        const auto cylinderTop = new Cylinder(ShaderComponent(m_basicVertTex, m_basicFragTex), color, texture);
+        const auto cone = new Cone(ShaderComponent(m_basicVertTex, m_basicFragTex), color, texture);
+        const auto cylinderBase = new Cylinder(ShaderComponent(m_basicVertTex, m_basicFragTex), color, texture);
         
         sphere->Transform.SetPositionY(1.8f).SetParent(&parent);
         cylinderTop->Transform.SetPositionY(1.3f).SetRotationX(90.f).SetScaleZ(0.2f).SetParent(&parent);
@@ -58,14 +56,14 @@ public:
     {
         std::vector<Drawable*> pieces;
         
-        const auto cubeL = new Cube(Shader(m_basicVert, m_basicFrag), color);
-        const auto cubeR = new Cube(Shader(m_basicVert, m_basicFrag), color);
-        const auto cubeF = new Cube(Shader(m_basicVert, m_basicFrag), color);
-        const auto cubeB = new Cube(Shader(m_basicVert, m_basicFrag), color);
+        const auto cubeL = new Cube(ShaderComponent(m_basicVert, m_basicFrag), color);
+        const auto cubeR = new Cube(ShaderComponent(m_basicVert, m_basicFrag), color);
+        const auto cubeF = new Cube(ShaderComponent(m_basicVert, m_basicFrag), color);
+        const auto cubeB = new Cube(ShaderComponent(m_basicVert, m_basicFrag), color);
         
-        const auto cylinderTop = new Cylinder(Shader(m_basicVert, m_basicFrag), color);
-        const auto cylinderMid = new Cylinder(Shader(m_basicVert, m_basicFrag), color);
-        const auto cylinderBase = new Cylinder(Shader(m_basicVert, m_basicFrag), color);
+        const auto cylinderTop = new Cylinder(ShaderComponent(m_basicVert, m_basicFrag), color);
+        const auto cylinderMid = new Cylinder(ShaderComponent(m_basicVert, m_basicFrag), color);
+        const auto cylinderBase = new Cylinder(ShaderComponent(m_basicVert, m_basicFrag), color);
         
         cubeL->Transform.SetPositionY(2.5f).SetPositionX(-0.4f).SetScale(glm::vec3(0.3f)).SetScaleX(0.2f).SetParent(&parent);
         cubeR->Transform.SetPositionY(2.5f).SetPositionX(0.4f).SetScale(glm::vec3(0.3f)).SetScaleX(0.2f).SetParent(&parent);
@@ -87,18 +85,18 @@ public:
         return pieces;
     }
 
-    static std::vector<Drawable*> GenerateRook(const glm::vec3& color, const Texture& texture, TransformComponent& parent)
+    static std::vector<Drawable*> GenerateRook(const glm::vec3& color, TransformComponent& parent, const TextureComponent& texture)
     {
         std::vector<Drawable*> pieces;
         
-        const auto cubeL = new Cube(Shader(m_basicVertTex, m_basicFragTex), color, texture);
-        const auto cubeR = new Cube(Shader(m_basicVertTex, m_basicFragTex), color, texture);
-        const auto cubeF = new Cube(Shader(m_basicVertTex, m_basicFragTex), color, texture);
-        const auto cubeB = new Cube(Shader(m_basicVertTex, m_basicFragTex), color, texture);
+        const auto cubeL = new Cube(ShaderComponent(m_basicVertTex, m_basicFragTex), color, texture);
+        const auto cubeR = new Cube(ShaderComponent(m_basicVertTex, m_basicFragTex), color, texture);
+        const auto cubeF = new Cube(ShaderComponent(m_basicVertTex, m_basicFragTex), color, texture);
+        const auto cubeB = new Cube(ShaderComponent(m_basicVertTex, m_basicFragTex), color, texture);
         
-        const auto cylinderTop = new Cylinder(Shader(m_basicVertTex, m_basicFragTex), color, texture);
-        const auto cylinderMid = new Cylinder(Shader(m_basicVertTex, m_basicFragTex), color, texture);
-        const auto cylinderBase = new Cylinder(Shader(m_basicVertTex, m_basicFragTex), color, texture);
+        const auto cylinderTop = new Cylinder(ShaderComponent(m_basicVertTex, m_basicFragTex), color, texture);
+        const auto cylinderMid = new Cylinder(ShaderComponent(m_basicVertTex, m_basicFragTex), color, texture);
+        const auto cylinderBase = new Cylinder(ShaderComponent(m_basicVertTex, m_basicFragTex), color, texture);
         
         cubeL->Transform.SetPositionY(2.5f).SetPositionX(-0.4f).SetScale(glm::vec3(0.3f)).SetScaleX(0.2f).SetParent(&parent);
         cubeR->Transform.SetPositionY(2.5f).SetPositionX(0.4f).SetScale(glm::vec3(0.3f)).SetScaleX(0.2f).SetParent(&parent);
@@ -124,12 +122,12 @@ public:
     {
         std::vector<Drawable*> pieces;
         
-        const auto cubeVert = new Cube(Shader(m_basicVert, m_basicFrag), color);
-        const auto cubeHor = new Cube(Shader(m_basicVert, m_basicFrag), color);
+        const auto cubeVert = new Cube(ShaderComponent(m_basicVert, m_basicFrag), color);
+        const auto cubeHor = new Cube(ShaderComponent(m_basicVert, m_basicFrag), color);
         
-        const auto cylinderTop = new Cylinder(Shader(m_basicVert, m_basicFrag), color);
-        const auto cylinderMid = new Cylinder(Shader(m_basicVert, m_basicFrag), color);
-        const auto cylinderBase = new Cylinder(Shader(m_basicVert, m_basicFrag), color);
+        const auto cylinderTop = new Cylinder(ShaderComponent(m_basicVert, m_basicFrag), color);
+        const auto cylinderMid = new Cylinder(ShaderComponent(m_basicVert, m_basicFrag), color);
+        const auto cylinderBase = new Cylinder(ShaderComponent(m_basicVert, m_basicFrag), color);
         
         cubeVert->Transform.SetRotationY(180.0f).SetPositionY(3.1f).SetScale(glm::vec3(0.3f)).SetScaleY(0.8f).SetParent(&parent);
         cubeHor->Transform.SetRotationY(180.0f).SetPositionY(3.1f).SetScale(glm::vec3(0.3f)).SetScaleZ(0.8f).SetParent(&parent);
@@ -147,16 +145,16 @@ public:
         return pieces;
     }
 
-    static std::vector<Drawable*> GenerateKing(const glm::vec3& color, const Texture& texture, TransformComponent& parent)
+    static std::vector<Drawable*> GenerateKing(const glm::vec3& color, TransformComponent& parent, const TextureComponent& texture)
     {
         std::vector<Drawable*> pieces;
         
-        const auto cubeVert = new Cube(Shader(m_basicVertTex, m_basicFragTex), color, texture);
-        const auto cubeHor = new Cube(Shader(m_basicVertTex, m_basicFragTex), color, texture);
+        const auto cubeVert = new Cube(ShaderComponent(m_basicVertTex, m_basicFragTex), color, texture);
+        const auto cubeHor = new Cube(ShaderComponent(m_basicVertTex, m_basicFragTex), color, texture);
         
-        const auto cylinderTop = new Cylinder(Shader(m_basicVertTex, m_basicFragTex), color, texture);
-        const auto cylinderMid = new Cylinder(Shader(m_basicVertTex, m_basicFragTex), color, texture);
-        const auto cylinderBase = new Cylinder(Shader(m_basicVertTex, m_basicFragTex), color, texture);
+        const auto cylinderTop = new Cylinder(ShaderComponent(m_basicVertTex, m_basicFragTex), color, texture);
+        const auto cylinderMid = new Cylinder(ShaderComponent(m_basicVertTex, m_basicFragTex), color, texture);
+        const auto cylinderBase = new Cylinder(ShaderComponent(m_basicVertTex, m_basicFragTex), color, texture);
         
         cubeVert->Transform.SetRotationY(180.0f).SetPositionY(3.1f).SetScale(glm::vec3(0.3f)).SetScaleY(0.8f).SetParent(&parent);
         cubeHor->Transform.SetRotationY(180.0f).SetPositionY(3.1f).SetScale(glm::vec3(0.3f)).SetScaleZ(0.8f).SetParent(&parent);
@@ -178,13 +176,13 @@ public:
     {
         std::vector<Drawable*> pieces;
 
-        const auto sphereTop = new Sphere(Shader(m_basicVert, m_basicFrag), color);
-        const auto sphere = new Sphere(Shader(m_basicVert, m_basicFrag), color);
-        const auto cone = new Cone(Shader(m_basicVert, m_basicFrag), color);
+        const auto sphereTop = new Sphere(ShaderComponent(m_basicVert, m_basicFrag), color);
+        const auto sphere = new Sphere(ShaderComponent(m_basicVert, m_basicFrag), color);
+        const auto cone = new Cone(ShaderComponent(m_basicVert, m_basicFrag), color);
         
-        const auto cylinderTop = new Cylinder(Shader(m_basicVert, m_basicFrag), color);
-        const auto cylinderMid = new Cylinder(Shader(m_basicVert, m_basicFrag), color);
-        const auto cylinderBase = new Cylinder(Shader(m_basicVert, m_basicFrag), color);
+        const auto cylinderTop = new Cylinder(ShaderComponent(m_basicVert, m_basicFrag), color);
+        const auto cylinderMid = new Cylinder(ShaderComponent(m_basicVert, m_basicFrag), color);
+        const auto cylinderBase = new Cylinder(ShaderComponent(m_basicVert, m_basicFrag), color);
 
         
         cone->Transform.SetPositionY(2.5f).SetRotationX(-90.0f).SetScale(glm::vec3(0.9f)).SetParent(&parent);
@@ -205,17 +203,17 @@ public:
         return pieces;
     }
 
-    static std::vector<Drawable*> GenerateQueen(const glm::vec3& color, const Texture& texture, TransformComponent& parent)
+    static std::vector<Drawable*> GenerateQueen(const glm::vec3& color, TransformComponent& parent, const TextureComponent& texture)
     {
         std::vector<Drawable*> pieces;
 
-        const auto sphereTop = new Sphere(Shader(m_basicVertTex, m_basicFragTex), color, texture);
-        const auto sphere = new Sphere(Shader(m_basicVertTex, m_basicFragTex), color, texture);
-        const auto cone = new Cone(Shader(m_basicVertTex, m_basicFragTex), color, texture);
+        const auto sphereTop = new Sphere(ShaderComponent(m_basicVertTex, m_basicFragTex), color, texture);
+        const auto sphere = new Sphere(ShaderComponent(m_basicVertTex, m_basicFragTex), color, texture);
+        const auto cone = new Cone(ShaderComponent(m_basicVertTex, m_basicFragTex), color, texture);
         
-        const auto cylinderTop = new Cylinder(Shader(m_basicVertTex, m_basicFragTex), color, texture);
-        const auto cylinderMid = new Cylinder(Shader(m_basicVertTex, m_basicFragTex), color, texture);
-        const auto cylinderBase = new Cylinder(Shader(m_basicVertTex, m_basicFragTex), color, texture);
+        const auto cylinderTop = new Cylinder(ShaderComponent(m_basicVertTex, m_basicFragTex), color, texture);
+        const auto cylinderMid = new Cylinder(ShaderComponent(m_basicVertTex, m_basicFragTex), color, texture);
+        const auto cylinderBase = new Cylinder(ShaderComponent(m_basicVertTex, m_basicFragTex), color, texture);
 
         
         cone->Transform.SetPositionY(2.5f).SetRotationX(-90.0f).SetScale(glm::vec3(0.9f)).SetParent(&parent);
@@ -240,15 +238,15 @@ public:
     {
         std::vector<Drawable*> pieces;
 
-        const auto coneT = new Cone(Shader(m_basicVert, m_basicFrag), color);
-        const auto sphere1 = new Sphere(Shader(m_basicVert, m_basicFrag), color);
-        const auto sphere2 = new Sphere(Shader(m_basicVert, m_basicFrag), color);
+        const auto coneT = new Cone(ShaderComponent(m_basicVert, m_basicFrag), color);
+        const auto sphere1 = new Sphere(ShaderComponent(m_basicVert, m_basicFrag), color);
+        const auto sphere2 = new Sphere(ShaderComponent(m_basicVert, m_basicFrag), color);
         
-        const auto coneB = new Cone(Shader(m_basicVert, m_basicFrag), color);
+        const auto coneB = new Cone(ShaderComponent(m_basicVert, m_basicFrag), color);
         
-        const auto cylinderTop = new Cylinder(Shader(m_basicVert, m_basicFrag), color);
-        const auto cylinderMid = new Cylinder(Shader(m_basicVert, m_basicFrag), color);
-        const auto cylinderBase = new Cylinder(Shader(m_basicVert, m_basicFrag), color);
+        const auto cylinderTop = new Cylinder(ShaderComponent(m_basicVert, m_basicFrag), color);
+        const auto cylinderMid = new Cylinder(ShaderComponent(m_basicVert, m_basicFrag), color);
+        const auto cylinderBase = new Cylinder(ShaderComponent(m_basicVert, m_basicFrag), color);
 
         coneT->Transform.SetPositionY(1.7f).SetRotationX(270.0f).SetParent(&parent);
         sphere1->Transform.SetPositionY(2.9f).SetScale(glm::vec3(0.2f)).SetParent(&parent);
@@ -273,19 +271,19 @@ public:
         return pieces;
     }
 
-    static std::vector<Drawable*> GenerateBishop(const glm::vec3& color, const Texture& texture, TransformComponent& parent)
+    static std::vector<Drawable*> GenerateBishop(const glm::vec3& color, TransformComponent& parent, const TextureComponent& texture)
     {
         std::vector<Drawable*> pieces;
 
-        const auto coneT = new Cone(Shader(m_basicVertTex, m_basicFragTex), color, texture);
-        const auto sphere1 = new Sphere(Shader(m_basicVertTex, m_basicFragTex), color, texture);
-        const auto sphere2 = new Sphere(Shader(m_basicVertTex, m_basicFragTex), color, texture);
+        const auto coneT = new Cone(ShaderComponent(m_basicVertTex, m_basicFragTex), color, texture);
+        const auto sphere1 = new Sphere(ShaderComponent(m_basicVertTex, m_basicFragTex), color, texture);
+        const auto sphere2 = new Sphere(ShaderComponent(m_basicVertTex, m_basicFragTex), color, texture);
         
-        const auto coneB = new Cone(Shader(m_basicVertTex, m_basicFragTex), color, texture);
+        const auto coneB = new Cone(ShaderComponent(m_basicVertTex, m_basicFragTex), color, texture);
         
-        const auto cylinderTop = new Cylinder(Shader(m_basicVertTex, m_basicFragTex), color, texture);
-        const auto cylinderMid = new Cylinder(Shader(m_basicVertTex, m_basicFragTex), color, texture);
-        const auto cylinderBase = new Cylinder(Shader(m_basicVertTex, m_basicFragTex), color, texture);
+        const auto cylinderTop = new Cylinder(ShaderComponent(m_basicVertTex, m_basicFragTex), color, texture);
+        const auto cylinderMid = new Cylinder(ShaderComponent(m_basicVertTex, m_basicFragTex), color, texture);
+        const auto cylinderBase = new Cylinder(ShaderComponent(m_basicVertTex, m_basicFragTex), color, texture);
 
         coneT->Transform.SetPositionY(1.7f).SetRotationX(270.0f).SetParent(&parent);
         sphere1->Transform.SetPositionY(2.9f).SetScale(glm::vec3(0.2f)).SetParent(&parent);
@@ -314,16 +312,16 @@ public:
     {
         std::vector<Drawable*> pieces;
 
-        const auto sphereL = new Sphere(Shader(m_basicVert, m_basicFrag), color);
-        const auto sphereR = new Sphere(Shader(m_basicVert, m_basicFrag), color);
+        const auto sphereL = new Sphere(ShaderComponent(m_basicVert, m_basicFrag), color);
+        const auto sphereR = new Sphere(ShaderComponent(m_basicVert, m_basicFrag), color);
 
-        const auto cubeDown = new Cube(Shader(m_basicVert, m_basicFrag), color);
-        const auto cubeTop = new Cube(Shader(m_basicVert, m_basicFrag), color);
+        const auto cubeDown = new Cube(ShaderComponent(m_basicVert, m_basicFrag), color);
+        const auto cubeTop = new Cube(ShaderComponent(m_basicVert, m_basicFrag), color);
         
         
-        const auto coneBase = new Cone(Shader(m_basicVert, m_basicFrag), color);
-        const auto sphereBase = new Sphere(Shader(m_basicVert, m_basicFrag), color);
-        const auto cylinderBase = new Cylinder(Shader(m_basicVert, m_basicFrag), color);
+        const auto coneBase = new Cone(ShaderComponent(m_basicVert, m_basicFrag), color);
+        const auto sphereBase = new Sphere(ShaderComponent(m_basicVert, m_basicFrag), color);
+        const auto cylinderBase = new Cylinder(ShaderComponent(m_basicVert, m_basicFrag), color);
         
 
         sphereL->Transform.SetPosition(glm::vec3(0.3f, 2.7f, 0.4f)).SetScale(glm::vec3(0.2f)).SetParent(&parent);
@@ -347,20 +345,20 @@ public:
         return pieces;
     }
 
-    static std::vector<Drawable*> GenerateKnight(const glm::vec3& color, const Texture& texture, TransformComponent& parent)
+    static std::vector<Drawable*> GenerateKnight(const glm::vec3& color, TransformComponent& parent, const TextureComponent& texture)
     {
         std::vector<Drawable*> pieces;
 
-        const auto sphereL = new Sphere(Shader(m_basicVertTex, m_basicFragTex), color, texture);
-        const auto sphereR = new Sphere(Shader(m_basicVertTex, m_basicFragTex), color, texture);
+        const auto sphereL = new Sphere(ShaderComponent(m_basicVertTex, m_basicFragTex), color, texture);
+        const auto sphereR = new Sphere(ShaderComponent(m_basicVertTex, m_basicFragTex), color, texture);
 
-        const auto cubeDown = new Cube(Shader(m_basicVertTex, m_basicFragTex), color, texture);
-        const auto cubeTop = new Cube(Shader(m_basicVertTex, m_basicFragTex), color, texture);
+        const auto cubeDown = new Cube(ShaderComponent(m_basicVertTex, m_basicFragTex), color, texture);
+        const auto cubeTop = new Cube(ShaderComponent(m_basicVertTex, m_basicFragTex), color, texture);
         
         
-        const auto coneBase = new Cone(Shader(m_basicVertTex, m_basicFragTex), color, texture);
-        const auto sphereBase = new Sphere(Shader(m_basicVertTex, m_basicFragTex), color, texture);
-        const auto cylinderBase = new Cylinder(Shader(m_basicVertTex, m_basicFragTex), color, texture);
+        const auto coneBase = new Cone(ShaderComponent(m_basicVertTex, m_basicFragTex), color, texture);
+        const auto sphereBase = new Sphere(ShaderComponent(m_basicVertTex, m_basicFragTex), color, texture);
+        const auto cylinderBase = new Cylinder(ShaderComponent(m_basicVertTex, m_basicFragTex), color, texture);
         
 
         sphereL->Transform.SetPosition(glm::vec3(0.3f, 2.7f, 0.4f)).SetScale(glm::vec3(0.2f)).SetParent(&parent);

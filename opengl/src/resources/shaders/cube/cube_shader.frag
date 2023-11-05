@@ -1,5 +1,7 @@
 R"glsl(
 #version 330 core
+// FRAGMENT SHADER
+
 in vec3 FragColor; // Receive the color from the vertex shader
 
 out vec4 FragOutput;

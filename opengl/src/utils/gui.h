@@ -23,8 +23,11 @@ static void ShowTitle(float normalizedLeftOffset, const char* title) {
 
 
 static void ShowDemoGUI(const char* title, const std::function<void()>& windowContent) {
-    ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x - 640, 40));
+    
+    ImVec2 centerPos(ImGui::GetIO().DisplaySize.x * 0.5f - 300, 40); // Change 300 and 200 to half of your desired window size.
     ImGui::SetNextWindowSize(ImVec2(600, 0));
+    ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x - 640, 40));
+    //ImGui::SetNextWindowPos(ImVec2(centerPos));
     
     ImGui::Begin(title, nullptr);
     windowContent();

@@ -462,7 +462,7 @@ void TaskTwo::render_ui()
             
             if (m_cameraUnlocked)
             {
-                m_camera.Transform.ShowControlsExcludeScale();
+                m_camera.Transform.GuiShowControlsExcludeScale();
 
                 ImGui::SliderFloat("FOV##Cam", &m_camera.Settings.Fov, 5.0f, 140.0f);
                 ImGui::SliderFloat("Speed##Cam", &m_camera.Settings.Speed, 2.0f, 10.0f);

@@ -62,13 +62,13 @@ inline void Cone::Construct()
             // tex
             glm::vec2 tex(static_cast<float>(j) / static_cast<float>(sectors), t);
             
-            m_vertices.push_back({pos, normal, tex});
+            Vertices.push_back({pos, normal, tex});
         }
     }
 
     // the starting index for the base/top surface
     //NOTE: it is used for generating indices later
-    int baseCenterIndex = static_cast<int>(m_vertices.size()) - (sectors + 1) * 2;
+    int baseCenterIndex = static_cast<int>(Vertices.size()) - (sectors + 1) * 2;
     int topCenterIndex = baseCenterIndex + sectors + 1; // include center vertex
 
     // put base and top vertices to arrays
@@ -82,7 +82,7 @@ inline void Cone::Construct()
         glm::vec3 centerNorm = {0, 0, nz};
         glm::vec2 centerTex = {0.5f, 0.5f};
         
-        m_vertices.push_back({centerPos, centerNorm, centerTex});
+        Vertices.push_back({centerPos, centerNorm, centerTex});
 
         for (int j = 0, k = 0; j < sectors; ++j, k += 3)
         {
@@ -97,7 +97,7 @@ inline void Cone::Construct()
             // Texture
             glm::vec2 tex(-ux * 0.5f + 0.5f, -uy * 0.5f + 0.5f);
             
-            m_vertices.push_back({ position, normal, tex });
+            Vertices.push_back({ position, normal, tex });
         }
     }
 
@@ -111,14 +111,14 @@ inline void Cone::Construct()
     {
         // 2 triangles per sector
         // k1 => k1+1 => k2
-        m_indices.push_back(k1);
-        m_indices.push_back(k1 + 1);
-        m_indices.push_back(k2);
+        Indices.push_back(k1);
+        Indices.push_back(k1 + 1);
+        Indices.push_back(k2);
 
         // k2 => k1+1 => k2+1
-        m_indices.push_back(k2);
-        m_indices.push_back(k1 + 1);
-        m_indices.push_back(k2 + 1);
+        Indices.push_back(k2);
+        Indices.push_back(k1 + 1);
+        Indices.push_back(k2 + 1);
     }
 
     // indices for the base
@@ -126,16 +126,16 @@ inline void Cone::Construct()
     {
         if (i < sectors - 1)
         {
-            m_indices.push_back(baseCenterIndex);
-            m_indices.push_back(k + 1);
-            m_indices.push_back(k);
+            Indices.push_back(baseCenterIndex);
+            Indices.push_back(k + 1);
+            Indices.push_back(k);
         }
         else
         {
             // last triangle
-            m_indices.push_back(baseCenterIndex);
-            m_indices.push_back(baseCenterIndex + 1);
-            m_indices.push_back(k);
+            Indices.push_back(baseCenterIndex);
+            Indices.push_back(baseCenterIndex + 1);
+            Indices.push_back(k);
         }
     }
 
@@ -144,16 +144,16 @@ inline void Cone::Construct()
     {
         if (i < sectors - 1)
         {
-            m_indices.push_back(topCenterIndex);
-            m_indices.push_back(k);
-            m_indices.push_back(k + 1);
+            Indices.push_back(topCenterIndex);
+            Indices.push_back(k);
+            Indices.push_back(k + 1);
         }
         else
         {
             // last triangle
-            m_indices.push_back(topCenterIndex);
-            m_indices.push_back(k);
-            m_indices.push_back(topCenterIndex + 1);
+            Indices.push_back(topCenterIndex);
+            Indices.push_back(k);
+            Indices.push_back(topCenterIndex + 1);
         }
     }
 

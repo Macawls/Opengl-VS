@@ -26,7 +26,7 @@ Terrain::Terrain(const char* heightmapPath, const ShaderComponent& shader, const
     float yScale = options.MaxHeight / 256.0f;
     float yShift = 16.0f;
 
-    m_vertices.clear();
+    Vertices.clear();
 
     for (unsigned int i = 0; i < m_height; i++)
     {
@@ -58,7 +58,7 @@ Terrain::Terrain(const char* heightmapPath, const ShaderComponent& shader, const
             auto tex = glm::vec2(u, v);
 
             // Create a Vertex struct and add it to the vector
-            m_vertices.push_back( { position,normalize(normal), tex });
+            Vertices.push_back( { position,normalize(normal), tex });
         }
     }
 
@@ -77,14 +77,14 @@ Terrain::Terrain(const char* heightmapPath, const ShaderComponent& shader, const
         }
     }
 
-    glGenVertexArrays(1, &m_vao);
-    glBindVertexArray(m_vao);
+    glGenVertexArrays(1, &Vao);
+    glBindVertexArray(Vao);
 
-    glGenBuffers(1, &m_vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+    glGenBuffers(1, &Vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, Vbo);
     glBufferData(GL_ARRAY_BUFFER,
-        m_vertices.size() * sizeof(Vertex),
-        &m_vertices[0],
+        Vertices.size() * sizeof(Vertex),
+        &Vertices[0],
         GL_STATIC_DRAW);
 
     // position attribute
@@ -99,8 +99,8 @@ Terrain::Terrain(const char* heightmapPath, const ShaderComponent& shader, const
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
     glEnableVertexAttribArray(2);
 
-    glGenBuffers(1, &m_ebo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
+    glGenBuffers(1, &Ebo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Ebo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER,
         indices.size() * sizeof(unsigned int),
         &indices[0],
@@ -122,7 +122,7 @@ void Terrain::Draw(PerspectiveCamera& camera)
     Shader.SetInt("texture1", 0);
     
     // draw mesh
-    glBindVertexArray(m_vao);
+    glBindVertexArray(Vao);
 
     // render the mesh triangle strip by triangle strip - each row at a time
     for (unsigned int strip = 0; strip < NUM_STRIPS; ++strip)

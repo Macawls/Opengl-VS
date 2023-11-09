@@ -27,7 +27,7 @@ void SceneHierarchy::show_transform_and_children(TransformComponent* transform, 
 
     if (nodeOpen)
     {
-        transform->ShowControls();
+        transform->GuiShowControls();
         // recursively show children transforms
         for (TransformComponent* child : transform->Children)
         {

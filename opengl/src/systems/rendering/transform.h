@@ -58,6 +58,9 @@ public:
 	// Copies values from another TransformComponent
 	void Copy(const TransformComponent& transform);
 
+	// Rotate around
+	void RotateAround(const glm::vec3& targetPosition, const glm::vec3& axis, float angleInDegrees, float deltaTime);
+
 	// Resets all values to default
 	TransformComponent& Reset();
 
@@ -75,11 +78,11 @@ public:
 	}
 
 	// Show ImGui controls for this TransformComponent
-	void ShowControls(const glm::vec3& resetPos = glm::vec3(0.0f),
+	void GuiShowControls(const glm::vec3& resetPos = glm::vec3(0.0f),
 		const glm::vec3& resetRot = glm::vec3(0.0f),
 		const glm::vec3& resetScale = glm::vec3(1.0f));
 
-	void ShowControlsExcludeScale(const glm::vec3& resetPos = glm::vec3(0.0f),
+	void GuiShowControlsExcludeScale(const glm::vec3& resetPos = glm::vec3(0.0f),
 		const glm::vec3& resetRot = glm::vec3(0.0f),
 		const glm::vec3& resetScale = glm::vec3(1.0f));
 

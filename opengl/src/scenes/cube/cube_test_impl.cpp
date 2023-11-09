@@ -83,7 +83,7 @@ void CubeTestScene::OnGui()
     {
         if (ImGui::BeginTabItem("Cube"))
         {
-            m_cubeTransform.ShowControls(StartingTransform.Position, StartingTransform.Rotation);
+            m_cubeTransform.GuiShowControls(StartingTransform.Position, StartingTransform.Rotation);
             ImGui::EndTabItem();
         }
 

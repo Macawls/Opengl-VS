@@ -52,7 +52,7 @@ inline void Sphere::Construct()
                 glm::vec2(U, V) // tex
             };
 
-            m_vertices.push_back(vertex);
+            Vertices.push_back(vertex);
         }
     }
 
@@ -60,13 +60,13 @@ inline void Sphere::Construct()
     for (int i = 0; i < sectors * stacks + sectors; ++i)
     {
 
-        m_indices.push_back(i);
-        m_indices.push_back(i + sectors + 1);
-        m_indices.push_back(i + sectors);
+        Indices.push_back(i);
+        Indices.push_back(i + sectors + 1);
+        Indices.push_back(i + sectors);
 
-        m_indices.push_back(i + sectors + 1);
-        m_indices.push_back(i);
-        m_indices.push_back(i + 1);
+        Indices.push_back(i + sectors + 1);
+        Indices.push_back(i);
+        Indices.push_back(i + 1);
     }
 
     Init();

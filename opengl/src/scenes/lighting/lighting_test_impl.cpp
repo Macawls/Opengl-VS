@@ -17,16 +17,24 @@
 LightingTestScene::LightingTestScene(WindowContext& context, PerspectiveCamera& camera, RenderSettings& settings)
     : SceneBase(context, camera, settings)
 {
-    cube = new Cube(ShaderComponent(vert, frag), glm::vec3(1.0f, 1.0f, 1.0f), TextureComponent(texPath));
-    pawn = new Pawn(ShaderComponent(vert, frag), glm::vec3(1.0f), TextureComponent(texPath));
+    subject = new Sphere(ShaderComponent(svertSrc, sfragSrc),
+        glm::vec3(1.0f),
+        TextureComponent(texPath));
 
-    SceneHierarchy.AddDrawable(pawn).AddDrawable(cube);
+    light = new Sphere(ShaderComponent(cvertSrc, cfragSrc),
+        glm::vec3(1.0f));
+
+    SceneHierarchy.AddDrawable(subject).AddDrawable(light);
 }
 
 void LightingTestScene::OnSetup()
 {
-    cube->Transform.SetRotation(glm::vec3(25.0f, 45.0f, 0.0f));
-    pawn->Transform.SetPositionX(-2.0f);
+    light->Transform.SetPositionX(1.5f);
+    light->Transform.SetScale(glm::vec3(0.3f));
+    subject->Transform.GuiDisplay = "subject";
+    light->Transform.GuiDisplay = "light";
+    
+    //sphere->Transform.SetRotation(glm::vec3(25.0f, 45.0f, 0.0f));
     m_camera.Reset();
     m_camera.Transform.SetPosition(CAMERA_STARTING_POSITION);
 }
@@ -35,13 +43,48 @@ void LightingTestScene::OnUpdate(float deltaTime)
 {
     glClearColor(ScreenClearColor.r, ScreenClearColor.g, ScreenClearColor.b, ScreenClearColor.a);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    SceneHierarchy.DrawAll(m_camera);
+
+   
+
+    // Rendering
+    subject->Shader.Use()
+    .SetMat4("model", subject->Transform.GetModelMatrix())
+    .SetMat4("view", m_camera.GetViewMatrix())
+    .SetMat4("projection", m_camera.GetProjectionMatrix())
+    .SetVec3("viewPos", m_camera.Transform.Position)
+    .SetVec3("color", subject->Color)
+    .SetVec3("lightPosition", light->Transform.Position)
+    .SetVec3("lightColor", LightColor);
+    
+    
+    subject->Texture.Bind(0);
+    subject->Shader.SetInt("texture1", 0);
+    
+    // Draw 
+    glBindVertexArray(subject->Vao);
+    glDrawElements(GL_TRIANGLES, subject->Indices.size(), GL_UNSIGNED_INT, 0);
+
+    // Unbind
+    glBindVertexArray(0);
+    subject->Texture.Unbind();
+
+    light->Draw(m_camera);
+
+    constexpr auto up = glm::vec3(0.0f, 1.0f, 0.0f);
+    light->Transform.RotateAround(subject->Transform.Position, up, 30, deltaTime);
 }
 
 void LightingTestScene::OnGui()
 {
     if (ImGui::BeginTabBar("Control Tabs"))
     {
+        if (ImGui::BeginTabItem("Lighting"))
+        {
+            ImGui::ColorPicker4("lightColor", value_ptr(LightColor));
+            ImGui::EndTabItem();
+        }
+
+        
         if (ImGui::BeginTabItem("Cube"))
         {
             SceneHierarchy.ShowDrawablesTree();

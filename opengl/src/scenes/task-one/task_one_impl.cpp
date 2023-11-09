@@ -291,7 +291,7 @@ void TaskOne::render_ui()
                     ShaderComponent(m_terrainVertSource, m_terrainFragSource), userOptions); 
             }
 
-            m_terrain->Transform.ShowControls();
+            m_terrain->Transform.GuiShowControls();
 
             ImGui::EndTabItem();
         }
@@ -316,7 +316,7 @@ void TaskOne::render_ui()
 
             if (m_cameraUnlocked)
             {
-                m_camera.Transform.ShowControlsExcludeScale();
+                m_camera.Transform.GuiShowControlsExcludeScale();
 
                 ImGui::SliderFloat("FOV##Cam", &m_camera.Settings.Fov, 5.0f, 140.0f);
                 ImGui::SliderFloat("Speed##Cam", &m_camera.Settings.Speed, 2.0f, 10.0f);

@@ -11,15 +11,25 @@ public:
     void OnUpdate(float deltaTime) override;
     void OnGui() override;
 private:
+    glm::vec3 LightColor = glm::vec3(1.0f);
 
-    const char *vert =
-#include "../../resources/shaders/basicTex.vert"
+    const char *svertSrc =
+#include "../../resources/shaders/basicTexLight.vert"
 ;
-    const char *frag =
-#include "../../resources/shaders/basicTex.frag"
+    const char *sfragSrc =
+#include "../../resources/shaders/basicTexLight.frag"
 ;
-    const char* texPath = "src/resources/textures/metal.png";
+
+    const char *cvertSrc =
+#include "../../resources/shaders/basic.vert"
+;
     
-    Cube* cube;
-    Pawn* pawn;
+    const char *cfragSrc =
+#include "../../resources/shaders/basic.frag"
+;
+    
+    const char* texPath = "src/resources/textures/cobble.png";
+    
+    Sphere* subject;
+    Drawable* light;
 };

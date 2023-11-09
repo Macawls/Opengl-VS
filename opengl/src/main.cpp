@@ -36,9 +36,9 @@ int main()
     SceneSelection demos = SceneSelection()
     .AddScene("Lighting Test", new LightingTestScene(context, camera, settings))
     //.AddScene("Task Three",     new TaskThree(context, camera, settings))
-    .AddScene("Task Two",       new TaskTwo(context, camera, settings))
+    //.AddScene("Task Two",       new TaskTwo(context, camera, settings))
     .AddScene("Chess Pieces",   new ChessPiecesScene(context, camera, settings))
-    //.AddScene("Task One",       new TaskOne(context, camera, settings))
+    .AddScene("Task One",       new TaskOne(context, camera, settings))
     .AddScene("Cube Test",      new CubeTestScene(context, camera, settings))
     .Init();
 

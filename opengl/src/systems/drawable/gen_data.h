@@ -12,8 +12,8 @@ static constexpr float PI = glm::pi<float>();
 struct SphereGenData
 {
     float Radius = 0.5f;
-    int Sectors = 12;
-    int Stacks = 6;
+    int Sectors = 18;
+    int Stacks = 9;
 };
 static SphereGenData SPHERE_GEN = SphereGenData();
 

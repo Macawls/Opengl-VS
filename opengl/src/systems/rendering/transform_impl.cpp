@@ -115,11 +115,7 @@ TransformComponent& TransformComponent::SetScaleZ(float scale)
 
 //////////////////////////////////
 
-void TransformComponent::Copy(const TransformComponent& transform) {
-    Position = transform.Position;
-    Rotation = transform.Rotation;
-    Scale = transform.Scale;
-}
+
 
 TransformComponent& TransformComponent::SetParent(TransformComponent* parent)
 {
@@ -143,7 +139,33 @@ TransformComponent& TransformComponent::Reset() {
     return *this;
 }
 
-void TransformComponent::ShowControls(const glm::vec3& resetPos, const glm::vec3& resetRot, const glm::vec3& resetScale)
+void TransformComponent::Copy(const TransformComponent& transform) {
+	Position = transform.Position;
+	Rotation = transform.Rotation;
+	Scale = transform.Scale;
+}
+
+void TransformComponent::RotateAround(const glm::vec3& targetPosition, const glm::vec3& axis, float angleInDegrees, float deltaTime)
+{
+	// Convert the angle to radians
+	const float angleInRadians = glm::radians(angleInDegrees);
+
+	// relative position of the object to the target
+	const glm::vec3 relativePosition = Position - targetPosition;
+
+	// new pos after rot
+	const float x = relativePosition.x * cos(angleInRadians * deltaTime) - relativePosition.z * sin(angleInRadians * deltaTime);
+	const float z = relativePosition.x * sin(angleInRadians * deltaTime) + relativePosition.z * cos(angleInRadians * deltaTime);
+
+	// new pos
+	Position.x = x + targetPosition.x;
+	Position.z = z + targetPosition.z;
+
+	// new rot
+	Rotation.y += angleInRadians * deltaTime;
+}
+
+void TransformComponent::GuiShowControls(const glm::vec3& resetPos, const glm::vec3& resetRot, const glm::vec3& resetScale)
 {
 	ShowTitle(0.15f, HEADER);
 	// Position
@@ -216,7 +238,7 @@ void TransformComponent::ShowControls(const glm::vec3& resetPos, const glm::vec3
 	}
 }
 
-void TransformComponent::ShowControlsExcludeScale(const glm::vec3& resetPos, const glm::vec3& resetRot, const glm::vec3& resetScale)
+void TransformComponent::GuiShowControlsExcludeScale(const glm::vec3& resetPos, const glm::vec3& resetRot, const glm::vec3& resetScale)
 {
 	ShowTitle(0.1f, HEADER);
 	// Position

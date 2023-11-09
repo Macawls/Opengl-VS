@@ -65,7 +65,7 @@ static GLuint compileShader(GLenum shaderType, const char* source) {
     if (!success) {
         GLchar infoLog[512];
         glGetShaderInfoLog(shader, sizeof(infoLog), NULL, infoLog);
-        Logger::LogError("Shader compilation error: %s", infoLog);
+        Logger::LogError("\nSource: %s Shader Compilation Error: %s", source, infoLog);
         
         glDeleteShader(shader);
         return 0;

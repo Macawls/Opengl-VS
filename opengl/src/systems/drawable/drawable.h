@@ -10,19 +10,19 @@
 class Drawable {
 public:
     Drawable(const ShaderComponent& shader, const glm::vec3& color)
-        : m_vao(0), m_vbo(0), m_ebo(0), m_textureVbo(0), Color(color), Shader(shader)
+        : Vao(0), Vbo(0), Ebo(0), Color(color), Shader(shader)
     {
         Transform.GuiDisplay = "Drawable";
     }
 
     Drawable(const ShaderComponent& shader)
-        : m_vao(0), m_vbo(0), m_ebo(0), m_textureVbo(0), Shader(shader)
+        : Vao(0), Vbo(0), Ebo(0), Shader(shader)
     {
         Transform.GuiDisplay = "Drawable";
     }
 
     Drawable(const ShaderComponent& shader, const glm::vec3& color, const TextureComponent& texture)
-    : m_vao(0), m_vbo(0), m_ebo(0), m_textureVbo(0), Color(color), Shader(shader), Texture(texture), HasTexture(true)
+    : Vao(0), Vbo(0), Ebo(0), Color(color), Shader(shader), Texture(texture)
     {
         Transform.GuiDisplay = "Drawable";
     }
@@ -35,13 +35,11 @@ public:
     TextureComponent Texture;
     ShaderComponent Shader;
     glm::vec3 Color = glm::vec3(1.0f, 1.0f, 1.0f);
-    bool HasTexture;
 
+    unsigned int Vao, Vbo, Ebo;
+    std::vector<unsigned int> Indices;
+    std::vector<Vertex> Vertices;
 protected:
-    unsigned int m_vao, m_vbo, m_ebo, m_textureVbo;
-    std::vector<unsigned int> m_indices;
-    std::vector<Vertex> m_vertices;
-    
     void Init();
 };
 
@@ -58,8 +56,8 @@ inline void Drawable::Draw(PerspectiveCamera& camera)
     
     
     // Draw 
-    glBindVertexArray(m_vao);
-    glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0);
+    glBindVertexArray(Vao);
+    glDrawElements(GL_TRIANGLES, Indices.size(), GL_UNSIGNED_INT, 0);
 
     // Unbind
     glBindVertexArray(0);
@@ -75,41 +73,36 @@ inline void Drawable::Draw(PerspectiveCamera& camera, const glm::vec3& color)
         .SetMat4("mvp", camera.GetProjectionMatrix() * camera.GetViewMatrix() * Transform.GetModelMatrix())
         .SetVec3("color", color);
     
-
     Texture.Bind(0);
     Shader.SetInt("texture1", 0);
-
-   
     
     // Draw 
-    glBindVertexArray(m_vao);
-    glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0);
+    glBindVertexArray(Vao);
+    glDrawElements(GL_TRIANGLES, Indices.size(), GL_UNSIGNED_INT, 0);
 
     // Unbind
     glBindVertexArray(0);
-
-
     Texture.Unbind();
 }
 
-// not called for terrain
+// not called for terrain/cubemap
 inline void Drawable::Init()
 {
     // Create the VAO, VBO, and EBO
-    glGenVertexArrays(1, &m_vao);
-    glGenBuffers(1, &m_vbo);
-    glGenBuffers(1, &m_ebo);
+    glGenVertexArrays(1, &Vao);
+    glGenBuffers(1, &Vbo);
+    glGenBuffers(1, &Ebo);
 
     // Bind the VAO
-    glBindVertexArray(m_vao);
+    glBindVertexArray(Vao);
 
     // Bind and buffer data into VBO
-    glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-    glBufferData(GL_ARRAY_BUFFER, m_vertices.size() * sizeof(Vertex), &m_vertices[0], GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, Vbo);
+    glBufferData(GL_ARRAY_BUFFER, Vertices.size() * sizeof(Vertex), &Vertices[0], GL_STATIC_DRAW);
 
     // Bind and buffer data into EBO
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices.size() * sizeof(unsigned int), m_indices.data(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, Indices.size() * sizeof(unsigned int), Indices.data(), GL_STATIC_DRAW);
 
     // Set the vertex attribute pointers for position, normal, and texture coordinates
     // Position

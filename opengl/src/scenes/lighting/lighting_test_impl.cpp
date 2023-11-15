@@ -24,6 +24,66 @@ LightingTestScene::LightingTestScene(WindowContext& context, PerspectiveCamera& 
     light = new Sphere(ShaderComponent(cvertSrc, cfragSrc),
         glm::vec3(1.0f));
 
+    m_lightingData.Directional = DirectionalLight{
+        glm::vec3(-0.2f, -1.0f, -0.3f),
+        glm::vec3(0.05f, 0.05f, 0.05f),
+        glm::vec3(0.4f),
+        glm::vec3(0.5f)
+    };
+
+    glm::vec3 pointLightPositions[] = {
+        glm::vec3( 0.7f,  0.2f,  2.0f),
+        glm::vec3( 2.3f, -3.3f, -4.0f),
+        glm::vec3(-4.0f,  2.0f, -12.0f),
+        glm::vec3( 0.0f,  0.0f, -3.0f)
+    };
+    
+    auto Light1 = PointLight{
+        pointLightPositions[0],
+        1.0f,
+        0.09f,
+        0.032f,
+        glm::vec3(0.05f),
+        glm::vec3(0.8f),
+        glm::vec3(1.0f)
+    };
+
+    auto Light2 = PointLight{
+        pointLightPositions[1],
+        1.0f,
+        0.09f,
+        0.032f,
+        glm::vec3(0.05f),
+        glm::vec3(0.8f),
+        glm::vec3(1.0f)
+    };
+
+    auto Light3 = PointLight{
+        pointLightPositions[2],
+        1.0f,
+        0.09f,
+        0.032f,
+        glm::vec3(0.05f),
+        glm::vec3(0.8f),
+        glm::vec3(1.0f)
+    };
+
+    auto Light4 = PointLight{
+        pointLightPositions[3],
+        1.0f,
+        0.09f,
+        0.032f,
+        glm::vec3(0.05f),
+        glm::vec3(0.8f),
+        glm::vec3(1.0f)
+    };
+
+
+    m_lightingData.PointLights.push_back(Light1);
+    m_lightingData.PointLights.push_back(Light2);
+    m_lightingData.PointLights.push_back(Light3);
+    m_lightingData.PointLights.push_back(Light4);
+
     SceneHierarchy.AddDrawable(subject).AddDrawable(light);
 }
 
@@ -51,6 +111,7 @@ void LightingTestScene::OnUpdate(float deltaTime)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Rendering
+    /*
     subject->Shader.Use()
     .SetMat4("model", subject->Transform.GetModelMatrix())
     .SetMat4("view", m_camera.GetViewMatrix())
@@ -59,6 +120,32 @@ void LightingTestScene::OnUpdate(float deltaTime)
     .SetVec3("color", subject->Color)
     .SetVec3("lightPosition", light->Transform.Position)
     .SetVec3("lightColor", LightColor);
+    */
+
+    subject->Shader.Use()
+    .SetMat4("model", subject->Transform.GetModelMatrix())
+    .SetMat4("view", m_camera.GetViewMatrix())
+    .SetMat4("projection", m_camera.GetProjectionMatrix())
+    .SetVec3("viewPosition", m_camera.Transform.Position)
+    .SetVec3("color", subject->Color)
+    .SetVec3("directionalLight.direction", m_lightingData.Directional.Direction)
+    .SetVec3("directionalLight.ambient", m_lightingData.Directional.Ambient)
+    .SetVec3("directionalLight.diffuse", m_lightingData.Directional.Diffuse)
+    .SetVec3("directionalLight.specular", m_lightingData.Directional.Specular);
+    
+    auto count = m_lightingData.PointLights.size();
+    for (size_t i = 0; i < count; i++)
+    {
+        std::string index = std::to_string(i);
+        subject->Shader
+        .SetVec3("pointLights[" + index + "].position", m_lightingData.PointLights[i].Position)
+        .SetVec3("pointLights[" + index + "].ambient", m_lightingData.PointLights[i].Ambient)
+        .SetVec3("pointLights[" + index + "].diffuse", m_lightingData.PointLights[i].Diffuse)
+        .SetVec3("pointLights[" + index + "].specular", m_lightingData.PointLights[i].Specular)
+        .SetFloat("pointLights[" + index + "].constant", m_lightingData.PointLights[i].Constant)
+        .SetFloat("pointLights[" + index + "].linear", m_lightingData.PointLights[i].Linear)
+        .SetFloat("pointLights[" + index + "].quadratic", m_lightingData.PointLights[i].Quadratic);
+    }
     
     
     subject->Texture.Bind(0);
@@ -84,7 +171,7 @@ void LightingTestScene::OnGui()
     {
         if (ImGui::BeginTabItem("Lighting"))
         {
-            ImGui::ColorPicker4("lightColor", value_ptr(LightColor));
+            //ImGui::ColorPicker4("lightColor", value_ptr(LightColor));
             ImGui::EndTabItem();
         }
 
@@ -97,7 +184,7 @@ void LightingTestScene::OnGui()
         
         if (ImGui::BeginTabItem("Background"))
         {
-            ImGui::ColorEdit4("Background", glm::value_ptr(ScreenClearColor));
+            ImGui::ColorEdit4("Background", value_ptr(ScreenClearColor));
             ImGui::EndTabItem();
 
             if (ImGui::Button("Reset"))

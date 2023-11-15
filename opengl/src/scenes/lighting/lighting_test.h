@@ -12,13 +12,12 @@ public:
     void OnGui() override;
     void OnExit() override;
 private:
-    glm::vec3 LightColor = glm::vec3(1.0f);
 
     const char *svertSrc =
-#include "../../resources/shaders/basicTexLight.vert"
+#include "../../resources/shaders/basicTexLight-MultipleLights.vert"
 ;
     const char *sfragSrc =
-#include "../../resources/shaders/basicTexLight.frag"
+#include "../../resources/shaders/basicTexLight-MultipleLights.frag"
 ;
 
     const char *cvertSrc =

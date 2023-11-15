@@ -46,18 +46,25 @@ int main()
 
     auto appUpdate = [&](const float deltaTime)
     {
-        demos.Current->OnUpdate(deltaTime);
-        camera.HandleKeyInput(deltaTime);
-        camera.OnUpdate(deltaTime);
+        const float coefficient = settings.Config.TimeScale;
+        const float delta = deltaTime * coefficient;
+        
+        demos.Current->OnUpdate(delta);
+        camera.HandleKeyInput(delta);
+        camera.HandleMouseInput(delta);
+        camera.OnUpdate(delta);
 
         menuBar.Show(UI_ENABLED);
 
         if (UI_ENABLED)
         {
-            ShowDemoGUI(demos.CurrentTitle,[&]{ demos.Current->OnGui(); });
+            ShowDemoGUI(demos.CurrentTitle,[&]
+            {
+                demos.Current->OnGui();
+            });
         }
         
-        pTween::pTweenStep(glfwGetTime());
+        pTween::pTweenStep(glfwGetTime() * coefficient);
     };
 
     context.SetDeltaUpdate(appUpdate);

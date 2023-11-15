@@ -21,6 +21,7 @@ public:
 
 	std::string GuiDisplay;
 	std::string Uuid;
+	
 	TransformComponent* Parent = nullptr;
 	std::vector<TransformComponent*> Children;
 	
@@ -35,6 +36,11 @@ public:
 	bool HasParent() const
 	{
 		return Parent;
+	}
+
+	glm::mat4 GetRotationMatrix() const
+	{
+		return glm::eulerAngleXYZ(Rotation.x, Rotation.y, Rotation.z);
 	}
 
 	TransformComponent& SetPositionX(float pos);
@@ -60,6 +66,8 @@ public:
 
 	// Rotate around
 	void RotateAround(const glm::vec3& targetPosition, const glm::vec3& axis, float angleInDegrees, float deltaTime);
+	// Move in Direction and Distance of translation
+	void Translate(const glm::vec3& translation);
 
 	// Resets all values to default
 	TransformComponent& Reset();
@@ -81,8 +89,12 @@ public:
 	void GuiShowControls(const glm::vec3& resetPos = glm::vec3(0.0f),
 		const glm::vec3& resetRot = glm::vec3(0.0f),
 		const glm::vec3& resetScale = glm::vec3(1.0f));
-
+	
 	void GuiShowControlsExcludeScale(const glm::vec3& resetPos = glm::vec3(0.0f),
+	const glm::vec3& resetRot = glm::vec3(0.0f),
+	const glm::vec3& resetScale = glm::vec3(1.0f));
+
+	void GuiShowControlsPosition(const glm::vec3& resetPos = glm::vec3(0.0f),
 		const glm::vec3& resetRot = glm::vec3(0.0f),
 		const glm::vec3& resetScale = glm::vec3(1.0f));
 

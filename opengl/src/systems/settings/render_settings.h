@@ -22,9 +22,10 @@
 class RenderSettings
 {
 public:
+    RenderConfig Config;
     inline static const char* SETTINGS_HEADER = ICON_FK_COGS " Settings";
     inline static const char* INFO_HEADER = ICON_FK_TELEVISION " Information";
-    inline static const char* LOGS_HEADER = ICON_FK_BARS " Logs";
+    inline static const char* LOGS_HEADER = ICON_FK_BUG " Logs";
     inline static const char* CONFIG_HEADER = ICON_FK_WRENCH " Configuration";
     inline static const char* WINDOW_HEADER = "System";
     RenderSettings(const RenderConfig& config, WindowContext& context);
@@ -48,7 +49,7 @@ public:
 
 private:
     ImGuiIO* m_imguiIO;
-    RenderConfig m_config;
+    
     WindowContext* m_context;
 
     void show_settings_tabs();

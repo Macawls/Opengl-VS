@@ -16,6 +16,7 @@ public:
     void OnSetup() override;
     void OnUpdate(float deltaTime) override;
     void OnGui() override;
+    void OnExit() override;
 
 private:
     // Shaders

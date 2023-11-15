@@ -6,6 +6,9 @@
 #include "../systems/window/window_context.h"
 #include "../systems/shader/shader_component.h"
 #include "../systems/settings/render_settings.h"
+// lights
+#include "../systems/rendering/scene_lighting_data.h"
+// entities
 #include "../systems/rendering/transform.h"
 #include "../systems/rendering/perspective_camera.h"
 #include "../resources/fonts/forkawesome-icons.h"
@@ -35,11 +38,19 @@
 #include <functional>
 #include <vector>
 
+struct CameraSnapshot
+{
+    CameraSettings settings;
+    glm::vec3 Position;
+    bool hasBeenSaved;
+};
+
 class SceneBase {
 protected:
     PerspectiveCamera& m_camera;
     GLFWwindow* m_window;
     RenderSettings& m_renderSettings;
+    SceneLightingData m_lightingData;
 public:
     SceneHierarchy SceneHierarchy;
     glm::vec4 ScreenClearColor = glm::vec4(0.18f, 0.18f, 0.18f, 1.0f);
@@ -58,6 +69,30 @@ public:
     virtual void OnSetup() = 0;
     virtual void OnUpdate(float deltaTime) = 0;
     virtual void OnGui() = 0;
-    // TODO: add OnDestroy for managing memory
+    virtual void OnExit() = 0;
+
+    CameraSnapshot CamSnapshot;
+
+    void SaveCamSnapshot()
+    {
+        CamSnapshot = {
+            m_camera.Settings, m_camera.Transform.Position
+        };
+    }
+
+    CameraSnapshot GetCameraSnapshot()
+    {
+        return CamSnapshot = {
+            m_camera.Settings, m_camera.Transform.Position
+        };
+    }
+
+    void LoadCamSnapShot()
+    {
+        if (!CamSnapshot.hasBeenSaved) return;
+        
+        m_camera.Settings = CamSnapshot.settings;
+        m_camera.Transform.Position = CamSnapshot.Position;
+    }
 };
 

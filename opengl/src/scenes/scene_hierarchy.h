@@ -26,7 +26,7 @@ public:
     void DrawAll(PerspectiveCamera& perspectiveCamera) const;
 
     // gui
-    void ShowDrawablesTree();
+    void GuiShowDrawablesTree();
 private:
-    void show_transform_and_children(TransformComponent* transform, int& index);
+    void DisplayTransformTree(TransformComponent* transform, int& index);
 };

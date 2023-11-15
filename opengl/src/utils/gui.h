@@ -13,7 +13,7 @@ static void ShowLogsWindow() {
     ImGui::EndChild();
 }
 
-static void ShowTitle(float normalizedLeftOffset, const char* title) {
+static void GuiShowTitle(float normalizedLeftOffset, const char* title) {
     float headerWidth = ImGui::GetWindowWidth();
     ImGui::Text("");
     ImGui::SameLine((headerWidth - ImGui::CalcTextSize(title).x) * normalizedLeftOffset);

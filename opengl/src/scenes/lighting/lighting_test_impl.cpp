@@ -29,14 +29,20 @@ LightingTestScene::LightingTestScene(WindowContext& context, PerspectiveCamera& 
 
 void LightingTestScene::OnSetup()
 {
+    m_camera.Transform.Position = glm::vec3(0.0f, 0.0f, 3.0f);
+    
     light->Transform.SetPositionX(1.5f);
     light->Transform.SetScale(glm::vec3(0.3f));
     subject->Transform.GuiDisplay = "subject";
     light->Transform.GuiDisplay = "light";
     
     //sphere->Transform.SetRotation(glm::vec3(25.0f, 45.0f, 0.0f));
-    m_camera.Reset();
-    m_camera.Transform.SetPosition(CAMERA_STARTING_POSITION);
+    LoadCamSnapShot();
+}
+
+void LightingTestScene::OnExit()
+{
+    SaveCamSnapshot();
 }
 
 void LightingTestScene::OnUpdate(float deltaTime)
@@ -44,14 +50,12 @@ void LightingTestScene::OnUpdate(float deltaTime)
     glClearColor(ScreenClearColor.r, ScreenClearColor.g, ScreenClearColor.b, ScreenClearColor.a);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-   
-
     // Rendering
     subject->Shader.Use()
     .SetMat4("model", subject->Transform.GetModelMatrix())
     .SetMat4("view", m_camera.GetViewMatrix())
     .SetMat4("projection", m_camera.GetProjectionMatrix())
-    .SetVec3("viewPos", m_camera.Transform.Position)
+    .SetVec3("viewPosition", m_camera.Transform.Position)
     .SetVec3("color", subject->Color)
     .SetVec3("lightPosition", light->Transform.Position)
     .SetVec3("lightColor", LightColor);
@@ -87,7 +91,7 @@ void LightingTestScene::OnGui()
         
         if (ImGui::BeginTabItem("Cube"))
         {
-            SceneHierarchy.ShowDrawablesTree();
+            SceneHierarchy.GuiShowDrawablesTree();
             ImGui::EndTabItem();
         }
         
@@ -102,8 +106,16 @@ void LightingTestScene::OnGui()
             }
         }
 
+        if (ImGui::BeginTabItem("Camera"))
+        {
+            m_camera.GuiShowControls();
+            ImGui::EndTabItem();
+        }
+        
+
         ImGui::EndTabBar();
     }
 }
+
 
 

@@ -69,7 +69,12 @@ private:
 		m_currentDemoIndex = index;
         const auto title = m_demoTitles[m_currentDemoIndex];
         CurrentTitle = const_cast<char*>(title);
-		
+
+        if (Current != nullptr) 
+        {
+            Current->OnExit();
+        }
+
         Current = m_demoMap[title];
         Current->OnSetup();
         Current->Context.SetWindowTitle(title);

@@ -61,8 +61,6 @@ TaskOne::TaskOne(WindowContext& context, PerspectiveCamera& camera, RenderSettin
 
 void TaskOne::OnSetup()
 {
-    m_camera.Reset();
-
     // farther plane to avoid clipping terrain
     m_camera.Settings.ClippingPlane = ClipPlane{ 0.1f, 500.0f };
     m_camera.Settings.Fov = 90.0f;
@@ -80,6 +78,12 @@ void TaskOne::OnSetup()
 
 
     play_cell_anim();
+    LoadCamSnapShot();
+}
+
+void TaskOne::OnExit()
+{
+    SaveCamSnapshot();
 }
 
 void TaskOne::OnUpdate(float deltaTime)
@@ -117,6 +121,7 @@ void TaskOne::OnGui()
 	render_ui();
 	handle_input();
 }
+
 
 std::vector<Cube> TaskOne::generate_chess_board()
 {
@@ -311,39 +316,7 @@ void TaskOne::render_ui()
 
         if (ImGui::BeginTabItem("Camera"))
         {
-            ImGui::Checkbox("Use Unlocked Mode", &m_cameraUnlocked);
-
-
-            if (m_cameraUnlocked)
-            {
-                m_camera.Transform.GuiShowControlsExcludeScale();
-
-                ImGui::SliderFloat("FOV##Cam", &m_camera.Settings.Fov, 5.0f, 140.0f);
-                ImGui::SliderFloat("Speed##Cam", &m_camera.Settings.Speed, 2.0f, 10.0f);
-
-                if (ImGui::Button("Reset##CamTransform"))
-                {
-                    m_camera.Transform
-                        .Reset()
-                        .SetPosition(CAMERA_STARTING_POSITION);
-
-                    m_camera.Settings = CameraSettings();
-                }
-            }
-            else
-            {
-                ImGui::Text("Camera Position [%d]", m_currentCamIndex);
-                if (ImGui::Button("Next")) next_cam_pos();
-                ImGui::SameLine(); 
-                if (ImGui::Button("Previous")) prev_cam_pos();
-
-                if (ImGui::Button("Reset"))
-                {
-                    m_currentCamIndex = 0;
-                }
-
-            }
-
+            m_camera.GuiShowControls();
             ImGui::EndTabItem();
         }
 

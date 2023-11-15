@@ -43,6 +43,7 @@ struct NormalizedMousePosition
 // A Wrapper for GLFWwindow, also manages ImGui and OpenGL context
 class WindowContext
 {
+    
 public:
     WindowContext(WindowParameters params);
     ~WindowContext();
@@ -52,7 +53,10 @@ public:
     WindowStatus WindowStatus;
     
     // Sets the update function, called every frame
-    void SetDeltaUpdate(const std::function<void(float deltaTime)>& func) { this->m_update = func; }
+    void SetDeltaUpdate(const std::function<void(float deltaTime)>& func)
+    {
+        this->m_update = func;
+    }
     
     // Closes the window
     void Close();

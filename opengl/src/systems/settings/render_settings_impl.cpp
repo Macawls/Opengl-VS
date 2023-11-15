@@ -70,7 +70,7 @@ RenderSettings::RenderSettings(const RenderConfig &config, WindowContext& contex
 {
     m_context = &context;
     m_imguiIO = &ImGui::GetIO();
-    this->m_config = config;
+    this->Config = config;
     Apply();
 }
 
@@ -78,80 +78,80 @@ RenderSettings::RenderSettings(WindowContext& context)
 {
     m_context = &context;
     m_imguiIO = &ImGui::GetIO();
-    this->m_config = RenderConfig();
+    this->Config = RenderConfig();
     Apply();
 }
 
 RenderSettings &RenderSettings::PolygonMode(PolygonModeConfig config)
 {
-    m_config.polygonMode = config;
+    Config.PolygonMode = config;
     return *this;
 }
 
 RenderSettings &RenderSettings::PolygonSmoothing(PolygonSmoothingConfig config)
 {
-    m_config.polygonSmoothing = config;
+    Config.PolygonSmoothing = config;
     return *this;
 }
 
 RenderSettings &RenderSettings::Depth(DepthConfig config)
 {
-    m_config.depth = config;
+    Config.Depth = config;
     return *this;
 }
 
 RenderSettings &RenderSettings::Blending(BlendingConfig config)
 {
-    m_config.blending = config;
+    Config.Blending = config;
     return *this;
 }
 
 RenderSettings &RenderSettings::Culling(CullingConfig config)
 {
-    m_config.culling = config;
+    Config.Culling = config;
     return *this;
 }
 
 RenderSettings &RenderSettings::Apply()
 {
-    GLCall(glPolygonMode(m_config.polygonMode.face, m_config.polygonMode.mode));
+    GLCall(glPolygonMode(Config.PolygonMode.Face, Config.PolygonMode.Mode));
 
-    if (m_config.culling.enabled)
+    if (Config.Culling.Enabled)
     {
         GLCall(glEnable(GL_CULL_FACE));
-        GLCall(glCullFace(m_config.culling.face));
-        GLCall(glFrontFace(m_config.culling.windingOrder));
+        GLCall(glCullFace(Config.Culling.Face));
+        GLCall(glFrontFace(Config.Culling.WindingOrder));
     }
     else
     {
         GLCall(glDisable(GL_CULL_FACE));
     }
 
-    if (m_config.polygonSmoothing.enabled)
+    if (Config.PolygonSmoothing.Enabled)
     {
         GLCall(glEnable(GL_POLYGON_SMOOTH));
-        GLCall(glHint(GL_POLYGON_SMOOTH_HINT, m_config.polygonSmoothing.hint));
+        GLCall(glHint(GL_POLYGON_SMOOTH_HINT, Config.PolygonSmoothing.Hint));
     }
     else
     {
         GLCall(glDisable(GL_POLYGON_SMOOTH));
     }
 
-    if (m_config.depth.enabled)
+    if (Config.Depth.Enabled)
     {
         GLCall(glEnable(GL_DEPTH_TEST));
-        GLCall(glDepthFunc(m_config.depth.function));
+        GLCall(glDepthFunc(Config.Depth.Function));
     }
     else
     {
         GLCall(glDisable(GL_DEPTH_TEST));
     }
 
-    if (m_config.blending.enabled)
+    if (Config.Blending.Enabled)
     {
         GLCall(glEnable(GL_BLEND));
-        GLCall(glBlendFunc(m_config.blending.sourceFactor, m_config.blending.destinationFactor));
-        GLCall(glBlendEquation(m_config.blending.equation));
+        GLCall(glBlendFunc(Config.Blending.SourceFactor, Config.Blending.DestinationFactor));
+        GLCall(glBlendEquation(Config.Blending.Equation));
     }
     else
     {
@@ -164,67 +164,67 @@ RenderSettings &RenderSettings::Apply()
 void RenderSettings::show_polygon_mode_controls()
 {
     ImGui::Text("Mode");
-    if (ImGui::RadioButton("Fill##PolygonFill", m_config.polygonMode.mode == GL_FILL))
+    if (ImGui::RadioButton("Fill##PolygonFill", Config.PolygonMode.Mode == GL_FILL))
     {
-        m_config.polygonMode.mode = GL_FILL;
+        Config.PolygonMode.Mode = GL_FILL;
         Apply();
     }
     ImGui::SameLine();
-    if (ImGui::RadioButton("Line##PolygonLine", m_config.polygonMode.mode == GL_LINE))
+    if (ImGui::RadioButton("Line##PolygonLine", Config.PolygonMode.Mode == GL_LINE))
     {
-        m_config.polygonMode.mode = GL_LINE;
+        Config.PolygonMode.Mode = GL_LINE;
         Apply();
     }
     ImGui::SameLine();
-    if (ImGui::RadioButton("Point##PolygonPoint", m_config.polygonMode.mode == GL_POINT))
+    if (ImGui::RadioButton("Point##PolygonPoint", Config.PolygonMode.Mode == GL_POINT))
     {
-        m_config.polygonMode.mode = GL_POINT;
+        Config.PolygonMode.Mode = GL_POINT;
         Apply();
     }
 
     ImGui::Text("Face");
-    if (ImGui::RadioButton("Front##PolygonFront", m_config.polygonMode.face == GL_FRONT))
+    if (ImGui::RadioButton("Front##PolygonFront", Config.PolygonMode.Face == GL_FRONT))
     {
-        m_config.polygonMode.face = GL_FRONT;
+        Config.PolygonMode.Face = GL_FRONT;
         Apply();
     }
     ImGui::SameLine();
-    if (ImGui::RadioButton("Back##PolygonBack", m_config.polygonMode.face == GL_BACK))
+    if (ImGui::RadioButton("Back##PolygonBack", Config.PolygonMode.Face == GL_BACK))
     {
-        m_config.polygonMode.face = GL_BACK;
+        Config.PolygonMode.Face = GL_BACK;
         Apply();
     }
     ImGui::SameLine();
-    if (ImGui::RadioButton("Front and Back##PolygonFrontAndBack", m_config.polygonMode.face == GL_FRONT_AND_BACK))
+    if (ImGui::RadioButton("Front and Back##PolygonFrontAndBack", Config.PolygonMode.Face == GL_FRONT_AND_BACK))
     {
-        m_config.polygonMode.face = GL_FRONT_AND_BACK;
+        Config.PolygonMode.Face = GL_FRONT_AND_BACK;
         Apply();
     }
 
     ImGui::Text("Smoothing");
     
-    if (ImGui::Checkbox("Enabled##PolygonSmoothingEnabled", &m_config.polygonSmoothing.enabled)) {
+    if (ImGui::Checkbox("Enabled##PolygonSmoothingEnabled", &Config.PolygonSmoothing.Enabled)) {
         Apply();
     }
     
   
-    if (m_config.polygonSmoothing.enabled)
+    if (Config.PolygonSmoothing.Enabled)
     {
-        if (ImGui::RadioButton("Fastest##PolygonSmoothingFastest", m_config.polygonSmoothing.hint == GL_FASTEST))
+        if (ImGui::RadioButton("Fastest##PolygonSmoothingFastest", Config.PolygonSmoothing.Hint == GL_FASTEST))
         {
-            m_config.polygonSmoothing.hint = GL_FASTEST;
+            Config.PolygonSmoothing.Hint = GL_FASTEST;
             Apply();
         }
         ImGui::SameLine();
-        if (ImGui::RadioButton("Nicest##PolygonSmoothingNicest", m_config.polygonSmoothing.hint == GL_NICEST))
+        if (ImGui::RadioButton("Nicest##PolygonSmoothingNicest", Config.PolygonSmoothing.Hint == GL_NICEST))
         {
-            m_config.polygonSmoothing.hint = GL_NICEST;
+            Config.PolygonSmoothing.Hint = GL_NICEST;
             Apply();
         }
         ImGui::SameLine();
-        if (ImGui::RadioButton("Dont Care##PolygonSmoothingDontCare", m_config.polygonSmoothing.hint == GL_DONT_CARE))
+        if (ImGui::RadioButton("Dont Care##PolygonSmoothingDontCare", Config.PolygonSmoothing.Hint == GL_DONT_CARE))
         {
-            m_config.polygonSmoothing.hint = GL_DONT_CARE;
+            Config.PolygonSmoothing.Hint = GL_DONT_CARE;
             Apply();
         }
     }
@@ -232,57 +232,57 @@ void RenderSettings::show_polygon_mode_controls()
 
 void RenderSettings::show_depth_controls()
 {
-    if (ImGui::Checkbox("Enabled##DepthEnabled", &m_config.depth.enabled)) {
+    if (ImGui::Checkbox("Enabled##DepthEnabled", &Config.Depth.Enabled)) {
 		Apply();
 	}
 
-    if (m_config.depth.enabled)
+    if (Config.Depth.Enabled)
     {
-        if (ImGui::RadioButton("Never##DepthNever", m_config.depth.function == GL_NEVER))
+        if (ImGui::RadioButton("Never##DepthNever", Config.Depth.Function == GL_NEVER))
         {
-            m_config.depth.function = GL_NEVER;
+            Config.Depth.Function = GL_NEVER;
             Apply();
         }
 
-        if (ImGui::RadioButton("Less##DepthLess", m_config.depth.function == GL_LESS))
+        if (ImGui::RadioButton("Less##DepthLess", Config.Depth.Function == GL_LESS))
         {
-            m_config.depth.function = GL_LESS;
+            Config.Depth.Function = GL_LESS;
             Apply();
         }
 
-        if (ImGui::RadioButton("Equal##DepthEqual", m_config.depth.function == GL_EQUAL))
+        if (ImGui::RadioButton("Equal##DepthEqual", Config.Depth.Function == GL_EQUAL))
         {
-            m_config.depth.function = GL_EQUAL;
+            Config.Depth.Function = GL_EQUAL;
             Apply();
         }
 
-        if (ImGui::RadioButton("Less/Equal##DepthLessOrEqual", m_config.depth.function == GL_LEQUAL))
+        if (ImGui::RadioButton("Less/Equal##DepthLessOrEqual", Config.Depth.Function == GL_LEQUAL))
         {
-            m_config.depth.function = GL_LEQUAL;
+            Config.Depth.Function = GL_LEQUAL;
             Apply();
         }
 
-        if (ImGui::RadioButton("Greater##DepthGreater", m_config.depth.function == GL_GREATER))
+        if (ImGui::RadioButton("Greater##DepthGreater", Config.Depth.Function == GL_GREATER))
         {
-            m_config.depth.function = GL_GREATER;
+            Config.Depth.Function = GL_GREATER;
             Apply();
         }
 
-        if (ImGui::RadioButton("Not Equal##DepthNotEqual", m_config.depth.function == GL_NOTEQUAL))
+        if (ImGui::RadioButton("Not Equal##DepthNotEqual", Config.Depth.Function == GL_NOTEQUAL))
         {
-            m_config.depth.function = GL_NOTEQUAL;
+            Config.Depth.Function = GL_NOTEQUAL;
             Apply();
         }
 
-        if (ImGui::RadioButton("Greater or Equal##DepthGreaterOrEqual", m_config.depth.function == GL_GEQUAL))
+        if (ImGui::RadioButton("Greater or Equal##DepthGreaterOrEqual", Config.Depth.Function == GL_GEQUAL))
         {
-            m_config.depth.function = GL_GEQUAL;
+            Config.Depth.Function = GL_GEQUAL;
             Apply();
         }
 
-        if (ImGui::RadioButton("Always##DepthAlways", m_config.depth.function == GL_ALWAYS))
+        if (ImGui::RadioButton("Always##DepthAlways", Config.Depth.Function == GL_ALWAYS))
         {
-            m_config.depth.function = GL_ALWAYS;
+            Config.Depth.Function = GL_ALWAYS;
             Apply();
         }
     }
@@ -290,55 +290,55 @@ void RenderSettings::show_depth_controls()
 
 void RenderSettings::show_blending_controls()
 {
-    if (ImGui::Checkbox("Enabled##BlendingEnabled", &m_config.blending.enabled))
+    if (ImGui::Checkbox("Enabled##BlendingEnabled", &Config.Blending.Enabled))
     {
        Apply();
     }
 
-    if (m_config.blending.enabled)
+    if (Config.Blending.Enabled)
     {
         ImGui::Text("Source Factor");
-        if (ImGui::RadioButton("GL_SRC_ALPHA", m_config.blending.sourceFactor == GL_SRC_ALPHA))
+        if (ImGui::RadioButton("GL_SRC_ALPHA", Config.Blending.SourceFactor == GL_SRC_ALPHA))
         {
-            m_config.blending.sourceFactor = GL_SRC_ALPHA;
+            Config.Blending.SourceFactor = GL_SRC_ALPHA;
             Apply();
         }
         ImGui::SameLine();
-        if (ImGui::RadioButton("GL_ONE_MINUS_SRC_ALPHA##src_factor", m_config.blending.sourceFactor == GL_ONE_MINUS_SRC_ALPHA))
+        if (ImGui::RadioButton("GL_ONE_MINUS_SRC_ALPHA##src_factor", Config.Blending.SourceFactor == GL_ONE_MINUS_SRC_ALPHA))
         {
-            m_config.blending.sourceFactor = GL_ONE_MINUS_SRC_ALPHA;
+            Config.Blending.SourceFactor = GL_ONE_MINUS_SRC_ALPHA;
             Apply();
         }
 
         ImGui::Text("Destination Factor");
-        if (ImGui::RadioButton("GL_ONE", m_config.blending.destinationFactor == GL_ONE))
+        if (ImGui::RadioButton("GL_ONE", Config.Blending.DestinationFactor == GL_ONE))
         {
-            m_config.blending.destinationFactor = GL_ONE;
+            Config.Blending.DestinationFactor = GL_ONE;
             Apply();
         }
         ImGui::SameLine();
-        if (ImGui::RadioButton("GL_ONE_MINUS_SRC_ALPHA##dest_factor", m_config.blending.destinationFactor == GL_ONE_MINUS_SRC_ALPHA))
+        if (ImGui::RadioButton("GL_ONE_MINUS_SRC_ALPHA##dest_factor", Config.Blending.DestinationFactor == GL_ONE_MINUS_SRC_ALPHA))
         {
-            m_config.blending.destinationFactor = GL_ONE_MINUS_SRC_ALPHA;
+            Config.Blending.DestinationFactor = GL_ONE_MINUS_SRC_ALPHA;
             Apply();
         }
 
         ImGui::Text("Blending Equation");
-        if (ImGui::RadioButton("GL_FUNC_ADD", m_config.blending.equation == GL_FUNC_ADD))
+        if (ImGui::RadioButton("GL_FUNC_ADD", Config.Blending.Equation == GL_FUNC_ADD))
         {
-            m_config.blending.equation = GL_FUNC_ADD;
+            Config.Blending.Equation = GL_FUNC_ADD;
             Apply();
         }
 
-        if (ImGui::RadioButton("GL_FUNC_SUBTRACT", m_config.blending.equation == GL_FUNC_SUBTRACT))
+        if (ImGui::RadioButton("GL_FUNC_SUBTRACT", Config.Blending.Equation == GL_FUNC_SUBTRACT))
         {
-            m_config.blending.equation = GL_FUNC_SUBTRACT;
+            Config.Blending.Equation = GL_FUNC_SUBTRACT;
             Apply();
         }
 
-        if (ImGui::RadioButton("GL_FUNC_REVERSE_SUBTRACT", m_config.blending.equation == GL_FUNC_REVERSE_SUBTRACT))
+        if (ImGui::RadioButton("GL_FUNC_REVERSE_SUBTRACT", Config.Blending.Equation == GL_FUNC_REVERSE_SUBTRACT))
         {
-            m_config.blending.equation = GL_FUNC_REVERSE_SUBTRACT;
+            Config.Blending.Equation = GL_FUNC_REVERSE_SUBTRACT;
             Apply();
         }
     }
@@ -346,42 +346,42 @@ void RenderSettings::show_blending_controls()
 
 void RenderSettings::show_culling_controls()
 {
-    if (ImGui::Checkbox("Enabled##CullingEnabled", &m_config.culling.enabled))
+    if (ImGui::Checkbox("Enabled##CullingEnabled", &Config.Culling.Enabled))
     {
         Apply();
     }
 
-    if (m_config.culling.enabled)
+    if (Config.Culling.Enabled)
     {
         ImGui::Text("Culling Face");
-        if (ImGui::RadioButton("GL_FRONT", m_config.culling.face == GL_FRONT))
+        if (ImGui::RadioButton("GL_FRONT", Config.Culling.Face == GL_FRONT))
         {
-            m_config.culling.face = GL_FRONT;
+            Config.Culling.Face = GL_FRONT;
             Apply();
         }
         ImGui::SameLine();
-        if (ImGui::RadioButton("GL_BACK", m_config.culling.face == GL_BACK))
+        if (ImGui::RadioButton("GL_BACK", Config.Culling.Face == GL_BACK))
         {
-            m_config.culling.face = GL_BACK;
+            Config.Culling.Face = GL_BACK;
             Apply();
         }
         ImGui::SameLine();
-        if (ImGui::RadioButton("GL_FRONT_AND_BACK", m_config.culling.face == GL_FRONT_AND_BACK))
+        if (ImGui::RadioButton("GL_FRONT_AND_BACK", Config.Culling.Face == GL_FRONT_AND_BACK))
         {
-            m_config.culling.face = GL_FRONT_AND_BACK;
+            Config.Culling.Face = GL_FRONT_AND_BACK;
             Apply();
         }
 
         ImGui::Text("Winding Order");
-        if (ImGui::RadioButton("GL_CCW", m_config.culling.windingOrder == GL_CCW))
+        if (ImGui::RadioButton("GL_CCW", Config.Culling.WindingOrder == GL_CCW))
         {
-            m_config.culling.windingOrder = GL_CCW;
+            Config.Culling.WindingOrder = GL_CCW;
             Apply();
         }
         ImGui::SameLine();
-        if (ImGui::RadioButton("GL_CW", m_config.culling.windingOrder == GL_CW))
+        if (ImGui::RadioButton("GL_CW", Config.Culling.WindingOrder == GL_CW))
         {
-            m_config.culling.windingOrder = GL_CW;
+            Config.Culling.WindingOrder = GL_CW;
             Apply();
         }
     }
@@ -399,11 +399,11 @@ void RenderSettings::show_settings_tabs()
         {
             show_polygon_mode_controls();
 
-            if (m_config.polygonMode != defaultConfig.polygonMode)
+            if (Config.PolygonMode != defaultConfig.PolygonMode)
             {
                 if (ImGui::Button("Reset"))
                 {
-                    m_config.polygonMode = RenderConfig().polygonMode;
+                    Config.PolygonMode = RenderConfig().PolygonMode;
                     Apply();
                 }
             }
@@ -415,11 +415,11 @@ void RenderSettings::show_settings_tabs()
         {
             show_depth_controls();
 
-            if (m_config.depth != defaultConfig.depth)
+            if (Config.Depth != defaultConfig.Depth)
             {
                 if (ImGui::Button("Reset"))
                 {
-                    m_config.depth = RenderConfig().depth;
+                    Config.Depth = RenderConfig().Depth;
                     Apply();
                 }
             }
@@ -431,11 +431,11 @@ void RenderSettings::show_settings_tabs()
         {
             show_blending_controls();
 
-            if (m_config.blending != defaultConfig.blending)
+            if (Config.Blending != defaultConfig.Blending)
             {
                 if (ImGui::Button("Reset"))
                 {
-                    m_config.blending = RenderConfig().blending;
+                    Config.Blending = RenderConfig().Blending;
                     Apply();
                 }
             }
@@ -447,11 +447,11 @@ void RenderSettings::show_settings_tabs()
         {
             show_culling_controls();
 
-            if (m_config.culling != defaultConfig.culling)
+            if (Config.Culling != defaultConfig.Culling)
             {
                 if (ImGui::Button("Reset"))
                 {
-                    m_config.culling = RenderConfig().culling;
+                    Config.Culling = RenderConfig().Culling;
                     Apply();
                 }
             }

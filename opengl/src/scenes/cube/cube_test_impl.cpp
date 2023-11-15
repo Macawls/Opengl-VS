@@ -52,8 +52,12 @@ CubeTestScene::CubeTestScene(WindowContext& context, PerspectiveCamera& camera, 
 
 void CubeTestScene::OnSetup()
 {
-    m_camera.Reset();
-    m_camera.Transform.SetPosition(CAMERA_STARTING_POSITION);
+    LoadCamSnapShot();
+}
+
+void CubeTestScene::OnExit()
+{
+    SaveCamSnapshot();
 }
 
 void CubeTestScene::OnUpdate(float deltaTime)
@@ -77,6 +81,7 @@ void CubeTestScene::OnUpdate(float deltaTime)
     glBindVertexArray(0);
 }
 
+
 void CubeTestScene::OnGui()
 {
     if (ImGui::BeginTabBar("Control Tabs"))
@@ -89,21 +94,7 @@ void CubeTestScene::OnGui()
 
         if (ImGui::BeginTabItem("Camera"))
         {
-            ImGui::SliderFloat3("Position", glm::value_ptr(m_camera.Transform.Position), -3.0f, 15.0f);
-            ImGui::SliderFloat3("Rotation##Cam", glm::value_ptr(m_camera.Transform.Rotation), -180.0f, 180.0f);
-
-            ImGui::SliderFloat("FOV", &m_camera.Settings.Fov, 5.0f, 140.0f);
-            ImGui::SliderFloat("Speed", &m_camera.Settings.Speed, 2.0f, 10.0f);
-
-            if (ImGui::Button("Reset"))
-            {
-                m_camera.Transform
-                    .Reset()
-                    .SetPosition(CAMERA_STARTING_POSITION);
-
-                m_camera.Settings = CameraSettings();
-            }
-
+            m_camera.GuiShowControls();
             ImGui::EndTabItem();
         }
 
@@ -118,8 +109,15 @@ void CubeTestScene::OnGui()
             }
         }
 
+        if (ImGui::BeginTabItem("Camera"))
+        {
+            m_camera.GuiShowControls();
+        }
+
         ImGui::EndTabBar();
     }
 }
+
+
 
 

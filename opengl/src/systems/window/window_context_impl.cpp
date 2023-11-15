@@ -125,8 +125,8 @@ void WindowContext::set_standard_callbacks()
 		WindowContext *win = (WindowContext *)glfwGetWindowUserPointer(window);
 		
         // * 2.0 - 1.0f to get range [-1, 1]
-        win->m_normalizedMousePosition.X = (static_cast<float>(xpos) / (float)win->m_framebufferSize.Width) * 2.0 - 1.0f;
-		win->m_normalizedMousePosition.Y = (1 - (static_cast<float>(ypos) / (float)win->m_framebufferSize.Height)) * 2.0f - 1.0f;
+        win->m_normalizedMousePosition.X = static_cast<float>(xpos) / static_cast<float>(win->m_framebufferSize.Width) * 2.0f - 1.0f;
+		win->m_normalizedMousePosition.Y = (1 - static_cast<float>(ypos) / static_cast<float>(win->m_framebufferSize.Height)) * 2.0f - 1.0f;
 	}); 
 
     // Set sleep status when window is minimized
@@ -167,6 +167,7 @@ void WindowContext::set_standard_window_hints()
     // Disable double buffering
     // glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_FALSE);
 }
+
 
 void WindowContext::Close()
 {

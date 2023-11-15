@@ -4,7 +4,7 @@
 
 static const float WIDGETWIDTH = 90.0f;
 static const float ROTMAX = 360.0f;
-static const float ROTMIN = 0.0f;
+static const float ROTMIN = -360.0f;
 static const ImVec2 HORIZONTAL = ImVec2(140.0f, 0.0f);
 static const ImVec2 BUTTON_SIZE = ImVec2(150, 30);
 
@@ -35,10 +35,6 @@ TransformComponent& TransformComponent::SetPosition(const glm::vec3& position)
 	return *this;
 }
 
-
-
-
-
 glm::mat4 TransformComponent::GetModelMatrix() const
 {
 	const glm::mat4 scale = glm::scale(m_identity, Scale);
@@ -47,7 +43,7 @@ glm::mat4 TransformComponent::GetModelMatrix() const
 		glm::radians(Rotation.y), 
 		glm::radians(Rotation.z));
 
-	const glm::mat4 translation = glm::translate(m_identity, Position);
+	const glm::mat4 translation = translate(m_identity, Position);
 	const glm::mat4 model = translation * rotation * scale;
 
 	return Parent ? Parent->GetModelMatrix() * model : model;
@@ -116,7 +112,6 @@ TransformComponent& TransformComponent::SetScaleZ(float scale)
 //////////////////////////////////
 
 
-
 TransformComponent& TransformComponent::SetParent(TransformComponent* parent)
 {
 	Parent = parent; // set pointer to new parent
@@ -132,14 +127,16 @@ TransformComponent& TransformComponent::AddChild(TransformComponent* child)
 }
 
 // Resets all values to default
-TransformComponent& TransformComponent::Reset() {
+TransformComponent& TransformComponent::Reset()
+{
     Position = glm::vec3(0.0f);
     Rotation = glm::vec3(0.0f);
     Scale = glm::vec3(1.0f);
     return *this;
 }
 
-void TransformComponent::Copy(const TransformComponent& transform) {
+void TransformComponent::Copy(const TransformComponent& transform)
+{
 	Position = transform.Position;
 	Rotation = transform.Rotation;
 	Scale = transform.Scale;
@@ -165,9 +162,14 @@ void TransformComponent::RotateAround(const glm::vec3& targetPosition, const glm
 	Rotation.y += angleInRadians * deltaTime;
 }
 
+void TransformComponent::Translate(const glm::vec3& translation)
+{
+	Position += translation;
+}
+
 void TransformComponent::GuiShowControls(const glm::vec3& resetPos, const glm::vec3& resetRot, const glm::vec3& resetScale)
 {
-	ShowTitle(0.15f, HEADER);
+	GuiShowTitle(0.15f, HEADER);
 	// Position
 	ImGui::Text("Position");
 	ImGui::SameLine(HORIZONTAL.x);
@@ -240,7 +242,7 @@ void TransformComponent::GuiShowControls(const glm::vec3& resetPos, const glm::v
 
 void TransformComponent::GuiShowControlsExcludeScale(const glm::vec3& resetPos, const glm::vec3& resetRot, const glm::vec3& resetScale)
 {
-	ShowTitle(0.1f, HEADER);
+	GuiShowTitle(0.1f, HEADER);
 	// Position
 	ImGui::Text("Position");
 	ImGui::SameLine(HORIZONTAL.x);
@@ -282,6 +284,38 @@ void TransformComponent::GuiShowControlsExcludeScale(const glm::vec3& resetPos, 
 	ImGui::SameLine();
 	ImGui::SetNextItemWidth(WIDGETWIDTH);
 	ImGui::DragFloat(("##RotZ" + Uuid).c_str(), &Rotation.z, 1.0f, ROTMIN, ROTMAX);
+
+	if (ImGui::Button("Reset", BUTTON_SIZE))
+	{
+		Position = resetPos;
+		Rotation = resetRot;
+		Scale = resetScale;
+	}
+}
+
+void TransformComponent::GuiShowControlsPosition(const glm::vec3& resetPos, const glm::vec3& resetRot, const glm::vec3& resetScale)
+{
+	GuiShowTitle(0.1f, HEADER);
+	// Position
+	ImGui::Text("Position");
+	ImGui::SameLine(HORIZONTAL.x);
+
+	ImGui::Text("X");
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(WIDGETWIDTH);
+	ImGui::DragFloat(("##PosX" + Uuid).c_str(), &Position.x, 0.1f);
+	ImGui::SameLine();
+    
+	ImGui::Text("Y");
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(WIDGETWIDTH);
+	ImGui::DragFloat(("##PosY" + Uuid).c_str(), &Position.y, 0.1f);
+	ImGui::SameLine();
+
+	ImGui::Text("Z");
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(WIDGETWIDTH);
+	ImGui::DragFloat(("##PosZ" + Uuid).c_str(), &Position.z, 0.1f);
 
 	if (ImGui::Button("Reset", BUTTON_SIZE))
 	{

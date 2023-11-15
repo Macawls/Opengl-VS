@@ -5,44 +5,59 @@ SceneHierarchy::SceneHierarchy()
     RootTransform.GuiDisplay = "Root";
 }
 
-void SceneHierarchy::show_transform_and_children(TransformComponent* transform, int& index)
+
+
+void SceneHierarchy::GuiShowDrawablesTree()
+{
+    int index = 0;
+    DisplayTransformTree(&RootTransform, index);
+}
+
+/**
+ * \brief Shows the ImGUI Transform Tree
+ * \param transform Transform to start the tree from
+ * \param index Applies unique IDs to each node, ref is mutated
+ */
+void SceneHierarchy::DisplayTransformTree(TransformComponent* transform, int& index)
 {
     ImGui::PushID(index);
+
+    // styling and behaviour
     ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_FramePadding |
                                ImGuiTreeNodeFlags_OpenOnArrow |
                                ImGuiTreeNodeFlags_SpanAvailWidth;
 
-    // default open for root
-    if (transform->GuiDisplay == "Root") {
-        flags |= ImGuiTreeNodeFlags_DefaultOpen;
-    }
+    // default open for root node
+    if (transform->GuiDisplay == "Root")
+        flags |= ImGuiTreeNodeFlags_DefaultOpen; // add to existing flags
     
-    const boolean nodeOpen = ImGui::TreeNodeEx(
-        transform->Uuid.c_str(), // id
-        flags, transform->GuiDisplay == "Root" ?
-        ICON_FK_GLOBE_W " Root" :
-        ICON_FK_CIRCLE_THIN " %s", transform->GuiDisplay.c_str()); // display
+    // Display text and node ID, ICON_FK for icons
+    const char* displayText = transform->GuiDisplay == "Root" ?
+        ICON_FK_GLOBE_W " Root" : ICON_FK_CIRCLE_THIN " %s";
 
+    const char* nodeId = transform->Uuid.c_str(); // UUID of Transform
+
+    // Create the tree node
+    const bool nodeOpen = ImGui::TreeNodeEx(
+        nodeId,                             // id
+        flags,                              // flags
+        displayText,                        // display text
+        transform->GuiDisplay.c_str());     // additional formatting if not root
+
+    // pop after pushing
     ImGui::PopID();
 
+    // If currently selected, display controls and children's controls recursively
     if (nodeOpen)
     {
         transform->GuiShowControls();
-        // recursively show children transforms
         for (TransformComponent* child : transform->Children)
-        {
-            show_transform_and_children(child, index);
-        }
-        ImGui::TreePop();
+            DisplayTransformTree(child, index);
+
+        ImGui::TreePop();   
     }
     
-    index++; // increment index
-}
-
-void SceneHierarchy::ShowDrawablesTree()
-{
-    int index = 0;
-    show_transform_and_children(&RootTransform, index);
+    index++; // increment index so node is unique
 }
 
 SceneHierarchy& SceneHierarchy::AddDrawable(Drawable* drawable)

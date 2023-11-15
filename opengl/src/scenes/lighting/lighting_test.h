@@ -10,6 +10,7 @@ public:
     void OnSetup() override;
     void OnUpdate(float deltaTime) override;
     void OnGui() override;
+    void OnExit() override;
 private:
     glm::vec3 LightColor = glm::vec3(1.0f);
 

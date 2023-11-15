@@ -17,10 +17,14 @@ out vec3 FragPos;
 
 void main()
 {
-    gl_Position = projection * view * model * vec4(aPos, 1.0);
+    // model to world space
     FragPos = vec3(model * vec4(aPos, 1.0));
     FragColor = color;
     TexCoord = aTexCoord;
+    // normal to world space
     Normal = mat3(transpose(inverse(model))) * aNormal;
+
+    // determine pos with mvp
+    gl_Position = projection * view * model * vec4(aPos, 1.0);
 }
 )glsl"

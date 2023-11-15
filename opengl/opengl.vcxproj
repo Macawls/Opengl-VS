@@ -567,7 +567,11 @@
     <ClInclude Include="src\systems\drawable\impl\sphere.h" />
     <ClInclude Include="src\systems\drawable\drawable.h" />
     <ClInclude Include="src\systems\drawable\terrain.h" />
+    <ClInclude Include="src\systems\rendering\lights\directional.h" />
+    <ClInclude Include="src\systems\rendering\lights\point.h" />
+    <ClInclude Include="src\systems\rendering\lights\spot.h" />
     <ClInclude Include="src\systems\rendering\perspective_camera.h" />
+    <ClInclude Include="src\systems\rendering\scene_lighting_data.h" />
     <ClInclude Include="src\systems\rendering\texture_component.h" />
     <ClInclude Include="src\systems\rendering\vertex.h" />
     <ClInclude Include="src\systems\settings\configs.h" />

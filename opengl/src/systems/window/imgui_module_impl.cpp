@@ -7,6 +7,8 @@
 bool ImGUIModule::Init(const char *glslVersion, GLFWwindow *window, float fontSize)
 {
     ImGui::CreateContext();
+    // N.B
+    // https://github.com/ocornut/imgui/issues/4981
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init(glslVersion);
 

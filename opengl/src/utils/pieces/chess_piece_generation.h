@@ -327,8 +327,8 @@ public:
         sphereL->Transform.SetPosition(glm::vec3(0.3f, 2.7f, 0.4f)).SetScale(glm::vec3(0.2f)).SetParent(&parent);
         sphereR->Transform.SetPosition(glm::vec3(-0.3f, 2.7f, 0.4f)).SetScale(glm::vec3(0.2f)).SetParent(&parent);
         
-        cubeDown->Transform.SetPositionY(2.45f).SetPositionZ(-0.25f).SetRotationX(105.0f).SetScaleX(0.6f).SetScaleY(0.4).SetScaleZ(0.9f).SetParent(&parent);
-        cubeTop->Transform.SetPositionY(2.45f).SetPositionZ(0.2f).SetRotationX(20.0f).SetScaleX(0.6f).SetScaleY(0.6).SetScaleZ(0.9f).SetParent(&parent);
+        cubeDown->Transform.SetPositionY(2.45f).SetPositionZ(-0.25f).SetRotationX(105.0f).SetScaleX(0.6f).SetScaleY(0.4f).SetScaleZ(0.9f).SetParent(&parent);
+        cubeTop->Transform.SetPositionY(2.45f).SetPositionZ(0.2f).SetRotationX(20.0f).SetScaleX(0.6f).SetScaleY(0.6f).SetScaleZ(0.9f).SetParent(&parent);
         coneBase->Transform.SetPositionY(1.6f).SetPositionZ(-0.2f).SetRotationX(75.0f).SetScale(glm::vec3(1.2f)).SetScaleZ(1.8f).SetParent(&parent);
         sphereBase->Transform.SetPositionY(0.6f).SetScale(glm::vec3(1.5f)).SetScaleY(1.3f).SetParent(&parent);
         cylinderBase->Transform.SetRotationX(90.0f).SetScale(glm::vec3(1.5)).SetScaleZ(0.5f).SetParent(&parent);
@@ -364,8 +364,8 @@ public:
         sphereL->Transform.SetPosition(glm::vec3(0.3f, 2.7f, 0.4f)).SetScale(glm::vec3(0.2f)).SetParent(&parent);
         sphereR->Transform.SetPosition(glm::vec3(-0.3f, 2.7f, 0.4f)).SetScale(glm::vec3(0.2f)).SetParent(&parent);
         
-        cubeDown->Transform.SetPositionY(2.45f).SetPositionZ(-0.25f).SetRotationX(105.0f).SetScaleX(0.6f).SetScaleY(0.4).SetScaleZ(0.9f).SetParent(&parent);
-        cubeTop->Transform.SetPositionY(2.45f).SetPositionZ(0.2f).SetRotationX(20.0f).SetScaleX(0.6f).SetScaleY(0.6).SetScaleZ(0.9f).SetParent(&parent);
+        cubeDown->Transform.SetPositionY(2.45f).SetPositionZ(-0.25f).SetRotationX(105.0f).SetScaleX(0.6f).SetScaleY(0.4f).SetScaleZ(0.9f).SetParent(&parent);
+        cubeTop->Transform.SetPositionY(2.45f).SetPositionZ(0.2f).SetRotationX(20.0f).SetScaleX(0.6f).SetScaleY(0.6f).SetScaleZ(0.9f).SetParent(&parent);
         coneBase->Transform.SetPositionY(1.6f).SetPositionZ(-0.2f).SetRotationX(75.0f).SetScale(glm::vec3(1.2f)).SetScaleZ(1.8f).SetParent(&parent);
         sphereBase->Transform.SetPositionY(0.6f).SetScale(glm::vec3(1.5f)).SetScaleY(1.3f).SetParent(&parent);
         cylinderBase->Transform.SetRotationX(90.0f).SetScale(glm::vec3(1.5)).SetScaleZ(0.5f).SetParent(&parent);

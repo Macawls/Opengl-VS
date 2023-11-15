@@ -7,6 +7,7 @@
 #include "../window/window_context.h"
 #include <GLFW/glfw3.h>
 
+
 #include "transform.h"
 
 // Notes: aspect ratio of window size = stretched, aspect ratio of framebuffer size = no stretching
@@ -21,18 +22,21 @@ struct ClipPlane
 
 struct CameraSettings
 {
+    float Yaw = -90.0f;
+    float Pitch =  0.0f;
     float Fov = 60.0f;
-    float Speed = 3.0f;
-    float Sensitivity = 30.0f;
-    ClipPlane ClippingPlane = ClipPlane();
+    float MovementSpeed = 2.5f;
+    float LookSpeed = 60.0f;
+    ClipPlane ClippingPlane;
+    bool Unlocked;
 };
 
+/*
 enum CameraMode
 {
     PAN, ROTATE
 };
-
-#define CAMERA_STARTING_POSITION glm::vec3(0.0f, 0.0f, 3.0f)
+*/
 
 /*
 Front View
@@ -57,60 +61,49 @@ Back View
 class PerspectiveCamera
 {
 public:
-    PerspectiveCamera(WindowContext& windowContext, const glm::vec3& position = CAMERA_STARTING_POSITION);
+    inline static glm::vec3 STARTING_POSITION = glm::vec3(0.0f, 0.0f, 3.0f);
+    inline static const char* GUI_HEADER = ICON_FK_CAMERA " Camera";
 
+    PerspectiveCamera(WindowContext& windowContext, const glm::vec3& position = STARTING_POSITION);
     CameraSettings Settings;
-    TransformComponent Transform = TransformComponent().SetPosition(CAMERA_STARTING_POSITION);
+    TransformComponent Transform = TransformComponent().SetPosition(STARTING_POSITION);
 
     glm::mat4 GetViewMatrix() const;
-
+    
     glm::mat4 GetProjectionMatrix() const { return m_projectionMatrix; }
 
     glm::mat4 CalculateMvp(const TransformComponent& transform) const;
 
-    void OnUpdate(float deltaTime)
-    {
-        update_projection_matrix();
-        update_view_matrix();
-    }
-
-    void Reset() {
-        Transform.Reset();
-        Settings = CameraSettings();
-    }
+    void OnUpdate(float deltaTime);
 
     void HandleKeyInput(float deltaTime);
     void HandleMouseInput(float deltaTime);
-
-    static glm::vec3 OrbitAround(const glm::vec3& direction, const glm::vec3& target, float distance) {
-        return target + (direction * distance);
-    }
+    void GuiShowControls();
 
 private:
     WindowContext* m_context;
     GLFWwindow* m_window;
+   
 
     float m_aspectRatio;
     double m_lastMouseX, m_lastMouseY = 0.0;
 
-    const glm::vec3 m_xAxis = glm::vec3(1.0f, 0.0f, 0.0f);
-    const glm::vec3 m_yAxis = glm::vec3(0.0f, 1.0f, 0.0f);
-    const glm::vec3 m_zAxis = glm::vec3(0.0f, 0.0f, 1.0f);
+    
+    const glm::vec3 m_worldRight = glm::vec3(1.0f, 0.0f, 0.0f);
+    const glm::vec3 m_worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
+    const glm::vec3 m_worldFront = glm::vec3(0.0f, 0.0f, -1.0f);
+    
 
-
-    glm::vec3 m_front = glm::vec3(0.0f, 0.0f, -1.0f);
-    glm::vec3 m_up = glm::vec3(0.0f, 1.0f, 0.0f);
     glm::vec3 m_right = glm::vec3(1.0f, 0.0f, 0.0f);
+    glm::vec3 m_up = glm::vec3(0.0f, 1.0f, 0.0f);
+    glm::vec3 m_front = glm::vec3(0.0f, 0.0f, -1.0f);
 
     glm::mat4 m_projectionMatrix;
     glm::mat4 m_viewMatrix;
 
-    float m_prevMouseX = 0.0f;
-    float m_prevMouseY = 0.0f;
     
-    //CameraMode m_mode = CameraMode::PAN;
-    CameraMode m_mode = CameraMode::ROTATE;
-
+    void update_vectors();
     void update_projection_matrix();
     void update_view_matrix();
+    void on_unlocked(float deltaTime);
 };

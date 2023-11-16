@@ -15,7 +15,7 @@ struct PolygonModeConfig
 struct DepthConfig
 {
     bool Enabled = true;
-    GLenum Function = GL_LESS;
+    GLenum Function = GL_LEQUAL;
 
     bool operator!=(const DepthConfig& other) const
     {

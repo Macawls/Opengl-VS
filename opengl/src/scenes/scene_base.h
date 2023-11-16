@@ -50,9 +50,10 @@ protected:
     PerspectiveCamera& m_camera;
     GLFWwindow* m_window;
     RenderSettings& m_renderSettings;
-    SceneLightingData m_lightingData;
+    
 public:
-    SceneHierarchy SceneHierarchy;
+    SceneHierarchy Hierarchy;
+    SceneLightingData LightingData;
     glm::vec4 ScreenClearColor = glm::vec4(0.18f, 0.18f, 0.18f, 1.0f);
     virtual ~SceneBase() = default;
     SceneBase(WindowContext& context, PerspectiveCamera& camera, RenderSettings& settings)

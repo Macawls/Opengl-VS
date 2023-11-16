@@ -27,6 +27,7 @@ public:
 	
 	TransformComponent();
 	TransformComponent(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale);
+	explicit TransformComponent(const glm::vec3& position);
 
 	~TransformComponent();
 
@@ -97,6 +98,7 @@ public:
 	void GuiShowControlsPosition(const glm::vec3& resetPos = glm::vec3(0.0f),
 		const glm::vec3& resetRot = glm::vec3(0.0f),
 		const glm::vec3& resetScale = glm::vec3(1.0f));
+	void GuiShowControlsPositionNoReset();
 
 private:
 	inline static glm::mat4 m_identity = glm::mat4(1.0f); // identity matrix

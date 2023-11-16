@@ -23,6 +23,11 @@ TransformComponent::TransformComponent(const glm::vec3& position, const glm::vec
 	Scale = scale;
 	Uuid = generate_uuid_string();
 }
+TransformComponent::TransformComponent(const glm::vec3& position)
+{
+	Position = position;
+	Uuid = generate_uuid_string();
+}
 
 TransformComponent::~TransformComponent()
 {
@@ -323,5 +328,30 @@ void TransformComponent::GuiShowControlsPosition(const glm::vec3& resetPos, cons
 		Rotation = resetRot;
 		Scale = resetScale;
 	}
+}
+
+void TransformComponent::GuiShowControlsPositionNoReset()
+{
+	GuiShowTitle(0.1f, HEADER);
+	// Position
+	ImGui::Text("Position");
+	ImGui::SameLine(HORIZONTAL.x);
+
+	ImGui::Text("X");
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(WIDGETWIDTH);
+	ImGui::DragFloat(("##PosX" + Uuid).c_str(), &Position.x, 0.1f);
+	ImGui::SameLine();
+    
+	ImGui::Text("Y");
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(WIDGETWIDTH);
+	ImGui::DragFloat(("##PosY" + Uuid).c_str(), &Position.y, 0.1f);
+	ImGui::SameLine();
+
+	ImGui::Text("Z");
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(WIDGETWIDTH);
+	ImGui::DragFloat(("##PosZ" + Uuid).c_str(), &Position.z, 0.1f);
 }
 

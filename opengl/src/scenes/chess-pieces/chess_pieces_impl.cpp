@@ -19,7 +19,7 @@ ChessPiecesScene::ChessPiecesScene(WindowContext& context, PerspectiveCamera& ca
 	const auto bishop = new Bishop(ShaderComponent(m_basicVertTex, m_basicFragTex), pieceColor, pieceTexture);
 	const auto knight = new Knight(ShaderComponent(m_basicVertTex, m_basicFragTex), pieceColor, pieceTexture);
 	
-	SceneHierarchy.AddDrawable(pawn)
+	Hierarchy.AddDrawable(pawn)
 	.AddDrawable(rook)
 	.AddDrawable(king)
 	.AddDrawable(queen)
@@ -33,10 +33,10 @@ void ChessPiecesScene::OnSetup()
 	
 	// place pieces in center
 	const float gap = 2.0f;
-	const int count = SceneHierarchy.Drawables.size();
+	const int count = Hierarchy.Drawables.size();
 	for (size_t i = 0; i < count; i++) {
 		const float xPos = (i - (count - 1) / 2.0f) * gap;
-		SceneHierarchy.Drawables[i]->Transform.SetPositionX(xPos);
+		Hierarchy.Drawables[i]->Transform.SetPositionX(xPos);
 	}
 
 	
@@ -44,7 +44,7 @@ void ChessPiecesScene::OnSetup()
 	m_camera.Transform.Rotation = glm::vec3(13.0f, 0.0f, 0.0f);
 	m_camera.Settings.Fov = 80.0f;
 
-	SceneHierarchy.RootTransform.Position = glm::vec3(-4.7, 1.9f, 0.0f);
+	Hierarchy.RootTransform.Position = glm::vec3(-4.7, 1.9f, 0.0f);
 	
 	LoadCamSnapShot();
 }
@@ -60,10 +60,10 @@ void ChessPiecesScene::OnUpdate(const float deltaTime)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	const float rotateSpeed = 30.0f;
-	SceneHierarchy.RootTransform.Rotation += glm::vec3(0.0f, rotateSpeed * deltaTime, 0.0f);
-	SceneHierarchy.RootTransform.Rotation.y = fmod(SceneHierarchy.RootTransform.Rotation.y, 360.0f); // clamp
+	Hierarchy.RootTransform.Rotation += glm::vec3(0.0f, rotateSpeed * deltaTime, 0.0f);
+	Hierarchy.RootTransform.Rotation.y = fmod(Hierarchy.RootTransform.Rotation.y, 360.0f); // clamp
 
-	SceneHierarchy.DrawAll(m_camera);
+	Hierarchy.DrawAll(m_camera);
 }
 
 void ChessPiecesScene::OnGui()
@@ -72,7 +72,7 @@ void ChessPiecesScene::OnGui()
 	{
 		if (ImGui::BeginTabItem("Scene"))
 		{
-			SceneHierarchy.GuiShowDrawablesTree();
+			Hierarchy.GuiShowDrawablesTree();
 			ImGui::EndTabItem();
 		}
 

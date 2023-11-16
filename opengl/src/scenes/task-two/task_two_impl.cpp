@@ -38,13 +38,13 @@ TaskTwo::TaskTwo(WindowContext& context, PerspectiveCamera& camera, RenderSettin
     m_terrain->Texture = TextureComponent(m_terrainTexturePath);
 
     m_terrain->Transform.Position.y = -2.0f;
-    SceneHierarchy.AddDrawable(m_terrain);
+    Hierarchy.AddDrawable(m_terrain);
     
     // Chess Board Border
     m_chessBorder = new Cube(ShaderComponent(m_basicVertTex, m_basicFragTex), glm::vec3(0.0f));
     m_chessBorder->Texture = TextureComponent(borderTexturePath);
 
-    m_chessBorder->Transform.SetParent(&SceneHierarchy.RootTransform);
+    m_chessBorder->Transform.SetParent(&Hierarchy.RootTransform);
     m_chessBorder->Transform.GuiDisplay = "Board";
     // width of board is 9
     m_chessBorder->Transform.Scale = glm::vec3(9.0f, 0.5f, 9.0f);
@@ -72,7 +72,7 @@ TaskTwo::TaskTwo(WindowContext& context, PerspectiveCamera& camera, RenderSettin
         else
         {
             m_chessCells.push_back(drawable);
-            SceneHierarchy.AddDrawable(drawable);
+            Hierarchy.AddDrawable(drawable);
         }
     }
 }
@@ -110,11 +110,11 @@ void TaskTwo::OnUpdate(float deltaTime)
     
     // rotate scene
     constexpr float rotateSpeed = 20.0f;
-    SceneHierarchy.RootTransform.Rotation.y += rotateSpeed * deltaTime;
-    SceneHierarchy.RootTransform.Rotation.y = fmod(SceneHierarchy.RootTransform.Rotation.y, 360.0f); // clamp
+    Hierarchy.RootTransform.Rotation.y += rotateSpeed * deltaTime;
+    Hierarchy.RootTransform.Rotation.y = fmod(Hierarchy.RootTransform.Rotation.y, 360.0f); // clamp
     
     // Draw
-    SceneHierarchy.DrawAll(m_camera);
+    Hierarchy.DrawAll(m_camera);
     m_chessBorder->Draw(m_camera, glm::vec3(1.0f));
 
     if (m_chessAnimShowPieces)
@@ -416,7 +416,7 @@ void TaskTwo::render_ui()
     {
         if (ImGui::BeginTabItem("Scene"))
         {
-            SceneHierarchy.GuiShowDrawablesTree();
+            Hierarchy.GuiShowDrawablesTree();
             ImGui::EndTabItem();
         }
 

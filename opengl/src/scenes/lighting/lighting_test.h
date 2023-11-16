@@ -12,6 +12,7 @@ public:
     void OnGui() override;
     void OnExit() override;
 private:
+    void setup_lights(SceneLightingData& data);
 
     const char *svertSrc =
 #include "../../resources/shaders/basicTexLight-MultipleLights.vert"
@@ -29,7 +30,9 @@ private:
 ;
     
     const char* texPath = "src/resources/textures/cobble.png";
+    const char* texPathCube = "src/resources/textures/metal.png";
     
     Sphere* subject;
+    Cube* subjectCube;
     Drawable* light;
 };

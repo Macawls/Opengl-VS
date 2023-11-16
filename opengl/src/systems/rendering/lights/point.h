@@ -3,7 +3,7 @@
 
 struct PointLight 
 {
-    glm::vec3 Position;
+    TransformComponent Transform;
     
     float Constant = 1.0f;
     float Linear = 0.09f;

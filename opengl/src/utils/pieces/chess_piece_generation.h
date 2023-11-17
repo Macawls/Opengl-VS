@@ -390,10 +390,10 @@ private:
     #include "../resources/shaders/basic.frag"
         ;
     inline static const char* m_basicVertTex =
-    #include "../resources/shaders/basicTex.vert"
+    #include "../resources/shaders/basicTexLight-MultipleLights.vert"
         ;
     inline static const char* m_basicFragTex =
-    #include "../resources/shaders/basicTex.frag"
+    #include "../resources/shaders/basicTexLight-MultipleLights.frag"
         ;
 };
 

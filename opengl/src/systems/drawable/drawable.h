@@ -5,6 +5,11 @@
 #include "../rendering/perspective_camera.h"
 #include "../shader/shader_component.h"
 #include "../rendering/texture_component.h"
+
+#include "../rendering/lights/directional.h"
+#include "../rendering/lights/point.h"
+#include "../rendering/lights/spot.h"
+
 #include "gen_data.h"
 
 class Drawable {
@@ -29,6 +34,19 @@ public:
     
     virtual void Draw(PerspectiveCamera& camera);
     virtual void Draw(PerspectiveCamera& camera, const glm::vec3& color);
+
+    //updated
+    virtual void Draw(
+        ShaderComponent& shader,
+        const glm::mat4& view,
+        const glm::mat4& projection,
+        const glm::vec3& color,
+        const glm::vec3& camPosition,
+        const glm::vec3& camFront,
+        const DirectionalLight& dirLight, 
+        const std::vector<PointLight>& pointLights,
+        const SpotLight& spotLight);
+    
     virtual ~Drawable() = default;
 
     TransformComponent Transform;
@@ -53,6 +71,70 @@ inline void Drawable::Draw(PerspectiveCamera& camera)
 
     Texture.Bind(0);
     Shader.SetInt("texture1", 0);
+    
+    
+    // Draw 
+    glBindVertexArray(Vao);
+    glDrawElements(GL_TRIANGLES, Indices.size(), GL_UNSIGNED_INT, 0);
+
+    // Unbind
+    glBindVertexArray(0);
+
+
+    Texture.Unbind();
+}
+
+inline void Drawable::Draw(
+        ShaderComponent& shader,
+        const glm::mat4& view,
+        const glm::mat4& projection,
+        const glm::vec3& color,
+        const glm::vec3& camPosition,
+        const glm::vec3& camFront,
+        const DirectionalLight& dirLight, 
+        const std::vector<PointLight>& pointLights,
+        const SpotLight& spotLight)
+{
+    // Set shader in opengl state machine
+
+    shader.Use()
+    .SetMat4("model", Transform.GetModelMatrix())
+    .SetMat4("view", view)
+    .SetMat4("projection", projection)
+    .SetVec3("viewPosition", camPosition)
+    .SetVec3("color", color)
+    .SetVec3("directionalLight.direction", dirLight.Direction)
+    .SetVec3("directionalLight.ambient", dirLight.Ambient)
+    .SetVec3("directionalLight.diffuse", dirLight.Diffuse)
+    .SetVec3("directionalLight.specular", dirLight.Specular)
+    .SetVec3("spotLight.position", spotLight.Position)
+    .SetVec3("spotLight.direction", camFront)
+    .SetVec3("spotLight.ambient", spotLight.Ambient)
+    .SetVec3("spotLight.diffuse", spotLight.Diffuse)
+    .SetVec3("spotLight.specular", spotLight.Specular)
+    .SetFloat("spotLight.constant", spotLight.Constant)
+    .SetFloat("spotLight.linear",  spotLight.Linear)
+    .SetFloat("spotLight.quadratic", spotLight.Quadratic)
+    .SetFloat("spotLight.cutOff", spotLight.CutOff)
+    .SetFloat("spotLight.outerCutOff", spotLight.OuterCutOff);
+
+
+    for (size_t i = 0; i < pointLights.size(); i++)
+    {
+        std::string index = std::to_string(i);
+        shader
+        .SetVec3("pointLights[" + index + "].position", pointLights[i].Transform.Position)
+        .SetVec3("pointLights[" + index + "].ambient", pointLights[i].Ambient)
+        .SetVec3("pointLights[" + index + "].diffuse", pointLights[i].Diffuse)
+        .SetVec3("pointLights[" + index + "].specular", pointLights[i].Specular)
+        .SetFloat("pointLights[" + index + "].constant", pointLights[i].Constant)
+        .SetFloat("pointLights[" + index + "].linear", pointLights[i].Linear)
+        .SetFloat("pointLights[" + index + "].quadratic", pointLights[i].Quadratic);
+    }
+
+
+    Texture.Bind(0);
+    shader.SetInt("texture1", 0);
     
     
     // Draw 

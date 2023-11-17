@@ -29,6 +29,8 @@
 #include "../systems/drawable/terrain.h"
 #include "../utils/gui.h"
 
+#include "../systems/drawable/model.h"
+
 #include "scene_hierarchy.h"
 
 // local utils

@@ -42,6 +42,24 @@ public:
         }
     }
 
+    void Draw(
+    ShaderComponent& shader,
+    const glm::mat4& View,
+    const glm::mat4& Projection,
+    const glm::vec3& color,
+    const glm::vec3& camPosition,
+    const glm::vec3& camFront,
+    const DirectionalLight& dirLight,
+    const std::vector<PointLight>& pointLights,
+    const SpotLight& spotLight)
+    {
+        for (size_t i = 0; i < Pieces.size(); i++)
+        {
+            Pieces[i]->Draw(shader, View, Projection, color, camPosition,
+                camFront, dirLight, pointLights, spotLight);
+        }
+    }
+
     ~Bishop() override
     {
         Pieces.clear();

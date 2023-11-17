@@ -39,6 +39,8 @@ LightingTestScene::LightingTestScene(WindowContext& context, PerspectiveCamera& 
     light = new Sphere(ShaderComponent(cvertSrc, cfragSrc),
         glm::vec3(1.0f));
 
+    //spaceship = new Model(spaceShipTexPath, ShaderComponent(svertSrc, sfragSrc));
+
     const std::vector<std::string> faces
     {
         "src/resources/textures/skybox/right.png",
@@ -136,12 +138,12 @@ void LightingTestScene::OnSetup()
     light->Transform.GuiDisplay = "Light";
     
     //sphere->Transform.SetRotation(glm::vec3(25.0f, 45.0f, 0.0f));
-    LoadCamSnapShot();
+    //LoadCamSnapShot();
 }
 
 void LightingTestScene::OnExit()
 {
-    SaveCamSnapshot();
+    //SaveCamSnapshot();
 }
 
 void LightingTestScene::OnUpdate(float deltaTime)
@@ -204,7 +206,7 @@ void LightingTestScene::OnUpdate(float deltaTime)
     .SetMat4("model", subjectCube->Transform.GetModelMatrix())
     .SetMat4("view", View)
     .SetMat4("projection", Projection)
-    .SetVec3("viewPosition", m_camera.Transform.Position)
+    .SetVec3("viewPosition", Position)
     .SetVec3("color", subjectCube->Color)
     .SetVec3("directionalLight.direction", LightingData.Directional.Direction)
     .SetVec3("directionalLight.ambient", LightingData.Directional.Ambient)
@@ -245,10 +247,6 @@ void LightingTestScene::OnUpdate(float deltaTime)
 
     glBindVertexArray(subjectCube->Vao);
     glDrawElements(GL_TRIANGLES, subjectCube->Indices.size(), GL_UNSIGNED_INT, 0);
-
-    const auto billboardSize = glm::vec2(2.0f, 2.0f);
-    const auto rightWorld = glm::vec3(View[0][0], View[1][0], View[2][0]);
-    const auto upWorld = glm::vec3(View[0][1], View[1][1], View[2][1]);
     
     // draw map last always
     map->Draw(View, Projection);

@@ -72,6 +72,18 @@ SceneHierarchy& SceneHierarchy::AddDrawable(Drawable* drawable)
     return *this;
 }
 
+SceneHierarchy& SceneHierarchy::AddTransform(TransformComponent* transform)
+{
+    // no parent so set parent to global root
+    if (!transform->Parent)
+    {
+        transform->SetParent(&RootTransform);
+    }
+    
+    //Drawables.push_back(drawable);
+    return *this;
+}
+
 void SceneHierarchy::DrawAll(PerspectiveCamera& camera) const
 {
     for (const auto & drawable : Drawables)

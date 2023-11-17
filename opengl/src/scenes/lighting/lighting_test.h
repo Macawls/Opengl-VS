@@ -1,6 +1,7 @@
 #pragma once
 #include "../scene_base.h"
 
+
 class LightingTestScene : virtual public SceneBase
 {
 public:
@@ -41,10 +42,11 @@ private:
     
     const char* texPath = "src/resources/textures/cobble.png";
     const char* texPathCube = "src/resources/textures/metal.png";
+
+    const char* spaceShipTexPath = "src/resources/models/spaceship.fbx";
     
     Sphere* subject;
     Cube* subjectCube;
     Drawable* light;
     Cubemap* map;
-    
 };

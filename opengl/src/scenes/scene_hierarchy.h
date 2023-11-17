@@ -23,6 +23,7 @@ public:
     TransformComponent RootTransform; // global root
     std::vector<Drawable*> Drawables{};
     SceneHierarchy& AddDrawable(Drawable* drawable);
+    SceneHierarchy & AddTransform(TransformComponent* transform);
     void DrawAll(PerspectiveCamera& perspectiveCamera) const;
 
     // gui

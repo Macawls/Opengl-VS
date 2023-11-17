@@ -7,6 +7,7 @@
 #include "scenes/cube/cube_test.h"
 #include "scenes/task-one/task_one.h"
 #include "scenes/task-two/task_two.h"
+#include "scenes/task-three/task_three.h"
 
 // systems
 #include "main_menu_bar.h"
@@ -18,9 +19,6 @@
 #include "systems/window/window_context.h"
 #include "utils/gui.h"
 
-#include <assimp/Importer.hpp>
-#include <assimp/version.h>
-
 const GLFWimage ICON = { image_width, image_height, image_data };
 const WindowParameters WINDOW_PARAMS = { 1600, 900, "opengl", 22.0f, ICON };
 
@@ -31,19 +29,19 @@ static bool UI_ENABLED = true;
 int main()
 {
     Logger::SetPriority(Logger::LogPriority::Debug);
-    Logger::LogDebug("Assimp Version: %d.%d.%d", aiGetVersionMajor(), aiGetVersionMinor(), aiGetVersionPatch());
+    //Logger::LogDebug("Assimp Version: %d.%d.%d", aiGetVersionMajor(), aiGetVersionMinor(), aiGetVersionPatch());
 
     auto context = WindowContext(WINDOW_PARAMS);
     auto camera = PerspectiveCamera(context);
     auto settings = RenderSettings(context);
 
     SceneSelection demos = SceneSelection()
+    .AddScene("Task Three",       new TaskThree(context, camera, settings))
     .AddScene("Lighting Test", new LightingTestScene(context, camera, settings))
     //.AddScene("Task Three",     new TaskThree(context, camera, settings))
-    .AddScene("Task Two",       new TaskTwo(context, camera, settings))
-    .AddScene("Chess Pieces",   new ChessPiecesScene(context, camera, settings))
-    .AddScene("Task One",       new TaskOne(context, camera, settings))
-    .AddScene("Cube Test",      new CubeTestScene(context, camera, settings))
+    //.AddScene("Chess Pieces",   new ChessPiecesScene(context, camera, settings))
+    //.AddScene("Task One",       new TaskOne(context, camera, settings))
+    //.AddScene("Cube Test",      new CubeTestScene(context, camera, settings))
     .Init();
 
     auto menuBar = MainMenuBar(4.0f, settings, demos);

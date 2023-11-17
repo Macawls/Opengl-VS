@@ -62,6 +62,7 @@ out vec4 FragOutput;
 // uniforms
 uniform sampler2D texture1;
 uniform vec3 viewPosition;
+uniform SpotLight spotLight;
 uniform DirectionalLight directionalLight;
 uniform PointLight pointLights[POINT_LIGHT_COUNT];
 
@@ -83,11 +84,10 @@ void main()
     {
         result += ComputePoint(pointLights[i], normal, FragPos, viewDirection);    
     }
-     /*
-    // phase 3: spot light
-    result += CalcSpotLight(spotLight, normal, FragPos, viewDirection); 
-     */   
-
+    
+    // spot light
+    result += ComputeSpot(spotLight, normal, FragPos, viewDirection); 
+       
     FragOutput = vec4(result, 1.0);
 }
 

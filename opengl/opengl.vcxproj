@@ -559,6 +559,8 @@
     <ClInclude Include="src\resources\fonts\jetbrainsmono.h" />
     <ClInclude Include="src\resources\images\icon\icon.h" />
     <ClInclude Include="src\scenes\task-two\task_two.h" />
+    <ClInclude Include="src\systems\drawable\billboard.h" />
+    <ClInclude Include="src\systems\drawable\cubemap.h" />
     <ClInclude Include="src\systems\drawable\empty.h" />
     <ClInclude Include="src\systems\drawable\gen_data.h" />
     <ClInclude Include="src\systems\drawable\impl\cone.h" />

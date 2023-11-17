@@ -37,7 +37,7 @@ void PerspectiveCamera::update_projection_matrix()
 
 void PerspectiveCamera::update_view_matrix()
 {
-    m_viewMatrix = lookAt(Transform.Position, Transform.Position + m_front, m_up);
+    m_viewMatrix = lookAt(Transform.Position, Transform.Position + Front, Up);
 }
 
 void PerspectiveCamera::update_vectors()
@@ -48,11 +48,11 @@ void PerspectiveCamera::update_vectors()
     front.y = sin(glm::radians(Settings.Pitch));
     front.z = sin(glm::radians(Settings.Yaw)) * cos(glm::radians(Settings.Pitch));
 
-    m_front = glm::normalize(front);
+    Front = glm::normalize(front);
     // also re-calculate the Right and Up vector
     // normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
-    m_right = glm::normalize(glm::cross(m_front, m_worldUp));  
-    m_up    = glm::normalize(glm::cross(m_right, m_front));
+    Right = glm::normalize(glm::cross(Front, m_worldUp));  
+    Up    = glm::normalize(glm::cross(Right, Front));
 }
 
 glm::mat4 PerspectiveCamera::GetViewMatrix() const
@@ -98,23 +98,23 @@ void PerspectiveCamera::on_unlocked(float deltaTime)
     // forward
     if (glfwGetKey(m_window, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(m_window, GLFW_KEY_UP) == GLFW_PRESS)
     {
-        Transform.Translate(Settings.MovementSpeed * deltaTime * m_front);
+        Transform.Translate(Settings.MovementSpeed * deltaTime * Front);
     }
     // back
     if (glfwGetKey(m_window, GLFW_KEY_S) == GLFW_PRESS || glfwGetKey(m_window, GLFW_KEY_DOWN) == GLFW_PRESS)
     {
-        Transform.Translate(Settings.MovementSpeed * deltaTime * -m_front);
+        Transform.Translate(Settings.MovementSpeed * deltaTime * -Front);
     }
     // left
     if (glfwGetKey(m_window, GLFW_KEY_A) == GLFW_PRESS || glfwGetKey(m_window, GLFW_KEY_LEFT) == GLFW_PRESS)
     {
-        const auto dir = normalize(cross(m_front, m_up));
+        const auto dir = normalize(cross(Front, Up));
         Transform.Translate(-dir * Settings.MovementSpeed * deltaTime);
     }
     // right
     if (glfwGetKey(m_window, GLFW_KEY_D) == GLFW_PRESS || glfwGetKey(m_window, GLFW_KEY_RIGHT) == GLFW_PRESS)
     {
-        const auto dir = normalize(cross(m_front, m_up));
+        const auto dir = normalize(cross(Front, Up));
         Transform.Translate(dir * Settings.MovementSpeed * deltaTime);
     }
 }

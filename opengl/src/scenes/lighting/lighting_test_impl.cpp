@@ -1,6 +1,7 @@
 #include "lighting_test.h"
 
 #define GLEW_STATIC
+#include <fstream>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
@@ -38,42 +39,34 @@ LightingTestScene::LightingTestScene(WindowContext& context, PerspectiveCamera& 
     light = new Sphere(ShaderComponent(cvertSrc, cfragSrc),
         glm::vec3(1.0f));
 
+    const std::vector<std::string> faces
+    {
+        "src/resources/textures/skybox/right.png",
+        "src/resources/textures/skybox/left.png",
+        "src/resources/textures/skybox/top.png",
+        "src/resources/textures/skybox/bottom.png",
+        "src/resources/textures/skybox/front.png",
+        "src/resources/textures/skybox/back.png",
+    };
+
+    map = new Cubemap(faces, ShaderComponent(mapVertSrc, mapFragSrc));
+
     setup_lights(LightingData);
 
     Hierarchy.AddDrawable(subject).AddDrawable(light).AddDrawable(subjectCube);
 }
 
-void LightingTestScene::OnSetup()
-{
-    m_camera.Transform.Position = glm::vec3(0.0f, 0.0f, 3.0f);
-
-    subjectCube->Transform.SetPositionX(-1.5f);
-    subject->Transform.SetPositionX(1.5f);
-    
-    light->Transform.SetPositionX(1.5f);
-    light->Transform.SetScale(glm::vec3(0.3f));
-    subject->Transform.GuiDisplay = "Subject Sphere";
-    subjectCube->Transform.GuiDisplay = "Subject Cube";
-    subjectCube->Transform.SetScale(glm::vec3(0.9f));
-    light->Transform.GuiDisplay = "Light";
-    
-    //sphere->Transform.SetRotation(glm::vec3(25.0f, 45.0f, 0.0f));
-    LoadCamSnapShot();
-}
-
-void LightingTestScene::OnExit()
-{
-    SaveCamSnapshot();
-}
-
 void LightingTestScene::setup_lights(SceneLightingData& data)
 {
-    data.Directional = DirectionalLight{
-    glm::vec3(-0.2f, -1.0f, -0.3f),
-    glm::vec3(0.05f, 0.05f, 0.05f),
-    glm::vec3(0.4f),
-    glm::vec3(0.5f)
+    data.Directional = DirectionalLight
+    {
+        glm::vec3(-0.2f, -1.0f, -0.3f),
+        glm::vec3(0.05f, 0.05f, 0.05f),
+        glm::vec3(0.4f),
+        glm::vec3(0.5f)
     };
+
+    data.Spot = SpotLight();
 
     const glm::vec3 pointLightPositions[] = {
         glm::vec3(0.7f,  0.2f,  2.0f),
@@ -121,12 +114,42 @@ void LightingTestScene::setup_lights(SceneLightingData& data)
         glm::vec3(0.8f),
         glm::vec3(1.0f)
     };
-
-
+    
     data.PointLights.push_back(Light1);
     data.PointLights.push_back(Light2);
     data.PointLights.push_back(Light3);
     data.PointLights.push_back(Light4);
+
+    /*
+    for (size_t i = 0; i < LightingData.PointLights.size(); i++)
+    {
+        auto board = Billboard(ShaderComponent(billboardVertSrc, billboardFragSrc), TextureComponent(pointLightPath));
+        lightBillBoards.push_back(&board);
+    }
+    */
+}
+
+void LightingTestScene::OnSetup()
+{
+    m_camera.Transform.Position = glm::vec3(0.0f, 0.0f, 3.0f);
+
+    subjectCube->Transform.SetPositionX(-1.5f);
+    subject->Transform.SetPositionX(1.5f);
+    
+    light->Transform.SetPositionX(1.5f);
+    light->Transform.SetScale(glm::vec3(0.3f));
+    subject->Transform.GuiDisplay = "Subject Sphere";
+    subjectCube->Transform.GuiDisplay = "Subject Cube";
+    subjectCube->Transform.SetScale(glm::vec3(0.9f));
+    light->Transform.GuiDisplay = "Light";
+    
+    //sphere->Transform.SetRotation(glm::vec3(25.0f, 45.0f, 0.0f));
+    LoadCamSnapShot();
+}
+
+void LightingTestScene::OnExit()
+{
+    SaveCamSnapshot();
 }
 
 void LightingTestScene::OnUpdate(float deltaTime)
@@ -134,28 +157,29 @@ void LightingTestScene::OnUpdate(float deltaTime)
     glClearColor(ScreenClearColor.r, ScreenClearColor.g, ScreenClearColor.b, ScreenClearColor.a);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // Rendering
-    /*
-    subject->Shader.Use()
-    .SetMat4("model", subject->Transform.GetModelMatrix())
-    .SetMat4("view", m_camera.GetViewMatrix())
-    .SetMat4("projection", m_camera.GetProjectionMatrix())
-    .SetVec3("viewPosition", m_camera.Transform.Position)
-    .SetVec3("color", subject->Color)
-    .SetVec3("lightPosition", light->Transform.Position)
-    .SetVec3("lightColor", LightColor);
-    */
+    // structured binding
+    const auto [View, Projection, Position, Front] = m_camera.GetData();
     
     subject->Shader.Use()
     .SetMat4("model", subject->Transform.GetModelMatrix())
-    .SetMat4("view", m_camera.GetViewMatrix())
-    .SetMat4("projection", m_camera.GetProjectionMatrix())
-    .SetVec3("viewPosition", m_camera.Transform.Position)
+    .SetMat4("view", View)
+    .SetMat4("projection", Projection)
+    .SetVec3("viewPosition", Position)
     .SetVec3("color", subject->Color)
     .SetVec3("directionalLight.direction", LightingData.Directional.Direction)
     .SetVec3("directionalLight.ambient", LightingData.Directional.Ambient)
     .SetVec3("directionalLight.diffuse", LightingData.Directional.Diffuse)
-    .SetVec3("directionalLight.specular", LightingData.Directional.Specular);
+    .SetVec3("directionalLight.specular", LightingData.Directional.Specular)
+    .SetVec3("spotLight.position", Position)
+    .SetVec3("spotLight.direction", Front)
+    .SetVec3("spotLight.ambient", LightingData.Spot.Ambient)
+    .SetVec3("spotLight.diffuse", LightingData.Spot.Diffuse)
+    .SetVec3("spotLight.specular", LightingData.Spot.Specular)
+    .SetFloat("spotLight.constant", LightingData.Spot.Constant)
+    .SetFloat("spotLight.linear",  LightingData.Spot.Linear)
+    .SetFloat("spotLight.quadratic", LightingData.Spot.Quadratic)
+    .SetFloat("spotLight.cutOff", LightingData.Spot.CutOff)
+    .SetFloat("spotLight.outerCutOff", LightingData.Spot.OuterCutOff); 
 
 
     for (size_t i = 0; i < LightingData.PointLights.size(); i++)
@@ -186,14 +210,24 @@ void LightingTestScene::OnUpdate(float deltaTime)
     
     subjectCube->Shader.Use()
     .SetMat4("model", subjectCube->Transform.GetModelMatrix())
-    .SetMat4("view", m_camera.GetViewMatrix())
-    .SetMat4("projection", m_camera.GetProjectionMatrix())
+    .SetMat4("view", View)
+    .SetMat4("projection", Projection)
     .SetVec3("viewPosition", m_camera.Transform.Position)
     .SetVec3("color", subjectCube->Color)
     .SetVec3("directionalLight.direction", LightingData.Directional.Direction)
     .SetVec3("directionalLight.ambient", LightingData.Directional.Ambient)
     .SetVec3("directionalLight.diffuse", LightingData.Directional.Diffuse)
-    .SetVec3("directionalLight.specular", LightingData.Directional.Specular);
+    .SetVec3("directionalLight.specular", LightingData.Directional.Specular)
+    .SetVec3("spotLight.position", Position)
+    .SetVec3("spotLight.direction", Front)
+    .SetVec3("spotLight.ambient", LightingData.Spot.Ambient)
+    .SetVec3("spotLight.diffuse", LightingData.Spot.Diffuse)
+    .SetVec3("spotLight.specular", LightingData.Spot.Specular)
+    .SetFloat("spotLight.constant", LightingData.Spot.Constant)
+    .SetFloat("spotLight.linear",  LightingData.Spot.Linear)
+    .SetFloat("spotLight.quadratic", LightingData.Spot.Quadratic)
+    .SetFloat("spotLight.cutOff", LightingData.Spot.CutOff)
+    .SetFloat("spotLight.outerCutOff", LightingData.Spot.OuterCutOff);
 
     for (size_t i = 0; i < LightingData.PointLights.size(); i++)
     {
@@ -219,8 +253,24 @@ void LightingTestScene::OnUpdate(float deltaTime)
 
     glBindVertexArray(subjectCube->Vao);
     glDrawElements(GL_TRIANGLES, subjectCube->Indices.size(), GL_UNSIGNED_INT, 0);
+
+    const auto billboardSize = glm::vec2(20.0f, 20.0f);
+    const auto rightWorld = glm::vec3(View[0][0], View[1][0], View[2][0]);
+    const auto upWorld = glm::vec3(View[0][1], View[1][1], View[2][1]);
     
+    /*
+    // draw light billboards
+    for (size_t i = 0; i < lightBillBoards.size(); i++)
+    {
+        lightBillBoards[i]->Draw(View, Projection,
+            billboardSize,
+            LightingData.PointLights[i].Transform.Position,
+            rightWorld, upWorld);
+    }
+    */
     
+    // draw map last always
+    map->Draw(View, Projection);
     
     //light->Draw(m_camera);
 
@@ -257,17 +307,6 @@ void LightingTestScene::OnGui()
         {
             Hierarchy.GuiShowDrawablesTree();
             ImGui::EndTabItem();
-        }
-        
-        if (ImGui::BeginTabItem("Background"))
-        {
-            ImGui::ColorEdit4("Background", value_ptr(ScreenClearColor));
-            ImGui::EndTabItem();
-
-            if (ImGui::Button("Reset"))
-            {
-                ScreenClearColor = glm::vec4(0.18f, 0.18f, 0.18f, 1.0f);
-            }
         }
 
         if (ImGui::BeginTabItem("Camera"))

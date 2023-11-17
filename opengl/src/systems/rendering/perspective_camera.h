@@ -31,6 +31,14 @@ struct CameraSettings
     bool Unlocked;
 };
 
+struct CameraData
+{
+    glm::mat4 View;
+    glm::mat4 Projection;
+    glm::vec3 Position;
+    glm::vec3 Front;
+};
+
 /*
 enum CameraMode
 {
@@ -65,6 +73,12 @@ public:
     inline static const char* GUI_HEADER = ICON_FK_CAMERA " Camera";
 
     PerspectiveCamera(WindowContext& windowContext, const glm::vec3& position = STARTING_POSITION);
+
+    glm::vec3 Right = glm::vec3(1.0f, 0.0f, 0.0f);
+    glm::vec3 Up = glm::vec3(0.0f, 1.0f, 0.0f);
+    glm::vec3 Front = glm::vec3(0.0f, 0.0f, -1.0f);
+
+    
     CameraSettings Settings;
     TransformComponent Transform = TransformComponent().SetPosition(STARTING_POSITION);
 
@@ -73,6 +87,17 @@ public:
     glm::mat4 GetProjectionMatrix() const { return m_projectionMatrix; }
 
     glm::mat4 CalculateMvp(const TransformComponent& transform) const;
+
+    CameraData GetData()
+    {
+        return CameraData
+        {
+            GetViewMatrix(),
+            GetProjectionMatrix(),
+            Transform.Position,
+            Front
+        };
+    }
 
     void OnUpdate(float deltaTime);
 
@@ -94,9 +119,7 @@ private:
     const glm::vec3 m_worldFront = glm::vec3(0.0f, 0.0f, -1.0f);
     
 
-    glm::vec3 m_right = glm::vec3(1.0f, 0.0f, 0.0f);
-    glm::vec3 m_up = glm::vec3(0.0f, 1.0f, 0.0f);
-    glm::vec3 m_front = glm::vec3(0.0f, 0.0f, -1.0f);
+
 
     glm::mat4 m_projectionMatrix;
     glm::mat4 m_viewMatrix;

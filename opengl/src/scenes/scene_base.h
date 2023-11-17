@@ -17,6 +17,8 @@
 #include "../systems/drawable/impl/cone.h"
 #include "../systems/drawable/impl/cone.h"
 #include "../systems/drawable/impl/cone.h"
+#include "../systems/drawable/cubemap.h"
+#include "../systems/drawable/billboard.h"
 
 // chess pieces
 #include "../utils/pieces/impl/pawn.h"
@@ -37,6 +39,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <functional>
 #include <vector>
+#include <filesystem>
 
 struct CameraSnapshot
 {

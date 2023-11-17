@@ -28,6 +28,24 @@ private:
     const char *cfragSrc =
 #include "../../resources/shaders/basic.frag"
 ;
+
+    const char *mapVertSrc =
+#include "../../resources/shaders/cubemap.vert"
+;
+    
+    const char *mapFragSrc =
+#include "../../resources/shaders/cubemap.frag"
+;
+
+    const char *billboardVertSrc =
+#include "../../resources/shaders/billboard.vert"
+;
+    
+    const char *billboardFragSrc =
+#include "../../resources/shaders/billboard.frag"
+;
+
+    const char* pointLightPath = "src/resources/textures/icons/lights/point.png";
     
     const char* texPath = "src/resources/textures/cobble.png";
     const char* texPathCube = "src/resources/textures/metal.png";
@@ -35,4 +53,7 @@ private:
     Sphere* subject;
     Cube* subjectCube;
     Drawable* light;
+    Cubemap* map;
+    std::vector<Billboard*> lightBillBoards;
+    
 };

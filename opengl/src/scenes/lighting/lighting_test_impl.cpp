@@ -119,14 +119,6 @@ void LightingTestScene::setup_lights(SceneLightingData& data)
     data.PointLights.push_back(Light2);
     data.PointLights.push_back(Light3);
     data.PointLights.push_back(Light4);
-
-    /*
-    for (size_t i = 0; i < LightingData.PointLights.size(); i++)
-    {
-        auto board = Billboard(ShaderComponent(billboardVertSrc, billboardFragSrc), TextureComponent(pointLightPath));
-        lightBillBoards.push_back(&board);
-    }
-    */
 }
 
 void LightingTestScene::OnSetup()
@@ -254,23 +246,15 @@ void LightingTestScene::OnUpdate(float deltaTime)
     glBindVertexArray(subjectCube->Vao);
     glDrawElements(GL_TRIANGLES, subjectCube->Indices.size(), GL_UNSIGNED_INT, 0);
 
-    const auto billboardSize = glm::vec2(20.0f, 20.0f);
+    const auto billboardSize = glm::vec2(2.0f, 2.0f);
     const auto rightWorld = glm::vec3(View[0][0], View[1][0], View[2][0]);
     const auto upWorld = glm::vec3(View[0][1], View[1][1], View[2][1]);
     
-    /*
-    // draw light billboards
-    for (size_t i = 0; i < lightBillBoards.size(); i++)
-    {
-        lightBillBoards[i]->Draw(View, Projection,
-            billboardSize,
-            LightingData.PointLights[i].Transform.Position,
-            rightWorld, upWorld);
-    }
-    */
-    
     // draw map last always
     map->Draw(View, Projection);
+
+    /**/
+
     
     //light->Draw(m_camera);
 

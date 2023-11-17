@@ -37,14 +37,6 @@ private:
 #include "../../resources/shaders/cubemap.frag"
 ;
 
-    const char *billboardVertSrc =
-#include "../../resources/shaders/billboard.vert"
-;
-    
-    const char *billboardFragSrc =
-#include "../../resources/shaders/billboard.frag"
-;
-
     const char* pointLightPath = "src/resources/textures/icons/lights/point.png";
     
     const char* texPath = "src/resources/textures/cobble.png";
@@ -54,6 +46,5 @@ private:
     Cube* subjectCube;
     Drawable* light;
     Cubemap* map;
-    std::vector<Billboard*> lightBillBoards;
     
 };

@@ -18,6 +18,9 @@
 #include "systems/window/window_context.h"
 #include "utils/gui.h"
 
+#include <assimp/Importer.hpp>
+#include <assimp/version.h>
+
 const GLFWimage ICON = { image_width, image_height, image_data };
 const WindowParameters WINDOW_PARAMS = { 1600, 900, "opengl", 22.0f, ICON };
 
@@ -28,6 +31,7 @@ static bool UI_ENABLED = true;
 int main()
 {
     Logger::SetPriority(Logger::LogPriority::Debug);
+    Logger::LogDebug("Assimp Version: %d.%d.%d", aiGetVersionMajor(), aiGetVersionMinor(), aiGetVersionPatch());
 
     auto context = WindowContext(WINDOW_PARAMS);
     auto camera = PerspectiveCamera(context);
